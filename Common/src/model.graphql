@@ -1,6 +1,6 @@
 type Query {
     me: User
-    issues: [Issue]
+    issues: [Issue!]
 }
 
 type User {
@@ -12,5 +12,5 @@ type Issue {
     id: ID!
     title: String!
     description: String!
-    children: [Issue]!
+    children: [Issue!]!
 }

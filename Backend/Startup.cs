@@ -14,7 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
-namespace Backend {
+namespace VirtualVoid {
     public class Startup {
         public Startup(IConfiguration configuration) {
             this.configuration = configuration;

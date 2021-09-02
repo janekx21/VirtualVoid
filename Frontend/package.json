@@ -15,6 +15,7 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
+    "@graphql-codegen/typescript": "^2.1.2",
     "lit-element": "^2.4.0"
   },
   "devDependencies": {

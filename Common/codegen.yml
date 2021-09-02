@@ -1,7 +1,13 @@
 schema: ./src/model.graphql
 generates:
-  src/MyTypes.cs:
+  ../Backend/Model/Generated.cs:
     plugins:
       - c-sharp
     config:
-      namespaceName: MyCompany.MyNamespace
+      namespaceName: VirtualVoid.Model
+
+  ../Frontend/src/model/generated.ts:
+   plugins:
+     - typescript
+   config:
+     avoidOptionals: true

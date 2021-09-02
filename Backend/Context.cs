@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using VirtualVoid;
 using static System.IO.Path;
 
 namespace EventSourceDemo {
@@ -28,20 +29,18 @@ namespace EventSourceDemo {
                 .Where(x => x.className == nameof(Issue))
                 .OrderBy(x => x.order).ToList();
 
+            var restore = new Restore();
             foreach (var commit in issueCommits) {
                 if (commit.type == nameof(CommitTypes.Create)) {
                     var create = JsonSerializer.Deserialize<CommitTypes.Create>(commit.payload) ??
-                                 throw new InvalidOperationException("could not deserialize Create");
-                    var issue = JsonSerializer.Deserialize<Issue>(create.initial) ??
-                                throw new InvalidOperationException("could not deserialize Issue");
-                    issues.Add(issue);
+                                 throw new InvalidOperationException("could not deserialize create");
+                    restore.allCreate[commit.className].Invoke(this, create);
                 }
 
                 if (commit.type == nameof(CommitTypes.Change)) {
-                    var (key, value) = JsonSerializer.Deserialize<CommitTypes.Change>(commit.payload) ??
+                    var update = JsonSerializer.Deserialize<CommitTypes.Change>(commit.payload) ??
                                        throw new InvalidOperationException("could not deserialize change");
-                    var issue = issues.Find(commit.objectId) ?? throw new Exception("issue not found");
-                    if (key == nameof(Issue.title)) issue.title = value;
+                    restore.allUpdate[commit.className].Invoke(this,update, commit.objectId);
                 }
             }
 

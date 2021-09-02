@@ -1,7 +1,8 @@
 using GraphQL.Types;
+using VirtualVoid.Model;
 
-namespace Backend {
-    public sealed class UserType : ObjectGraphType<MyTypes.User> {
+namespace VirtualVoid {
+    public sealed class UserType : ObjectGraphType<Types.User> {
         public UserType() {
             Field(o => o.id);
             Field(o => o.name);

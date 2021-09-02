@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Backend {
+namespace VirtualVoid {
     public class Program {
         public static void Main(string[] args) {
             createHostBuilder(args).Build().Run();

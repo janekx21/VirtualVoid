@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace MyCompany.MyNamespace {
+namespace VirtualVoid.Model {
   public class Types {
     
     #region Issue
