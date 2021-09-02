@@ -11,12 +11,17 @@
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
-      "launchUrl": "ui/playground",
       "applicationUrl": "http://localhost:5001",
+      "launchUrl": "ui/playground",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "commandLineArgs": "watch run"
+      }
+    },
+    "Watch": {
+      "commandName": "Executable",
+      "executablePath": "dotnet",
+      "commandLineArgs": "watch run --launch-profile Development",
+      "workingDirectory": "$(ProjectDir)"
     }
   }
 }

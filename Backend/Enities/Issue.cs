@@ -3,12 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EventSourceDemo {
     public class Issue {
-        public Issue(Guid id, string title) {
-            this.id = id;
-            this.title = title;
-        }
 
-        [Key] public Guid id { get; private set; }
-        [Required] public string title { get; set; }
+        [Key] public Guid id { get; set; } = Guid.NewGuid();
+        [Required] public string title { get; set; } = null!;
+        [Required] public string description { get; set; } = null!;
+        [Required] public State state { get; set; } = null!;
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventSourceDemo;
 using GraphQL.Server;
+using GraphQL.Server.Ui.Voyager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -45,12 +46,13 @@ namespace VirtualVoid {
 
             var context = new Context();
             services.AddSingleton(context);
-            context.restoreDomain();
+            // TODO
+            // context.restoreDomain();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 

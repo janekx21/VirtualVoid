@@ -1,5 +1,6 @@
 import {LitElement, html, customElement, css, state} from 'lit-element'
 import "./my-issue"
+import "./my-issue-detail"
 import "./my-modal"
 import Issue from "./Issue";
 
@@ -47,7 +48,7 @@ export class MyState extends LitElement {
           </div>
           ${this.opened !== null ? html`
             <my-modal @close="${this.close}" .visable="true">
-              <my-issue .issue="${this.opened}"></my-issue>
+              <my-issue-detail @change="${(e: CustomEvent<Issue>) => this.opened = e.detail}" .issue="${this.opened}"></my-issue-detail>
             </my-modal>
           ` : html``}
         `

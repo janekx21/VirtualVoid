@@ -11,22 +11,65 @@ export type Scalars = {
   Float: number;
 };
 
+export type Board = {
+  __typename?: 'Board';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  issues: Array<Issue>;
+  states: Array<State>;
+};
+
+export type BoardInput = {
+  id: Scalars['ID'];
+  name: Maybe<Scalars['String']>;
+};
+
 export type Issue = {
   __typename?: 'Issue';
   id: Scalars['ID'];
   title: Scalars['String'];
   description: Scalars['String'];
-  children: Array<Issue>;
+  state: State;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createBoard: Board;
+  updateBoard: Board;
+  deleteBoard: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCreateBoardArgs = {
+  name: Scalars['String'];
+};
+
+
+export type MutationUpdateBoardArgs = {
+  board: BoardInput;
+};
+
+
+export type MutationDeleteBoardArgs = {
+  id: Scalars['ID'];
 };
 
 export type Query = {
   __typename?: 'Query';
   me: Maybe<User>;
-  issues: Maybe<Array<Issue>>;
+  boards: Maybe<Array<Board>>;
+};
+
+export type State = {
+  __typename?: 'State';
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
-  name: Scalars['String'];
+  userName: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
 };

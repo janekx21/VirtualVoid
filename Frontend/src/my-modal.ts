@@ -26,6 +26,7 @@ export class MyModal extends LitElement {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        max-width: 800px;
       }
     `
 

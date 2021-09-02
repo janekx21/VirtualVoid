@@ -15,19 +15,19 @@ export class MyIssue extends LitElement {
         background-color: #c8c8c8;
         overflow: hidden;
         font-family: Roboto, serif;
-        box-shadow: 0 0 0 rgba(0, 0, 0, 0.30), 0 0 0 rgba(0, 0, 0, 0.22);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.30), 0 0 0 rgba(0, 0, 0, 0.22);
         transition: all .2s cubic-bezier(0, 0, 0.2, 1);
         transform: translate(0px, 0px);
       }
 
-      :host div {
-        padding: 0 1rem;
-      }
-      
       :host(:hover) {
         box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
-        transform: translate(0px, -5px) scale(1.01);
+        transform: translate(0px, -5px) scale(1.02);
         cursor: pointer;
+      }
+
+      :host div {
+        padding: 0 1rem;
       }
 
       .head {

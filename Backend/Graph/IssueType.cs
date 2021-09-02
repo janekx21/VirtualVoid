@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using EventSourceDemo;
 using GraphQL.Types;
 using VirtualVoid.Model;
 
@@ -7,7 +9,7 @@ namespace VirtualVoid {
             Field(x => x.id);
             Field(x => x.title);
             Field(x => x.description);
-            Field(x => x.children);
+            Field(x => x.state);
         }
     }
 }

@@ -1,16 +1,45 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
 type Query {
     me: User
-    issues: [Issue!]
+    boards: [Board!]
+}
+
+type Mutation {
+    createBoard(name: String!): Board!
+    updateBoard(id: ID!, board: BoardInput!): Board!
+    deleteBoard(id: ID!): String
+}
+
+input BoardInput {
+    name: String
 }
 
 type User {
     id: ID!
+    userName: String!
+    firstName: String!
+    lastName: String!
+}
+
+type Board {
+    id: ID!
     name: String!
+    issues: [Issue!]!
+    states: [State!]!
 }
 
 type Issue {
     id: ID!
     title: String!
     description: String!
-    children: [Issue!]!
+    state: State!
+}
+
+type State {
+    id: ID!
+    name: String!
 }

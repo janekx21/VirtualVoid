@@ -17,6 +17,9 @@ namespace EventSourceDemo {
 
         public DbSet<Issue> issues { get; set; } = null!;
         public DbSet<Commit> commits { get; set; } = null!;
+        public DbSet<Board> boards { get; set; } = null!;
+        public DbSet<State> states { get; set; } = null!;
+
         private string dbPath => $"{path}{DirectorySeparatorChar}context.db";
 
         public void restoreDomain() {

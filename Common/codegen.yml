@@ -5,6 +5,7 @@ generates:
       - c-sharp
     config:
       namespaceName: VirtualVoid.Model
+      emitRecords: true
 
   ../Frontend/src/model/generated.ts:
    plugins:
