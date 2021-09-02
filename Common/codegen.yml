@@ -1,0 +1,7 @@
+schema: ./src/model.graphql
+generates:
+  src/MyTypes.cs:
+    plugins:
+      - c-sharp
+    config:
+      namespaceName: MyCompany.MyNamespace
