@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EventSourceDemo;
 using GraphQL.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,11 +24,6 @@ namespace Backend {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers();
-            services.AddSwaggerGen(c => {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Backend", Version = "v1" });
-            });
-
             // Add GraphQL services and configure options
             services
                 // .AddSingleton<IChat, Chat>()
@@ -46,23 +42,18 @@ namespace Backend {
                 .AddDataLoader() // Add required services for DataLoader support
                 .AddGraphTypes(
                     typeof(IssueSchema)); // Add all IGraphType implementors in assembly which ChatSchema exists
+
+            var context = new Context();
+            services.AddSingleton(context);
+            context.restoreDomain();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Backend v1"));
-            }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             // this is required for websockets support
             app.UseWebSockets();
 
@@ -72,17 +63,14 @@ namespace Backend {
             // use HTTP middleware for ChatSchema at default path /graphql
             app.UseGraphQL<IssueSchema>();
 
-            // use GraphiQL middleware at default path /ui/graphiql with default options
-            app.UseGraphQLGraphiQL();
+            if (env.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
+                // use GraphQL Playground middleware at default path /ui/playground with default options
+                app.UseGraphQLPlayground();
 
-            // use GraphQL Playground middleware at default path /ui/playground with default options
-            app.UseGraphQLPlayground();
-
-            // use Altair middleware at default path /ui/altair with default options
-            app.UseGraphQLAltair();
-
-            // use Voyager middleware at default path /ui/voyager with default options
-            app.UseGraphQLVoyager();
+                // use Voyager middleware at default path /ui/voyager with default options
+                app.UseGraphQLVoyager();
+            }
         }
     }
 }
