@@ -1,22 +1,20 @@
 <template>
   <div class="flex flex-col m-4 rounded-3xl overflow-hidden font-sans issue">
     <div class="color-head flex justify-between text-2xl font-bold p-3">
-      <div class="title">Issue Titel</div>
+      <div class="title">{{data.title}}</div>
       <div>#123</div>
     </div>
     <div class="color-body text-base overflow-hidden p-3">
       <i class="gg-arrow-top-right-o"></i>
-      <p class="description">
-        Issue Description foo bar foo bar foo bar foo bar foo bar foo bar foo bar
-      </p>
+      <p class="description">{{data.description}}</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "Issue"
-}
+<script setup lang="ts">
+import {Issue} from "../model/generated";
+
+defineProps<{data: Issue}>()
 </script>
 
 <style scoped>
