@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-between space-x-2 overflow-hidden rounded-3xl">
-    <div v-for="state of data.states" class="flex flex-col color-state flex-grow">
+  <div class="grid grid-cols-3 space-x-2 overflow-hidden rounded-3xl">
+    <div v-for="state of data.states" class="flex flex-col color-state">
       <div class="flex justify-center text-5xl font-serif color-head p-4">{{ state.name }}</div>
       <div>
         <Issue :data="issue" v-for="issue of data.issues.filter(x => x.state.id === state.id)"></Issue>

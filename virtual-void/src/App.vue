@@ -10,7 +10,7 @@ const board: Board = {
   issues: [
     {id: "foo", title: "Cooles Issue", description: "coole beschreibung", state: {id: "1-1-1", name: "To Do"}},
     {id: "foo", title: "Anderes Issue", description: "coole beschreibung", state: {id: "1-1-1", name: "To Do"}},
-    {id: "foo", title: "Fast Fertiges", description: "coole beschreibung", state: {id: "2-2-2", name: "Doing"}},
+    {id: "foo", title: "Fast Fertiges", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in magna ullamcorper, varius nibh id, dictum nulla. In a nisl ipsum. Vivamus luctus urna vel sollicitudin consectetur.", state: {id: "2-2-2", name: "Doing"}},
     {id: "foo", title: "Fertiges Issue", description: "coole beschreibung", state: {id: "3-3-3", name: "Done"}},
   ],
   states: [
