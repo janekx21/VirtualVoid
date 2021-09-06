@@ -3,6 +3,7 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import BoardComponent from "./components/Board.vue";
 import {Board} from "./model/generated";
+import HelloWorld from "./components/HelloWorld.vue";
 
 const board: Board = {
   id: "foo",
