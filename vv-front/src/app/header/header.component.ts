@@ -1,4 +1,5 @@
 import {Component, HostBinding, OnInit} from '@angular/core';
+import {IconService} from "carbon-components-angular";
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,7 @@ export class HeaderComponent implements OnInit {
 
   @HostBinding('class.bx--header') headerClass = true;
 
-  constructor() {
+  constructor(protected iconService: IconService) {
   }
 
   ngOnInit(): void {

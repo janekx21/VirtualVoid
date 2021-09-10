@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {LandingPageComponent} from './landing-page/landing-page.component';
 import {HomeRoutingModule} from "./home-routing.module";
+import {TilesModule} from "carbon-components-angular";
 
 @NgModule({
   declarations: [
@@ -9,7 +10,8 @@ import {HomeRoutingModule} from "./home-routing.module";
   ],
   imports: [
     CommonModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    TilesModule
   ]
 })
 export class HomeModule {
