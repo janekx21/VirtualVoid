@@ -3,10 +3,12 @@ import {CommonModule} from '@angular/common';
 import {LandingPageComponent} from './landing-page/landing-page.component';
 import {HomeRoutingModule} from "./home-routing.module";
 import {TilesModule} from "carbon-components-angular";
+import { BoardComponent } from './landing-page/board/board.component';
 
 @NgModule({
   declarations: [
-    LandingPageComponent
+    LandingPageComponent,
+    BoardComponent
   ],
   imports: [
     CommonModule,

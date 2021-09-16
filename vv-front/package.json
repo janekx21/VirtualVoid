@@ -18,15 +18,16 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@apollo/client": "^3.0.0",
     "@carbon/icons": "^10.37.0",
     "apollo-angular": "^2.6.0",
     "carbon-components": "^10.41.0",
     "carbon-components-angular": "^4.55.0",
+    "graphql": "^15.0.0",
     "rxjs": "~6.6.0",
+    "subscriptions-transport-ws": "^0.9.19",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4",
-    "@apollo/client": "^3.0.0",
-    "graphql": "^15.0.0"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~12.2.4",

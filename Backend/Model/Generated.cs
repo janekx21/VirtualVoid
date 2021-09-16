@@ -27,10 +27,6 @@ namespace VirtualVoid.Model {
     #region BoardInput
     public class BoardInput {
       #region members
-      [Required]
-      [JsonRequired]
-      public string id { get; set; }
-    
       public string name { get; set; }
       #endregion
     
@@ -111,6 +107,15 @@ namespace VirtualVoid.Model {
     
       [JsonProperty("name")]
       public string name { get; set; }
+      #endregion
+    }
+    #endregion
+    
+    #region Subscription2
+    public class Subscription2 {
+      #region members
+      [JsonProperty("time")]
+      public string time { get; set; }
       #endregion
     }
     #endregion

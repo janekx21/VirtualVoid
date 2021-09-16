@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EventSourceDemo;
+using GraphQL;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Voyager;
 using Microsoft.AspNetCore.Builder;
@@ -46,15 +47,19 @@ namespace VirtualVoid {
 
             var context = new Context();
             services.AddSingleton(context);
+
+            services.AddSingleton<IDocumentExecuter, SubscriptionDocumentExecuter>();
             // TODO
             // context.restoreDomain();
+            services.AddCors(options =>
+                options.AddPolicy("DefaultPolicy",
+                    builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            // app.UseHttpsRedirection();
-
-            app.UseRouting();
+            app.UseCors("DefaultPolicy");
+            // app.UseRouting();
 
             // this is required for websockets support
             app.UseWebSockets();

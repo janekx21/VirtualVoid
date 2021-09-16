@@ -5,7 +5,9 @@ generates:
       - c-sharp
     config:
       namespaceName: VirtualVoid.Model
-      emitRecords: true
+      # emitRecords: true
+      # namingConvention: keep
+      # emitJsonAttributes: false
 
   ../Frontend/src/model/generated.ts:
    plugins:

@@ -4,11 +4,12 @@ using GraphQL.Types;
 using VirtualVoid.Model;
 
 namespace VirtualVoid {
-    public class IssueSchema : Schema{
-        public IssueSchema(Context context) {
+    public class IssueSchema : Schema {
+        public IssueSchema(Context context, IServiceProvider provider) : base(provider) {
             Query = new QueryType(context);
             Mutation = new MutationType(context);
-            // Subscription = new ChatSubscriptions(chat);
+            Subscription = new SubscriptionType();
+
             RegisterTypeMapping(typeof(Types.User), typeof(UserType));
             RegisterTypeMapping(typeof(Types.Issue), typeof(IssueType));
             RegisterTypeMapping(typeof(Types.Board), typeof(BoardType));

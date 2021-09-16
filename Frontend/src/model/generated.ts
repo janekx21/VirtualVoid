@@ -20,7 +20,6 @@ export type Board = {
 };
 
 export type BoardInput = {
-  id: Scalars['ID'];
   name: Maybe<Scalars['String']>;
 };
 
@@ -46,6 +45,7 @@ export type MutationCreateBoardArgs = {
 
 
 export type MutationUpdateBoardArgs = {
+  id: Scalars['ID'];
   board: BoardInput;
 };
 
@@ -64,6 +64,11 @@ export type State = {
   __typename?: 'State';
   id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type Subscription2 = {
+  __typename?: 'Subscription2';
+  time: Maybe<Scalars['String']>;
 };
 
 export type User = {

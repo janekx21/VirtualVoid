@@ -1,6 +1,7 @@
 schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription2
 }
 
 type Query {
@@ -12,6 +13,10 @@ type Mutation {
     createBoard(name: String!): Board!
     updateBoard(id: ID!, board: BoardInput!): Board!
     deleteBoard(id: ID!): String
+}
+
+type Subscription2 {
+    time: String
 }
 
 input BoardInput {
