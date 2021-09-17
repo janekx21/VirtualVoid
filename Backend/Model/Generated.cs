@@ -6,8 +6,8 @@ using Newtonsoft.Json;
 namespace VirtualVoid.Model {
   public class Types {
     
-    #region Board
-    public class Board {
+    #region BackLog
+    public class BackLog {
       #region members
       [JsonProperty("id")]
       public string id { get; set; }
@@ -17,6 +17,18 @@ namespace VirtualVoid.Model {
     
       [JsonProperty("issues")]
       public List<Issue> issues { get; set; }
+      #endregion
+    }
+    #endregion
+    
+    #region Board
+    public class Board {
+      #region members
+      [JsonProperty("id")]
+      public string id { get; set; }
+    
+      [JsonProperty("backlog")]
+      public BackLog backlog { get; set; }
     
       [JsonProperty("states")]
       public List<State> states { get; set; }
@@ -54,6 +66,30 @@ namespace VirtualVoid.Model {
     }
     #endregion
     
+    #region Epic
+    public class Epic {
+      #region members
+      [JsonProperty("id")]
+      public string id { get; set; }
+    
+      [JsonProperty("name")]
+      public string name { get; set; }
+    
+      [JsonProperty("shortName")]
+      public string shortName { get; set; }
+    
+      [JsonProperty("description")]
+      public string description { get; set; }
+      #endregion
+    }
+    #endregion
+    public enum Importance {
+      LOW,
+      MEDIUM,
+      HIGH
+    }
+    
+    
     #region Issue
     public class Issue {
       #region members
@@ -66,11 +102,43 @@ namespace VirtualVoid.Model {
       [JsonProperty("description")]
       public string description { get; set; }
     
+      [JsonProperty("number")]
+      public int number { get; set; }
+    
+      [JsonProperty("points")]
+      public int? points { get; set; }
+    
+      [JsonProperty("flagged")]
+      public bool flagged { get; set; }
+    
+      [JsonProperty("importance")]
+      public Importance importance { get; set; }
+    
+      [JsonProperty("type")]
+      public IssueType type { get; set; }
+    
       [JsonProperty("state")]
       public State state { get; set; }
+    
+      [JsonProperty("epic")]
+      public Epic epic { get; set; }
+    
+      [JsonProperty("creator")]
+      public User creator { get; set; }
+    
+      [JsonProperty("worker")]
+      public User worker { get; set; }
       #endregion
     }
     #endregion
+    public enum IssueType {
+      STORY,
+      IMPROVEMENT,
+      TASK,
+      BUG,
+      DEPT
+    }
+    
     
     #region Mutation
     public class Mutation {
@@ -83,6 +151,27 @@ namespace VirtualVoid.Model {
     
       [JsonProperty("deleteBoard")]
       public string deleteBoard { get; set; }
+      #endregion
+    }
+    #endregion
+    
+    #region Project
+    public class Project {
+      #region members
+      [JsonProperty("id")]
+      public string id { get; set; }
+    
+      [JsonProperty("name")]
+      public string name { get; set; }
+    
+      [JsonProperty("shortName")]
+      public string shortName { get; set; }
+    
+      [JsonProperty("backlogs")]
+      public List<BackLog> backlogs { get; set; }
+    
+      [JsonProperty("boards")]
+      public List<Board> boards { get; set; }
       #endregion
     }
     #endregion
@@ -111,8 +200,8 @@ namespace VirtualVoid.Model {
     }
     #endregion
     
-    #region Subscription2
-    public class Subscription2 {
+    #region Subscription
+    public class Subscription {
       #region members
       [JsonProperty("time")]
       public string time { get; set; }

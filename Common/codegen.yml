@@ -14,3 +14,9 @@ generates:
      - typescript
    config:
      avoidOptionals: true
+
+  ../virtual-void/src/model/generated.ts:
+    plugins:
+      - typescript
+    config:
+      avoidOptionals: true

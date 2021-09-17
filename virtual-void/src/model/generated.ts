@@ -11,26 +11,61 @@ export type Scalars = {
   Float: number;
 };
 
-export type Board = {
-  __typename?: 'Board';
+export type BackLog = {
+  __typename?: 'BackLog';
   id: Scalars['ID'];
   name: Scalars['String'];
   issues: Array<Issue>;
+};
+
+export type Board = {
+  __typename?: 'Board';
+  id: Scalars['ID'];
+  backlog: BackLog;
   states: Array<State>;
 };
 
 export type BoardInput = {
-  id: Scalars['ID'];
   name: Maybe<Scalars['String']>;
 };
+
+export type Epic = {
+  __typename?: 'Epic';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  shortName: Scalars['String'];
+  description: Scalars['String'];
+};
+
+export enum Importance {
+  Low = 'LOW',
+  Medium = 'MEDIUM',
+  High = 'HIGH'
+}
 
 export type Issue = {
   __typename?: 'Issue';
   id: Scalars['ID'];
   title: Scalars['String'];
   description: Scalars['String'];
-  state: State;
+  number: Scalars['Int'];
+  points: Maybe<Scalars['Int']>;
+  flagged: Scalars['Boolean'];
+  importance: Importance;
+  type: IssueType;
+  state: Maybe<State>;
+  epic: Maybe<Epic>;
+  creator: Maybe<User>;
+  worker: Maybe<User>;
 };
+
+export enum IssueType {
+  Story = 'STORY',
+  Improvement = 'IMPROVEMENT',
+  Task = 'TASK',
+  Bug = 'BUG',
+  Dept = 'DEPT'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -46,12 +81,22 @@ export type MutationCreateBoardArgs = {
 
 
 export type MutationUpdateBoardArgs = {
+  id: Scalars['ID'];
   board: BoardInput;
 };
 
 
 export type MutationDeleteBoardArgs = {
   id: Scalars['ID'];
+};
+
+export type Project = {
+  __typename?: 'Project';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  shortName: Scalars['String'];
+  backlogs: Array<BackLog>;
+  boards: Array<Board>;
 };
 
 export type Query = {
@@ -64,6 +109,11 @@ export type State = {
   __typename?: 'State';
   id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  time: Maybe<Scalars['String']>;
 };
 
 export type User = {

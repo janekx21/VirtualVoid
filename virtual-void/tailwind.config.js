@@ -4,8 +4,9 @@ module.exports = {
     theme: {
         extend: {},
         fontFamily: {
-            'serif': ['Merriweather'],
-            'sans': ['Roboto']
+            'serif': ['IBM Plex Serif'],
+            'sans': ['IBM Plex Sans'],
+            'mono': ['IBM Plex Mono']
         }
     },
     variants: {

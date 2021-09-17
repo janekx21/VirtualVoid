@@ -1,7 +1,7 @@
 schema {
     query: Query
     mutation: Mutation
-    subscription: Subscription2
+    subscription: Subscription
 }
 
 type Query {
@@ -15,7 +15,7 @@ type Mutation {
     deleteBoard(id: ID!): String
 }
 
-type Subscription2 {
+type Subscription {
     time: String
 }
 
@@ -30,18 +30,61 @@ type User {
     lastName: String!
 }
 
-type Board {
+type Project {
+    id: ID!
+    name: String!
+    shortName: String!
+    backlogs: [BackLog!]!
+    boards: [Board!]!
+}
+
+type BackLog {
     id: ID!
     name: String!
     issues: [Issue!]!
+}
+
+type Board {
+    id: ID!
+    backlog: BackLog!
     states: [State!]!
+    # TODO filter
 }
 
 type Issue {
     id: ID!
     title: String!
     description: String!
-    state: State!
+    number: Int!
+    points: Int
+    flagged: Boolean!
+    importance: Importance!
+    type: IssueType!
+    state: State
+    epic: Epic
+    creator: User
+    worker: User
+}
+
+enum Importance {
+    LOW
+    MEDIUM
+    HIGH
+}
+
+enum IssueType {
+    STORY
+    IMPROVEMENT
+    TASK
+    BUG
+    DEPT
+}
+
+type Epic {
+    id: ID!
+    name: String!
+    shortName: String! # length=2
+    description: String!
 }
 
 type State {
