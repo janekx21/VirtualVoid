@@ -3,36 +3,42 @@ package com.virtualvoid.backend.model
 import com.expediagroup.graphql.generator.execution.OptionalInput
 import java.util.*
 
+// TODO
+data class Story(
+    val id: UUID,
+    val backlog: Backlog,
+    val name: String,
+    val description: String,
+    val tasks: List<Issue>
+)
+
 data class Issue(
     val id: UUID,
     val backlog: Backlog,
+    val type: IssueType,
     val number: Int,
     val name: String,
     val description: String,
     val epic: Epic?,
+    val state: State,
     val importance: Importance,
-
-    val detail: Detail
+    val points: Int
 ) {
     init {
         require(number > 0)
         require(name.length in 1..200)
+        require(points in 0..99)
     }
 }
-
-interface Detail
-
-data class Improvement(val state: State, val points: Int) : Detail
-data class Bug(val state: State, val points: Int) : Detail
-data class Dept(val state: State, val points: Int) : Detail
-data class Story(val points: Int) : Detail
-data class Task(val state: State, val points: Int, val parent: Issue) : Detail
 
 data class IssueCreate(
     val name: String = "",
     val description: String = "",
     val epic: UUID? = null,
-    val importance: Importance = Importance.medium,
+    val importance: Importance = Importance.MEDIUM,
+    val type: IssueType,
+    val state: UUID,
+    val points: Int,
 )
 
 /**
@@ -43,4 +49,13 @@ data class IssueUpdate(
     val description: OptionalInput<String>,
     val epic: OptionalInput<UUID?>,
     val importance: OptionalInput<Importance>,
+    val state: OptionalInput<UUID>,
+    val points: OptionalInput<Int>,
 )
+
+enum class IssueType {
+    IMPROVEMENT,
+    BUG,
+    DEPT,
+    TASK
+}

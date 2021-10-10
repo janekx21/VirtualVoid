@@ -1,5 +1,5 @@
 package com.virtualvoid.backend.model
 
 enum class Importance {
-    low, medium, high
+    LOW, MEDIUM, HIGH
 }

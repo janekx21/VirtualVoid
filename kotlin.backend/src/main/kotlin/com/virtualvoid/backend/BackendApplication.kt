@@ -4,6 +4,7 @@ import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import com.expediagroup.graphql.server.operations.Subscription
+import com.virtualvoid.backend.AppRepository.Companion.createID
 import com.virtualvoid.backend.model.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -13,10 +14,6 @@ import reactor.core.publisher.Flux
 import java.time.Duration
 import java.util.*
 import kotlin.random.Random
-
-fun createID(): UUID = UUID.randomUUID()
-fun randomWord(): String = listOf("Foo", "Bar", "Fizz", "Buzz").random()
-fun randomSentence(len: Int): String = List(len) { randomWord() }.joinToString(" ")
 
 fun main(args: Array<String>) {
     runApplication<BackendApplication>(*args)
@@ -29,6 +26,7 @@ class BackendApplication {
 }
 
 @Component
+@Suppress("unused")
 class IssueQuery(val repo: AppRepository) : Query {
     @GraphQLDescription("Returns all issues")
     fun issues(): List<Issue> = repo.issues
@@ -46,18 +44,21 @@ class IssueQuery(val repo: AppRepository) : Query {
     fun projects(): List<Project> = repo.projects
 }
 
+@Suppress("unused")
 @Component
 class IssueMutation(val repo: AppRepository) : Mutation {
     fun createIssue(create: IssueCreate): Issue {
         val issue = Issue(
             createID(),
             repo.backlogs.random(),
+            create.type,
             repo.issues.maxOfOrNull { it.number } ?: 1,
             create.name,
             create.description,
             repo.resolveEpic(create.epic),
+            repo.findState(create.state),
             create.importance,
-            Improvement(repo.states.random(), 42)
+            create.points
         )
         repo.issues.add(issue)
         return issue
@@ -69,6 +70,7 @@ class IssueMutation(val repo: AppRepository) : Mutation {
         update.description.ifDefined { issue = issue.copy(description = it) }
         update.importance.ifDefined { issue = issue.copy(importance = it) }
         update.epic.ifDefinedOrNull { issue = issue.copy(epic = repo.resolveEpic(it)) }
+        update.state.ifDefined { issue = issue.copy(state = repo.findState(it)) }
         repo.replaceIssue(issue)
         return issue
     }
@@ -82,6 +84,7 @@ class IssueMutation(val repo: AppRepository) : Mutation {
 }
 
 @Component
+@Suppress("unused")
 class IssueSubscription(val repo: AppRepository) : Subscription {
     @GraphQLDescription("Returns subscribed issue when it changes")
     fun changedIssue(id: UUID): Flux<Issue> {
