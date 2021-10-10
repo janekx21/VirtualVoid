@@ -31,7 +31,11 @@ data class Issue(
     }
 }
 
+/**
+ * Creates an [Issue]
+ */
 data class IssueCreate(
+    val backlog: UUID,
     val name: String = "",
     val description: String = "",
     val epic: UUID? = null,
@@ -45,6 +49,7 @@ data class IssueCreate(
  * Updates an [Issue]
  */
 data class IssueUpdate(
+    val id: UUID,
     val name: OptionalInput<String>,
     val description: OptionalInput<String>,
     val epic: OptionalInput<UUID?>,

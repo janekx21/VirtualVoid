@@ -27,7 +27,7 @@ class BackendApplication {
 
 @Component
 @Suppress("unused")
-class IssueQuery(val repo: AppRepository) : Query {
+class AppQuery(val repo: AppRepository) : Query {
     @GraphQLDescription("Returns all issues")
     fun issues(): List<Issue> = repo.issues
 
@@ -46,11 +46,34 @@ class IssueQuery(val repo: AppRepository) : Query {
 
 @Suppress("unused")
 @Component
-class IssueMutation(val repo: AppRepository) : Mutation {
+class AppMutation(val repo: AppRepository) : Mutation {
+    fun createProject(name: String, short: String) {
+        repo.projects.add(Project(createID(), name, short))
+    }
+
+    fun removeProject(id: UUID) {
+        val index = repo.projects.indexOfFirst { it.id == id }
+        val project = repo.projects[index]
+        repo.backlogs.removeAll { it.project == project }
+        repo.issues.removeAll { it.backlog.project == project }
+        repo.projects.removeAt(index)
+    }
+
+    fun createBacklog(title: String, project: UUID) {
+        repo.backlogs.add(Backlog(createID(), title, repo.findProject(project)))
+    }
+
+    fun removeBacklog(id: UUID) {
+        val index = repo.backlogs.indexOfFirst { it.id == id }
+        val backlog = repo.backlogs[index]
+        repo.issues.removeAll { it.backlog == backlog } // TODO bad idea?
+        repo.backlogs.removeAt(index)
+    }
+
     fun createIssue(create: IssueCreate): Issue {
         val issue = Issue(
             createID(),
-            repo.backlogs.random(),
+            repo.findBacklog(create.backlog),
             create.type,
             repo.issues.maxOfOrNull { it.number } ?: 1,
             create.name,
@@ -64,8 +87,8 @@ class IssueMutation(val repo: AppRepository) : Mutation {
         return issue
     }
 
-    fun updateIssue(id: UUID, update: IssueUpdate): Issue {
-        var issue = repo.findIssue(id)
+    fun updateIssue(update: IssueUpdate): Issue {
+        var issue = repo.findIssue(update.id)
         update.name.ifDefined { issue = issue.copy(name = it) }
         update.description.ifDefined { issue = issue.copy(description = it) }
         update.importance.ifDefined { issue = issue.copy(importance = it) }
@@ -85,7 +108,7 @@ class IssueMutation(val repo: AppRepository) : Mutation {
 
 @Component
 @Suppress("unused")
-class IssueSubscription(val repo: AppRepository) : Subscription {
+class AppSubscription(val repo: AppRepository) : Subscription {
     @GraphQLDescription("Returns subscribed issue when it changes")
     fun changedIssue(id: UUID): Flux<Issue> {
         return repo.issuesChange.asFlux().filter { it.id == id }

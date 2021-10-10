@@ -9,8 +9,10 @@ import java.util.concurrent.CompletableFuture
 data class Project(val id: UUID, val name: String, val short: String) {
     init {
         require(name.length in 1..200)
-        require(short.length in 1..4)
+        require(short.length in 1..4) { "shorts length must be between 1 and 4" }
     }
+
+    @Suppress("unused")
     fun backlogs(environment: DataFetchingEnvironment): CompletableFuture<List<Backlog>> {
         return environment.getValueFromDataLoader(ProjectToBacklogs.name, this)
     }

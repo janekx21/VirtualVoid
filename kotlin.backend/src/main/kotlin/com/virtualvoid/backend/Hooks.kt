@@ -21,6 +21,7 @@ class CustomSchemaGeneratorHooks : SchemaGeneratorHooks {
      */
     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier) {
         UUID::class -> graphqlUUIDType
+        Unit::class -> unitType
         else -> null
     }
 
@@ -49,6 +50,18 @@ internal val graphqlUUIDType = GraphQLScalarType.newScalar()
     .description("A type representing a formatted java.util.UUID")
     .coercing(UUIDCoercing)
     .build()
+
+internal val unitType = GraphQLScalarType.newScalar()
+    .name("Unit")
+    .description("The type with only one value: the Unit object. This type corresponds to the void type in Java.")
+    .coercing(UnitCoercing)
+    .build()
+
+private object UnitCoercing : Coercing<Unit, String> {
+    override fun parseLiteral(input: Any?) {}
+    override fun parseValue(input: Any?) {}
+    override fun serialize(dataFetcherResult: Any?): String = ""
+}
 
 private object UUIDCoercing : Coercing<UUID, String> {
     override fun parseValue(input: Any): UUID = runCatching {

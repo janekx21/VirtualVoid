@@ -46,13 +46,15 @@ class AppRepository {
 
     fun findIssueIndex(id: UUID): Int {
         val index = issues.indexOfFirst { it.id == id }
-        if (index == -1) throw IssueNotFoundException(id)
+        if (index == -1) throw EntityNotFoundException(id, "issue")
         return index
     }
 
-    fun findIssue(id: UUID): Issue = issues.find { it.id == id } ?: throw IssueNotFoundException(id)
-    fun findEpic(id: UUID): Epic = epics.find { it.id == id } ?: throw EpicNotFoundException(id)
-    fun findState(id: UUID): State = states.find { it.id == id } ?: throw StateNotFoundException(id)
+    fun findIssue(id: UUID): Issue = issues.find { it.id == id } ?: throw EntityNotFoundException(id, "issue")
+    fun findEpic(id: UUID): Epic = epics.find { it.id == id } ?: throw EntityNotFoundException(id, "epic")
+    fun findState(id: UUID): State = states.find { it.id == id } ?: throw EntityNotFoundException(id, "state")
+    fun findBacklog(id: UUID): Backlog = backlogs.find { it.id == id } ?: throw EntityNotFoundException(id, "backlog")
+    fun findProject(id: UUID): Project = projects.find { it.id == id } ?: throw EntityNotFoundException(id, "project")
 
     fun resolveEpic(id: UUID?): Epic? = if (id == null) null else findEpic(id)
 

@@ -10,6 +10,8 @@ data class Backlog(val id: UUID, val title: String, val project: Project) {
     init {
         require(title.length in 1..200)
     }
+
+    @Suppress("unused")
     fun issues(environment: DataFetchingEnvironment): CompletableFuture<List<Issue>> {
         return environment.getValueFromDataLoader(BacklogToIssues.name, this)
     }
