@@ -12,8 +12,12 @@
 <script setup lang="ts">
 import Issue from "./Issue.vue"
 import {Board} from "../model/generated";
+import {useStore} from "../store";
 
 defineProps<{ data: Board }>()
+
+const store = useStore()
+const foo = store.getters.stuff
 </script>
 
 <style scoped>

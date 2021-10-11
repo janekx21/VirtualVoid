@@ -1,6 +1,10 @@
 package com.virtualvoid.backend
 
+import com.expediagroup.graphql.generator.SchemaGeneratorConfig
+import com.expediagroup.graphql.generator.TopLevelObject
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
+import com.expediagroup.graphql.generator.extensions.print
+import com.expediagroup.graphql.generator.toSchema
 import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import com.expediagroup.graphql.server.operations.Subscription
@@ -9,13 +13,30 @@ import com.virtualvoid.backend.model.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.web.reactive.config.CorsRegistry
+import org.springframework.web.server.ServerWebExchange
+import org.springframework.web.server.WebFilter
+import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import java.io.File
 import java.time.Duration
 import java.util.*
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
+    val config = SchemaGeneratorConfig(listOf("com.virtualvoid.backend"), hooks = CustomSchemaGeneratorHooks())
+    val schema = toSchema(
+        config,
+        listOf(TopLevelObject(AppQuery::class)),
+        listOf(TopLevelObject(AppMutation::class)),
+        listOf(TopLevelObject(AppSubscription::class)),
+    )
+    File("../common/src/schema.graphql").writeText(schema.print())
     runApplication<BackendApplication>(*args)
 }
 
@@ -23,6 +44,27 @@ fun main(args: Array<String>) {
 class BackendApplication {
     @Bean
     fun hooks() = CustomSchemaGeneratorHooks()
+}
+
+@Component
+class CorsFilter : WebFilter {
+    override fun filter(ctx: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+        ctx.response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        ctx.response.headers.add("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
+        ctx.response.headers.add("Access-Control-Allow-Credentials", "true")
+        ctx.response.headers.add("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range")
+        return when {
+            ctx.request.method == HttpMethod.OPTIONS -> {
+                ctx.response.headers.add("Access-Control-Max-Age", "1728000")
+                ctx.response.statusCode = HttpStatus.NO_CONTENT
+                Mono.empty()
+            }
+            else -> {
+                ctx.response.headers.add("Access-Control-Expose-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range")
+                chain.filter(ctx)
+            }
+        }
+    }
 }
 
 @Component

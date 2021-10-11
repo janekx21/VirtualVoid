@@ -15,28 +15,21 @@ import kotlin.reflect.full.isSubclassOf
  * Schema generator hook that adds additional scalar types.
  */
 class CustomSchemaGeneratorHooks : SchemaGeneratorHooks {
-
-    /**
-     * Register additional GraphQL scalar types.
-     */
+    // Register additional GraphQL scalar types.
     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier) {
         UUID::class -> graphqlUUIDType
         Unit::class -> unitType
         else -> null
     }
 
-    /**
-     * Register Reactor Mono monad type.
-     */
+    // Register Reactor Mono monad type.
     override fun willResolveMonad(type: KType): KType = when (type.classifier) {
         Mono::class -> type.arguments.first().type ?: type
         Set::class -> List::class.createType(type.arguments)
         else -> type
     }
 
-    /**
-     * Exclude the Spring bean factory interface
-     */
+    // Exclude the Spring bean factory interface
     override fun isValidSuperclass(kClass: KClass<*>): Boolean {
         return when {
             kClass.isSubclassOf(BeanFactoryAware::class) -> false

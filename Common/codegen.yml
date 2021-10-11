@@ -1,0 +1,7 @@
+schema: ./src/schema.graphql
+generates:
+  ../vue.frontend/src/model/generated.ts:
+   plugins:
+     - typescript
+   config:
+     avoidOptionals: true

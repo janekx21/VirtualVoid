@@ -9,117 +9,167 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A type representing a formatted java.util.UUID */
+  UUID: any;
+  /** The type with only one value: the Unit object. This type corresponds to the void type in Java. */
+  Unit: any;
 };
 
-export type BackLog = {
-  __typename?: 'BackLog';
-  id: Scalars['ID'];
-  name: Scalars['String'];
+export type Backlog = {
+  __typename?: 'Backlog';
+  id: Scalars['UUID'];
   issues: Array<Issue>;
-};
-
-export type Board = {
-  __typename?: 'Board';
-  id: Scalars['ID'];
-  backlog: BackLog;
-  states: Array<State>;
-};
-
-export type BoardInput = {
-  name: Maybe<Scalars['String']>;
+  project: Project;
+  title: Scalars['String'];
 };
 
 export type Epic = {
   __typename?: 'Epic';
-  id: Scalars['ID'];
+  id: Scalars['UUID'];
   name: Scalars['String'];
-  shortName: Scalars['String'];
-  description: Scalars['String'];
+  short: Scalars['String'];
 };
 
 export enum Importance {
+  High = 'HIGH',
   Low = 'LOW',
-  Medium = 'MEDIUM',
-  High = 'HIGH'
+  Medium = 'MEDIUM'
 }
 
 export type Issue = {
   __typename?: 'Issue';
-  id: Scalars['ID'];
-  title: Scalars['String'];
+  backlog: Backlog;
   description: Scalars['String'];
-  number: Scalars['Int'];
-  points: Maybe<Scalars['Int']>;
-  flagged: Scalars['Boolean'];
-  importance: Importance;
-  type: IssueType;
-  state: Maybe<State>;
   epic: Maybe<Epic>;
-  creator: Maybe<User>;
-  worker: Maybe<User>;
+  id: Scalars['UUID'];
+  importance: Importance;
+  name: Scalars['String'];
+  number: Scalars['Int'];
+  points: Scalars['Int'];
+  state: State;
+  type: IssueType;
+};
+
+export type IssueCreateInput = {
+  backlog: Scalars['UUID'];
+  description: Scalars['String'];
+  epic: Maybe<Scalars['UUID']>;
+  importance: Importance;
+  name: Scalars['String'];
+  points: Scalars['Int'];
+  state: Scalars['UUID'];
+  type: IssueType;
 };
 
 export enum IssueType {
-  Story = 'STORY',
-  Improvement = 'IMPROVEMENT',
-  Task = 'TASK',
   Bug = 'BUG',
-  Dept = 'DEPT'
+  Dept = 'DEPT',
+  Improvement = 'IMPROVEMENT',
+  Task = 'TASK'
 }
+
+export type IssueUpdateInput = {
+  description: Maybe<Scalars['String']>;
+  epic: Maybe<Scalars['UUID']>;
+  id: Scalars['UUID'];
+  importance: Maybe<Importance>;
+  name: Maybe<Scalars['String']>;
+  points: Maybe<Scalars['Int']>;
+  state: Maybe<Scalars['UUID']>;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createBoard: Board;
-  updateBoard: Board;
-  deleteBoard: Maybe<Scalars['String']>;
+  createBacklog: Scalars['Unit'];
+  createIssue: Issue;
+  createProject: Scalars['Unit'];
+  removeBacklog: Scalars['Unit'];
+  removeIssue: Issue;
+  removeProject: Scalars['Unit'];
+  updateIssue: Issue;
 };
 
 
-export type MutationCreateBoardArgs = {
+export type MutationCreateBacklogArgs = {
+  project: Scalars['UUID'];
+  title: Scalars['String'];
+};
+
+
+export type MutationCreateIssueArgs = {
+  create: IssueCreateInput;
+};
+
+
+export type MutationCreateProjectArgs = {
   name: Scalars['String'];
+  short: Scalars['String'];
 };
 
 
-export type MutationUpdateBoardArgs = {
-  id: Scalars['ID'];
-  board: BoardInput;
+export type MutationRemoveBacklogArgs = {
+  id: Scalars['UUID'];
 };
 
 
-export type MutationDeleteBoardArgs = {
-  id: Scalars['ID'];
+export type MutationRemoveIssueArgs = {
+  id: Scalars['UUID'];
+};
+
+
+export type MutationRemoveProjectArgs = {
+  id: Scalars['UUID'];
+};
+
+
+export type MutationUpdateIssueArgs = {
+  update: IssueUpdateInput;
 };
 
 export type Project = {
   __typename?: 'Project';
-  id: Scalars['ID'];
+  backlogs: Array<Backlog>;
+  id: Scalars['UUID'];
   name: Scalars['String'];
-  shortName: Scalars['String'];
-  backlogs: Array<BackLog>;
-  boards: Array<Board>;
+  short: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  me: Maybe<User>;
-  boards: Maybe<Array<Board>>;
+  /** Returns all backlogs */
+  backlogs: Array<Backlog>;
+  /** Returns all epics */
+  epics: Array<Epic>;
+  /** Returns all issues */
+  issues: Array<Issue>;
+  /** Returns all projects */
+  projects: Array<Project>;
+  /** Returns all states */
+  states: Array<State>;
 };
 
 export type State = {
   __typename?: 'State';
-  id: Scalars['ID'];
+  id: Scalars['UUID'];
   name: Scalars['String'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
-  time: Maybe<Scalars['String']>;
+  /** Returns subscribed issue when it changes */
+  changedIssue: Issue;
+  /** Returns a random number every second */
+  counter: Scalars['Int'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['ID'];
-  userName: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
+
+export type SubscriptionChangedIssueArgs = {
+  id: Scalars['UUID'];
 };
+
+
+export type SubscriptionCounterArgs = {
+  limit: Maybe<Scalars['Int']>;
+};
+
+

@@ -3,6 +3,7 @@
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import BoardComponent from "./components/Board.vue";
 import {Board, Importance, IssueType} from "./model/generated";
+import {useStore} from "./store";
 
 const board: Board = {
   backlog: {
@@ -57,6 +58,8 @@ const board: Board = {
     {id: "3-3-3", name: "Done"},
   ],
 }
+
+useStore().dispatch('fetchProjects')
 </script>
 
 <template>
