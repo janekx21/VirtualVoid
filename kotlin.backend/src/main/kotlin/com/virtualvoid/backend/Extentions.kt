@@ -2,6 +2,7 @@ package com.virtualvoid.backend
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
 import com.virtualvoid.backend.model.OptionalInputUndefinedException
+import java.util.*
 
 fun <T> OptionalInput<T>.ifDefinedOrNull(callback: (it: T?) -> Unit) {
     if (this is OptionalInput.Defined) {
@@ -15,6 +16,10 @@ fun <T> OptionalInput<T>.ifDefined(callback: (it: T) -> Unit) {
     }
 }
 
+fun <T> OptionalInput<T>.toOptional()= if (this is OptionalInput.Defined) Optional.of(this.value!!) else Optional.empty()
+fun OptionalInput<UUID?>.toOptionalOrZero()= if (this is OptionalInput.Defined) Optional.of(this.value ?: zeroUUID) else Optional.empty()
+
+val UUID.isZero get() = mostSignificantBits == 0L && leastSignificantBits == 0L
 /**
  * @throws OptionalInputUndefinedException when the value is undefined
  */

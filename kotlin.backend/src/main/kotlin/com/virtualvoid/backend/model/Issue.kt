@@ -1,6 +1,7 @@
 package com.virtualvoid.backend.model
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
+import com.virtualvoid.backend.isZero
 import java.util.*
 
 // TODO
@@ -28,6 +29,7 @@ data class Issue(
         require(number > 0)
         require(name.length in 1..200)
         require(points in 0..99)
+        require(!id.isZero)
     }
 }
 

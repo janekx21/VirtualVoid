@@ -10,14 +10,14 @@ import com.expediagroup.graphql.server.operations.Query
 import com.expediagroup.graphql.server.operations.Subscription
 import com.virtualvoid.backend.AppRepository.Companion.createID
 import com.virtualvoid.backend.model.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.config.CorsRegistry
 import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
@@ -44,6 +44,12 @@ fun main(args: Array<String>) {
 class BackendApplication {
     @Bean
     fun hooks() = CustomSchemaGeneratorHooks()
+
+    private val logger: Logger = LoggerFactory.getLogger(BackendApplication::class.java)
+
+    init {
+        logger.info("Hosting playground at http://localhost:8080/playground")
+    }
 }
 
 @Component
@@ -67,6 +73,20 @@ class CorsFilter : WebFilter {
     }
 }
 
+// todo cool idea
+/*
+data class Model(val issues: List<String>)
+data class Request(val parameter: Optional<String>)
+data class Result(val data: String)
+
+fun addIssues(currentModel: Model, request: Request): Pair<Model, Result> =
+    Pair(currentModel.copy(issues = currentModel.issues + "new issue"), Result(data = "succeed"))
+
+fun foo(r: Request): String = r.parameter.map { "Foo" }.orElseGet { "nothing" }
+ */
+
+val zeroUUID = UUID(0,0)
+
 @Component
 @Suppress("unused")
 class AppQuery(val repo: AppRepository) : Query {
@@ -89,62 +109,58 @@ class AppQuery(val repo: AppRepository) : Query {
 @Suppress("unused")
 @Component
 class AppMutation(val repo: AppRepository) : Mutation {
-    fun createProject(name: String, short: String) {
-        repo.projects.add(Project(createID(), name, short))
-    }
+    fun createProject(name: String, short: String): Project =
+        Project(createID(), name, short).also{repo.projects.add(it)}
 
-    fun removeProject(id: UUID) {
+    fun removeProject(id: UUID): Project {
         val index = repo.projects.indexOfFirst { it.id == id }
-        val project = repo.projects[index]
-        repo.backlogs.removeAll { it.project == project }
-        repo.issues.removeAll { it.backlog.project == project }
-        repo.projects.removeAt(index)
+        return repo.projects[index].also { project ->
+            repo.backlogs.removeAll { it.project == project }
+            repo.issues.removeAll { it.backlog.project == project }
+            repo.projects.removeAt(index)
+        }
     }
 
-    fun createBacklog(title: String, project: UUID) {
-        repo.backlogs.add(Backlog(createID(), title, repo.findProject(project)))
-    }
+    fun createBacklog(title: String, project: UUID): Backlog =
+        Backlog(createID(), title, repo.findProject(project)).also { repo.backlogs.add(it) }
 
-    fun removeBacklog(id: UUID) {
+    fun removeBacklog(id: UUID): Backlog {
         val index = repo.backlogs.indexOfFirst { it.id == id }
-        val backlog = repo.backlogs[index]
-        repo.issues.removeAll { it.backlog == backlog } // TODO bad idea?
-        repo.backlogs.removeAt(index)
+        return repo.backlogs[index].also { backlog ->
+            repo.issues.removeAll { it.backlog == backlog } // TODO bad idea?
+            repo.backlogs.removeAt(index)
+        }
     }
 
-    fun createIssue(create: IssueCreate): Issue {
-        val issue = Issue(
-            createID(),
-            repo.findBacklog(create.backlog),
-            create.type,
-            repo.issues.maxOfOrNull { it.number } ?: 1,
-            create.name,
-            create.description,
-            repo.resolveEpic(create.epic),
-            repo.findState(create.state),
-            create.importance,
-            create.points
-        )
-        repo.issues.add(issue)
-        return issue
-    }
+    fun createIssue(create: IssueCreate): Issue = createToIssue(create).also { repo.issues.add(it) }
 
-    fun updateIssue(update: IssueUpdate): Issue {
-        var issue = repo.findIssue(update.id)
-        update.name.ifDefined { issue = issue.copy(name = it) }
-        update.description.ifDefined { issue = issue.copy(description = it) }
-        update.importance.ifDefined { issue = issue.copy(importance = it) }
-        update.epic.ifDefinedOrNull { issue = issue.copy(epic = repo.resolveEpic(it)) }
-        update.state.ifDefined { issue = issue.copy(state = repo.findState(it)) }
-        repo.replaceIssue(issue)
-        return issue
-    }
+    private fun createToIssue(create: IssueCreate): Issue = Issue(
+        createID(),
+        repo.findBacklog(create.backlog),
+        create.type,
+        repo.issues.maxOfOrNull { it.number } ?: 1,
+        create.name,
+        create.description,
+        repo.findEpic(Optional.ofNullable(create.epic).orElse(zeroUUID)),
+        repo.findState(create.state),
+        create.importance,
+        create.points
+    )
+
+    fun updateIssue(update: IssueUpdate): Issue =
+        combineUpdateAndIssue(update, repo.findIssue(update.id)).also { repo.replaceIssue(it) }
+
+    private fun combineUpdateAndIssue(update: IssueUpdate, issue: Issue): Issue = issue.copy(
+        name = update.name.toOptional().orElse(issue.name),
+        description = update.description.toOptional().orElse(issue.description),
+        importance = update.importance.toOptional().orElse(issue.importance),
+        epic = update.epic.toOptionalOrZero().map { repo.resolveEpic(it) }.orElse(issue.epic),
+        state = update.state.toOptional().map { repo.findState(it) }.orElse(issue.state),
+    )
 
     fun removeIssue(id: UUID): Issue {
         val index = repo.findIssueIndex(id)
-        val issue = repo.issues[index]
-        repo.issues.removeAt(index)
-        return issue
+        return repo.issues[index].also { repo.issues.removeAt(index) }
     }
 }
 
@@ -152,9 +168,7 @@ class AppMutation(val repo: AppRepository) : Mutation {
 @Suppress("unused")
 class AppSubscription(val repo: AppRepository) : Subscription {
     @GraphQLDescription("Returns subscribed issue when it changes")
-    fun changedIssue(id: UUID): Flux<Issue> {
-        return repo.issuesChange.asFlux().filter { it.id == id }
-    }
+    fun changedIssue(id: UUID): Flux<Issue> = repo.issuesChange.asFlux().filter { it.id == id }
 
     @GraphQLDescription("Returns a random number every second")
     fun counter(limit: Int? = null): Flux<Int> {

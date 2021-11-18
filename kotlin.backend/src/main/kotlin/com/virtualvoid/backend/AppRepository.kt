@@ -56,7 +56,7 @@ class AppRepository {
     fun findBacklog(id: UUID): Backlog = backlogs.find { it.id == id } ?: throw EntityNotFoundException(id, "backlog")
     fun findProject(id: UUID): Project = projects.find { it.id == id } ?: throw EntityNotFoundException(id, "project")
 
-    fun resolveEpic(id: UUID?): Epic? = if (id == null) null else findEpic(id)
+    fun resolveEpic(id: UUID): Epic? = if (id.isZero) null else findEpic(id)
 
     fun replaceIssue(issue: Issue) {
         val index = findIssueIndex(issue.id)
