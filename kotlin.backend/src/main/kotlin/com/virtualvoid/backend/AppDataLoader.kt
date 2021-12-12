@@ -11,11 +11,7 @@ import java.util.concurrent.CompletableFuture
 
 @Component
 class BacklogToIssues(val repo: AppRepository) : KotlinDataLoader<Backlog, List<Issue>> {
-    companion object {
-        const val name = "BacklogToIssues"
-    }
-
-    override val dataLoaderName = name
+    override val dataLoaderName = this::class.simpleName!!
     override fun getDataLoader() = DataLoader<Backlog, List<Issue>>({ ids ->
         CompletableFuture.supplyAsync {
             ids.map { backlog ->
@@ -24,13 +20,10 @@ class BacklogToIssues(val repo: AppRepository) : KotlinDataLoader<Backlog, List<
         }
     }, DataLoaderOptions.newOptions().setCachingEnabled(true))
 }
+
 @Component
 class ProjectToBacklogs(val repo: AppRepository) : KotlinDataLoader<Project, List<Backlog>> {
-    companion object {
-        const val name = "BacklogToBacklogs"
-    }
-
-    override val dataLoaderName = name
+    override val dataLoaderName = this::class.simpleName!!
     override fun getDataLoader() = DataLoader<Project, List<Backlog>>({ ids ->
         CompletableFuture.supplyAsync {
             ids.map { project ->

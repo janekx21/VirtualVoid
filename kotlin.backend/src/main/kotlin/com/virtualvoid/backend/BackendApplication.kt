@@ -59,8 +59,8 @@ class CorsFilter : WebFilter {
         ctx.response.headers.add("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
         ctx.response.headers.add("Access-Control-Allow-Credentials", "true")
         ctx.response.headers.add("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range")
-        return when {
-            ctx.request.method == HttpMethod.OPTIONS -> {
+        return when (ctx.request.method) {
+            HttpMethod.OPTIONS -> {
                 ctx.response.headers.add("Access-Control-Max-Age", "1728000")
                 ctx.response.statusCode = HttpStatus.NO_CONTENT
                 Mono.empty()
@@ -90,34 +90,50 @@ val zeroUUID = UUID(0,0)
 @Component
 @Suppress("unused")
 class AppQuery(val repo: AppRepository) : Query {
-    @GraphQLDescription("Returns all issues")
-    fun issues(): List<Issue> = repo.issues
+    @GraphQLDescription("Returns all projects")
+    fun projects(): List<Project> = repo.projects.values.toList()
+
+    @GraphQLDescription("Returns a project")
+    fun project(id: UUID): Project = repo.findProject(id)
 
     @GraphQLDescription("Returns all backlogs")
     fun backlogs(): List<Backlog> = repo.backlogs
 
-    @GraphQLDescription("Returns all states")
-    fun states(): List<State> = repo.states
+    @GraphQLDescription("Finds a backlog")
+    fun backlog(id: UUID): Backlog = repo.findBacklog(id)
+
+    @GraphQLDescription("Returns all issues")
+    fun issues(): List<Issue> = repo.issues
+
+    @GraphQLDescription("Finds an issue")
+    fun issue(id: UUID): Issue = repo.findIssue(id)
 
     @GraphQLDescription("Returns all epics")
     fun epics(): List<Epic> = repo.epics
 
-    @GraphQLDescription("Returns all projects")
-    fun projects(): List<Project> = repo.projects
+    @GraphQLDescription("Returns all states")
+    fun states(): List<State> = repo.states
 }
 
 @Suppress("unused")
 @Component
 class AppMutation(val repo: AppRepository) : Mutation {
+    @GraphQLDescription("Creates a new Project")
     fun createProject(name: String, short: String): Project =
-        Project(createID(), name, short).also{repo.projects.add(it)}
+        Project(createID(), name, short).also{repo.addProject(it)}
 
+    @GraphQLDescription("Updates a Project. Returns the previous value.")
+    fun updateProject(id: UUID, name: String): Project {
+        val new = repo.findProject(id).copy(name = name)
+        return repo.replaceProject(new)
+    }
+
+    @GraphQLDescription("Removes a Project")
     fun removeProject(id: UUID): Project {
-        val index = repo.projects.indexOfFirst { it.id == id }
-        return repo.projects[index].also { project ->
+        return repo.findProject(id).also { project ->
+            repo.removeProject(id)
             repo.backlogs.removeAll { it.project == project }
             repo.issues.removeAll { it.backlog.project == project }
-            repo.projects.removeAt(index)
         }
     }
 

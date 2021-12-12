@@ -16,6 +16,6 @@ data class Project(val id: UUID, val name: String, val short: String) {
 
     @Suppress("unused")
     fun backlogs(environment: DataFetchingEnvironment): CompletableFuture<List<Backlog>> {
-        return environment.getValueFromDataLoader(ProjectToBacklogs.name, this)
+        return environment.getValueFromDataLoader(ProjectToBacklogs::class.simpleName!!, this)
     }
 }

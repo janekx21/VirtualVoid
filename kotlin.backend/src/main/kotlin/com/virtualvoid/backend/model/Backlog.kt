@@ -7,14 +7,14 @@ import graphql.schema.DataFetchingEnvironment
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-data class Backlog(val id: UUID, val title: String, val project: Project) {
+data class Backlog(val id: UUID, val name: String, val project: Project) {
     init {
-        require(title.length in 1..200)
+        require(name.length in 1..200)
         require(!id.isZero)
     }
 
     @Suppress("unused")
     fun issues(environment: DataFetchingEnvironment): CompletableFuture<List<Issue>> {
-        return environment.getValueFromDataLoader(BacklogToIssues.name, this)
+        return environment.getValueFromDataLoader(BacklogToIssues::class.simpleName!!, this)
     }
 }
