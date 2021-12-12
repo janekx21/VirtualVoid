@@ -8,7 +8,6 @@ import com.expediagroup.graphql.generator.toSchema
 import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import com.expediagroup.graphql.server.operations.Subscription
-import com.virtualvoid.backend.AppRepository.Companion.createID
 import com.virtualvoid.backend.model.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -58,7 +57,10 @@ class CorsFilter : WebFilter {
         ctx.response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
         ctx.response.headers.add("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
         ctx.response.headers.add("Access-Control-Allow-Credentials", "true")
-        ctx.response.headers.add("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range")
+        ctx.response.headers.add(
+            "Access-Control-Allow-Headers",
+            "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
+        )
         return when (ctx.request.method) {
             HttpMethod.OPTIONS -> {
                 ctx.response.headers.add("Access-Control-Max-Age", "1728000")
@@ -66,7 +68,10 @@ class CorsFilter : WebFilter {
                 Mono.empty()
             }
             else -> {
-                ctx.response.headers.add("Access-Control-Expose-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range")
+                ctx.response.headers.add(
+                    "Access-Control-Expose-Headers",
+                    "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
+                )
                 chain.filter(ctx)
             }
         }
@@ -85,8 +90,6 @@ fun addIssues(currentModel: Model, request: Request): Pair<Model, Result> =
 fun foo(r: Request): String = r.parameter.map { "Foo" }.orElseGet { "nothing" }
  */
 
-val zeroUUID = UUID(0,0)
-
 @Component
 @Suppress("unused")
 class AppQuery(val repo: AppRepository) : Query {
@@ -94,19 +97,19 @@ class AppQuery(val repo: AppRepository) : Query {
     fun projects(): List<Project> = repo.projects.values.toList()
 
     @GraphQLDescription("Returns a project")
-    fun project(id: UUID): Project = repo.findProject(id)
+    fun project(id: UUID): Project = repo.projects.find(id)
 
     @GraphQLDescription("Returns all backlogs")
-    fun backlogs(): List<Backlog> = repo.backlogs
+    fun backlogs(): List<Backlog> = repo.backlogs.values
 
     @GraphQLDescription("Finds a backlog")
-    fun backlog(id: UUID): Backlog = repo.findBacklog(id)
+    fun backlog(id: UUID): Backlog = repo.backlogs.find(id)
 
     @GraphQLDescription("Returns all issues")
-    fun issues(): List<Issue> = repo.issues
+    fun issues(): List<Issue> = repo.issues.values
 
     @GraphQLDescription("Finds an issue")
-    fun issue(id: UUID): Issue = repo.findIssue(id)
+    fun issue(id: UUID): Issue = repo.issues.find(id)
 
     @GraphQLDescription("Returns all epics")
     fun epics(): List<Epic> = repo.epics
@@ -120,51 +123,50 @@ class AppQuery(val repo: AppRepository) : Query {
 class AppMutation(val repo: AppRepository) : Mutation {
     @GraphQLDescription("Creates a new Project")
     fun createProject(name: String, short: String): Project =
-        Project(createID(), name, short).also{repo.addProject(it)}
+        Project(createID(), name, short).also { repo.projects.add(it) }
 
     @GraphQLDescription("Updates a Project. Returns the previous value.")
     fun updateProject(id: UUID, name: String): Project {
-        val new = repo.findProject(id).copy(name = name)
-        return repo.replaceProject(new)
+        val new = repo.projects.find(id).copy(name = name)
+        return repo.projects.replace(new)
     }
 
     @GraphQLDescription("Removes a Project")
-    fun removeProject(id: UUID): Project {
-        return repo.findProject(id).also { project ->
-            repo.removeProject(id)
-            repo.backlogs.removeAll { it.project == project }
-            repo.issues.removeAll { it.backlog.project == project }
-        }
+    fun removeProject(id: UUID): Project = repo.projects.remove(id).also { project ->
+        repo.backlogs.removeAll { it.project == project }
+        repo.issues.removeAll { it.backlog.project == project }
     }
 
+    @GraphQLDescription("Creates a new Backlog")
     fun createBacklog(title: String, project: UUID): Backlog =
-        Backlog(createID(), title, repo.findProject(project)).also { repo.backlogs.add(it) }
+        Backlog(createID(), title, repo.projects.find(project)).also { repo.backlogs.add(it) }
 
-    fun removeBacklog(id: UUID): Backlog {
-        val index = repo.backlogs.indexOfFirst { it.id == id }
-        return repo.backlogs[index].also { backlog ->
-            repo.issues.removeAll { it.backlog == backlog } // TODO bad idea?
-            repo.backlogs.removeAt(index)
-        }
-    }
+    @GraphQLDescription("Removes a Backlog")
+    fun removeBacklog(id: UUID): Backlog =
+        repo.backlogs.remove(id).also { backlog -> repo.issues.removeAll { it.backlog == backlog } }
 
-    fun createIssue(create: IssueCreate): Issue = createToIssue(create).also { repo.issues.add(it) }
+    @GraphQLDescription("Creates an Issue")
+    fun createIssue(create: IssueCreate): Issue = repo.issues.add(createToIssue(create))
+
+    @GraphQLDescription("Updates an Issue")
+    fun updateIssue(update: IssueUpdate): Issue =
+        combineUpdateAndIssue(update, repo.issues.find(update.id)).also { repo.issues.replace(it) }
+
+    @GraphQLDescription("Remove an Issue")
+    fun removeIssue(id: UUID): Issue = repo.issues.remove(id)
 
     private fun createToIssue(create: IssueCreate): Issue = Issue(
         createID(),
-        repo.findBacklog(create.backlog),
+        repo.backlogs.find(create.backlog),
         create.type,
-        repo.issues.maxOfOrNull { it.number } ?: 1,
+        repo.issues.values.maxOfOrNull { it.number } ?: 1,
         create.name,
         create.description,
-        repo.findEpic(Optional.ofNullable(create.epic).orElse(zeroUUID)),
+        repo.findEpic(Optional.ofNullable(create.epic).orElse(zeroID)),
         repo.findState(create.state),
         create.importance,
         create.points
     )
-
-    fun updateIssue(update: IssueUpdate): Issue =
-        combineUpdateAndIssue(update, repo.findIssue(update.id)).also { repo.replaceIssue(it) }
 
     private fun combineUpdateAndIssue(update: IssueUpdate, issue: Issue): Issue = issue.copy(
         name = update.name.toOptional().orElse(issue.name),
@@ -173,11 +175,6 @@ class AppMutation(val repo: AppRepository) : Mutation {
         epic = update.epic.toOptionalOrZero().map { repo.resolveEpic(it) }.orElse(issue.epic),
         state = update.state.toOptional().map { repo.findState(it) }.orElse(issue.state),
     )
-
-    fun removeIssue(id: UUID): Issue {
-        val index = repo.findIssueIndex(id)
-        return repo.issues[index].also { repo.issues.removeAt(index) }
-    }
 }
 
 @Component
@@ -187,17 +184,9 @@ class AppSubscription(val repo: AppRepository) : Subscription {
     fun changedIssue(id: UUID): Flux<Issue> = repo.issuesChange.asFlux().filter { it.id == id }
 
     @GraphQLDescription("Returns a random number every second")
-    fun counter(limit: Int? = null): Flux<Int> {
-        val flux = Flux.interval(Duration.ofSeconds(1)).map {
-            val value = Random.nextInt()
-            println("Returning $value from counter")
-            value
-        }
-
-        return if (limit != null) {
-            flux.take(limit.toLong())
-        } else {
-            flux
-        }
+    fun counter(limit: Int? = null): Flux<Int> = Flux.interval(Duration.ofSeconds(1)).map {
+        val value = Random.nextInt()
+        println("Returning $value from counter")
+        value
     }
 }

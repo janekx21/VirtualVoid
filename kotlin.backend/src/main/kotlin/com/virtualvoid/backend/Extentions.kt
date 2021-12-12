@@ -17,7 +17,7 @@ fun <T> OptionalInput<T>.ifDefined(callback: (it: T) -> Unit) {
 }
 
 fun <T> OptionalInput<T>.toOptional()= if (this is OptionalInput.Defined) Optional.of(this.value!!) else Optional.empty()
-fun OptionalInput<UUID?>.toOptionalOrZero()= if (this is OptionalInput.Defined) Optional.of(this.value ?: zeroUUID) else Optional.empty()
+fun OptionalInput<UUID?>.toOptionalOrZero()= if (this is OptionalInput.Defined) Optional.of(this.value ?: zeroID) else Optional.empty()
 
 val UUID.isZero get() = mostSignificantBits == 0L && leastSignificantBits == 0L
 /**

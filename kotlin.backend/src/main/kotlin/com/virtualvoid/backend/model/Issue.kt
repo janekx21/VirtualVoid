@@ -1,6 +1,7 @@
 package com.virtualvoid.backend.model
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
+import com.virtualvoid.backend.Data
 import com.virtualvoid.backend.isZero
 import java.util.*
 
@@ -13,8 +14,15 @@ data class Story(
     val tasks: List<Issue>
 )
 
+enum class IssueType {
+    IMPROVEMENT,
+    BUG,
+    DEPT,
+    TASK
+}
+
 data class Issue(
-    val id: UUID,
+    override val id: UUID,
     val backlog: Backlog,
     val type: IssueType,
     val number: Int,
@@ -24,7 +32,7 @@ data class Issue(
     val state: State,
     val importance: Importance,
     val points: Int
-) {
+) : Data {
     init {
         require(number > 0)
         require(name.length in 1..200)
@@ -59,10 +67,3 @@ data class IssueUpdate(
     val state: OptionalInput<UUID>,
     val points: OptionalInput<Int>,
 )
-
-enum class IssueType {
-    IMPROVEMENT,
-    BUG,
-    DEPT,
-    TASK
-}
