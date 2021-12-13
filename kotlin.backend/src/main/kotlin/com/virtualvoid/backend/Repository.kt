@@ -3,11 +3,11 @@ package com.virtualvoid.backend
 import com.virtualvoid.backend.model.EntityNotFoundException
 import java.util.*
 
-interface Data {
+interface HasID {
     val id: UUID
 }
 
-class Repository<T : Data>(private val name: String) {
+class Repository<T : HasID>(private val name: String) {
     private val data = mutableMapOf<UUID, T>()
     val values get() = data.values.toList()
     fun add(value: T): T = value.also { data[it.id] = it }
@@ -20,7 +20,7 @@ class Repository<T : Data>(private val name: String) {
     fun find(id: UUID): T = data[id] ?: throw EntityNotFoundException(id, name)
 }
 
-inline fun <reified T : Data> createRepository() = Repository<T>(T::class.simpleName!!)
+inline fun <reified T : HasID> createRepository() = Repository<T>(T::class.simpleName!!)
 
 fun createID(): UUID = UUID.randomUUID()
 val zeroID = UUID(0, 0)

@@ -1,11 +1,12 @@
 package com.virtualvoid.backend.model
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
-import com.virtualvoid.backend.Data
+import com.virtualvoid.backend.HasID
 import com.virtualvoid.backend.isZero
 import java.util.*
 
 // TODO
+/*
 data class Story(
     val id: UUID,
     val backlog: Backlog,
@@ -13,6 +14,7 @@ data class Story(
     val description: String,
     val tasks: List<Issue>
 )
+ */
 
 enum class IssueType {
     IMPROVEMENT,
@@ -32,7 +34,7 @@ data class Issue(
     val state: State,
     val importance: Importance,
     val points: Int
-) : Data {
+) : HasID {
     init {
         require(number > 0)
         require(name.length in 1..200)
