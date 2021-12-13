@@ -1,10 +1,6 @@
 package com.virtualvoid.backend
 
-import com.expediagroup.graphql.generator.SchemaGeneratorConfig
-import com.expediagroup.graphql.generator.TopLevelObject
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
-import com.expediagroup.graphql.generator.extensions.print
-import com.expediagroup.graphql.generator.toSchema
 import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import com.expediagroup.graphql.server.operations.Subscription
@@ -22,20 +18,11 @@ import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.io.File
 import java.time.Duration
 import java.util.*
 import kotlin.random.Random
 
 fun main(args: Array<String>) {
-    val config = SchemaGeneratorConfig(listOf("com.virtualvoid.backend"), hooks = CustomSchemaGeneratorHooks())
-    val schema = toSchema(
-        config,
-        listOf(TopLevelObject(AppQuery::class)),
-        listOf(TopLevelObject(AppMutation::class)),
-        listOf(TopLevelObject(AppSubscription::class)),
-    )
-    File("../common/src/schema.graphql").writeText(schema.print())
     runApplication<BackendApplication>(*args)
 }
 
@@ -51,16 +38,14 @@ class BackendApplication {
     }
 }
 
+
 @Component
 class CorsFilter : WebFilter {
     override fun filter(ctx: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
-        ctx.response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        ctx.response.headers.add("Access-Control-Allow-Origin", "http://localhost:8000")
         ctx.response.headers.add("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS")
         ctx.response.headers.add("Access-Control-Allow-Credentials", "true")
-        ctx.response.headers.add(
-            "Access-Control-Allow-Headers",
-            "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
-        )
+        ctx.response.headers.add("Access-Control-Allow-Headers", headerValue)
         return when (ctx.request.method) {
             HttpMethod.OPTIONS -> {
                 ctx.response.headers.add("Access-Control-Max-Age", "1728000")
@@ -68,27 +53,17 @@ class CorsFilter : WebFilter {
                 Mono.empty()
             }
             else -> {
-                ctx.response.headers.add(
-                    "Access-Control-Expose-Headers",
-                    "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
-                )
+                ctx.response.headers.add("Access-Control-Expose-Headers", headerValue)
                 chain.filter(ctx)
             }
         }
     }
+
+    companion object {
+        private const val headerValue =
+            "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range"
+    }
 }
-
-// todo cool idea
-/*
-data class Model(val issues: List<String>)
-data class Request(val parameter: Optional<String>)
-data class Result(val data: String)
-
-fun addIssues(currentModel: Model, request: Request): Pair<Model, Result> =
-    Pair(currentModel.copy(issues = currentModel.issues + "new issue"), Result(data = "succeed"))
-
-fun foo(r: Request): String = r.parameter.map { "Foo" }.orElseGet { "nothing" }
- */
 
 @Component
 @Suppress("unused")
@@ -118,8 +93,8 @@ class AppQuery(val repo: AppRepository) : Query {
     fun states(): List<State> = repo.states
 }
 
-@Suppress("unused")
 @Component
+@Suppress("unused")
 class AppMutation(val repo: AppRepository) : Mutation {
     @GraphQLDescription("Creates a new Project")
     fun createProject(name: String, short: String): Project =

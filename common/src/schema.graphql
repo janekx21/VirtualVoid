@@ -28,7 +28,11 @@ directive @specifiedBy(
     url: String!
   ) on SCALAR
 
-type Backlog {
+interface Data {
+  id: UUID!
+}
+
+type Backlog implements Data {
   id: UUID!
   issues: [Issue!]!
   name: String!
@@ -41,7 +45,7 @@ type Epic {
   short: String!
 }
 
-type Issue {
+type Issue implements Data {
   backlog: Backlog!
   description: String!
   epic: Epic
@@ -55,20 +59,25 @@ type Issue {
 }
 
 type Mutation {
+  "Creates a new Backlog"
   createBacklog(project: UUID!, title: String!): Backlog!
+  "Creates an Issue"
   createIssue(create: IssueCreateInput!): Issue!
   "Creates a new Project"
   createProject(name: String!, short: String!): Project!
+  "Removes a Backlog"
   removeBacklog(id: UUID!): Backlog!
+  "Remove an Issue"
   removeIssue(id: UUID!): Issue!
   "Removes a Project"
   removeProject(id: UUID!): Project!
+  "Updates an Issue"
   updateIssue(update: IssueUpdateInput!): Issue!
   "Updates a Project. Returns the previous value."
   updateProject(id: UUID!, name: String!): Project!
 }
 
-type Project {
+type Project implements Data {
   backlogs: [Backlog!]!
   id: UUID!
   name: String!

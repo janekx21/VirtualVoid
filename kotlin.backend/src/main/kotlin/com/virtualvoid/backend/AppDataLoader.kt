@@ -15,7 +15,7 @@ class BacklogToIssues(val repo: AppRepository) : KotlinDataLoader<Backlog, List<
     override fun getDataLoader() = DataLoader<Backlog, List<Issue>>({ ids ->
         CompletableFuture.supplyAsync {
             ids.map { backlog ->
-                repo.issues.filter { it.backlog == backlog }
+                repo.issues.values.filter { it.backlog == backlog }
             }
         }
     }, DataLoaderOptions.newOptions().setCachingEnabled(true))
@@ -27,7 +27,7 @@ class ProjectToBacklogs(val repo: AppRepository) : KotlinDataLoader<Project, Lis
     override fun getDataLoader() = DataLoader<Project, List<Backlog>>({ ids ->
         CompletableFuture.supplyAsync {
             ids.map { project ->
-                repo.backlogs.filter { it.project == project }
+                repo.backlogs.values.filter { it.project == project }
             }
         }
     }, DataLoaderOptions.newOptions().setCachingEnabled(true))
