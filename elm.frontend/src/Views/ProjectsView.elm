@@ -18,7 +18,7 @@ import UUID exposing (UUID)
 
 
 type alias Model =
-    RemoteData (Graphql.Http.Error ProjectsResponse) ProjectsResponse
+    RemoteData (Graphql.Http.Error Response) Response
 
 
 type alias ProjectData =
@@ -36,18 +36,18 @@ init =
 -- update
 
 
-type alias ProjectsResponse =
+type alias Response =
     List ProjectData
 
 
 type Msg
-    = GotProjects (RemoteData (Graphql.Http.Error ProjectsResponse) ProjectsResponse)
+    = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotProjects remoteData ->
+        GotFetch remoteData ->
             ( remoteData, Cmd.none )
 
 
@@ -59,29 +59,20 @@ fetchProjects : Cmd Msg
 fetchProjects =
     query
         |> Graphql.Http.queryRequest "http://localhost:8080/graphql"
-        |> Graphql.Http.send (RemoteData.fromResult >> GotProjects)
+        |> Graphql.Http.send (RemoteData.fromResult >> GotFetch)
 
 
 query : SelectionSet (List ProjectData) RootQuery
 query =
-    Query.projects issueSelection
+    Query.projects selection
 
 
-issueSelection : SelectionSet ProjectData Api.Object.Project
-issueSelection =
+selection : SelectionSet ProjectData Api.Object.Project
+selection =
     SelectionSet.map3 ProjectData
         Api.Object.Project.id
         Api.Object.Project.name
         Api.Object.Project.short
-
-
-
--- subscriptions
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
 
 
 
@@ -110,7 +101,7 @@ maybeProjects model =
         Loading ->
             text <| "loading"
 
-        Failure e ->
+        Failure _ ->
             text <| "failure"
 
         Success a ->

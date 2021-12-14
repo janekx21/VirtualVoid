@@ -8,6 +8,7 @@ import Route exposing (Route(..))
 import Url exposing (Url)
 import Views.HomeView as HomeView
 import Views.IssuesView as IssuesView
+import Views.ProjectView as ProjectView
 import Views.ProjectsView as ProjectsView
 
 
@@ -38,6 +39,7 @@ type Page
     = NotFoundPage
     | HomePage HomeView.Model
     | ProjectsPage ProjectsView.Model
+    | ProjectPage ProjectView.Model
     | IssuesPage IssuesView.Model
 
 
@@ -75,6 +77,13 @@ initCurrentPage ( model, existingCmds ) =
                     in
                     ( ProjectsPage pageModel, Cmd.map ProjectsPageMsg pageCmds )
 
+                Route.ProjectRoute id ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            ProjectView.init id
+                    in
+                    ( ProjectPage pageModel, Cmd.map ProjectPageMsg pageCmds )
+
                 IssuesRoute id ->
                     let
                         ( pageModel, pageCmds ) =
@@ -98,6 +107,7 @@ type Msg
     = HomePageMsg HomeView.Msg
     | ProjectsPageMsg ProjectsView.Msg
     | IssuesPageMsg IssuesView.Msg
+    | ProjectPageMsg ProjectView.Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
 
@@ -130,6 +140,15 @@ update msg model =
             in
             ( { model | page = ProjectsPage updatedPageModel }
             , Cmd.map ProjectsPageMsg updatedCmd
+            )
+
+        ( ProjectPageMsg subMsg, ProjectPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    ProjectView.update subMsg pageModel
+            in
+            ( { model | page = ProjectPage updatedPageModel }
+            , Cmd.map ProjectPageMsg updatedCmd
             )
 
         ( LinkClicked urlRequest, _ ) ->
@@ -189,6 +208,12 @@ view model =
             Document "Projects"
                 [ ProjectsView.view pageModel
                     |> Html.map ProjectsPageMsg
+                ]
+
+        ProjectPage pageModel ->
+            Document "Project"
+                [ ProjectView.view pageModel
+                    |> Html.map ProjectPageMsg
                 ]
 
         IssuesPage pageModel ->
