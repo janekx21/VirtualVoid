@@ -4,12 +4,9 @@
 
 module Api.Subscription exposing (..)
 
-import Api.InputObject
-import Api.Interface
 import Api.Object
 import Api.Scalar
-import Api.ScalarCodecs
-import Api.Union
+import CustomScalarCodecs
 import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
 import Graphql.Internal.Builder.Object as Object
 import Graphql.Internal.Encode as Encode exposing (Value)
@@ -20,7 +17,7 @@ import Json.Decode as Decode exposing (Decoder)
 
 
 type alias ChangedIssueRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Returns subscribed issue when it changes
@@ -30,7 +27,7 @@ changedIssue :
     -> SelectionSet decodesTo Api.Object.Issue
     -> SelectionSet decodesTo RootSubscription
 changedIssue requiredArgs____ object____ =
-    Object.selectionForCompositeField "changedIssue" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "changedIssue" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 type alias CounterOptionalArguments =

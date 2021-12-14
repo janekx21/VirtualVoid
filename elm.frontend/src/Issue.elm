@@ -1,11 +1,9 @@
 module Issue exposing (..)
 
-import Common exposing (blue, breadcrumb, gray40, gray90, green, labelledCheckboxIcon, lightBlue, materialIcon, orange, pill, red, white)
-import Element exposing (Color, Element, alignBottom, alignRight, centerX, centerY, column, el, fill, height, padding, paddingXY, paragraph, px, rgb255, row, spacing, text, textColumn, width)
+import Common exposing (breadcrumb, gray40, gray90, green, materialIcon, orange, pill, red)
+import Element exposing (Color, Element, alignBottom, alignRight, centerX, column, el, fill, height, paddingXY, paragraph, px, row, spacing, text, textColumn, width)
 import Element.Background as Background
-import Element.Border as Border
 import Element.Font as Font
-import Element.Input as Input exposing (labelHidden, labelLeft, placeholder)
 import Html exposing (Html)
 import Material.Icons.Outlined as Outlined
 

@@ -4,7 +4,7 @@ import Api.Object
 import Api.Object.Issue
 import Api.Query as Query
 import Browser
-import Common exposing (breadcrumb, gray40, gray90, green, materialIcon, orange, pill, red)
+import Common exposing (breadcrumb, gray40, gray90, materialIcon, orange, pill, red)
 import Element exposing (Color, Element, alignBottom, alignRight, centerX, column, el, fill, height, paddingXY, paragraph, px, row, spacing, text, textColumn, width)
 import Element.Background as Background
 import Element.Font as Font

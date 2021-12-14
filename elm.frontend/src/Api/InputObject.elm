@@ -6,17 +6,10 @@ module Api.InputObject exposing (..)
 
 import Api.Enum.Importance
 import Api.Enum.IssueType
-import Api.Interface
-import Api.Object
 import Api.Scalar
-import Api.ScalarCodecs
-import Api.Union
-import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
-import Graphql.Internal.Builder.Object as Object
+import CustomScalarCodecs
 import Graphql.Internal.Encode as Encode exposing (Value)
 import Graphql.OptionalArgument exposing (OptionalArgument(..))
-import Graphql.SelectionSet exposing (SelectionSet)
-import Json.Decode as Decode
 
 
 buildIssueCreateInput :
@@ -33,30 +26,30 @@ buildIssueCreateInput required____ fillOptionals____ =
 
 
 type alias IssueCreateInputRequiredFields =
-    { backlog : Api.ScalarCodecs.Uuid
+    { backlog : CustomScalarCodecs.Uuid
     , description : String
     , importance : Api.Enum.Importance.Importance
     , name : String
     , points : Int
-    , state : Api.ScalarCodecs.Uuid
+    , state : CustomScalarCodecs.Uuid
     , type_ : Api.Enum.IssueType.IssueType
     }
 
 
 type alias IssueCreateInputOptionalFields =
-    { epic : OptionalArgument Api.ScalarCodecs.Uuid }
+    { epic : OptionalArgument CustomScalarCodecs.Uuid }
 
 
 {-| Type for the IssueCreateInput input object.
 -}
 type alias IssueCreateInput =
-    { backlog : Api.ScalarCodecs.Uuid
+    { backlog : CustomScalarCodecs.Uuid
     , description : String
-    , epic : OptionalArgument Api.ScalarCodecs.Uuid
+    , epic : OptionalArgument CustomScalarCodecs.Uuid
     , importance : Api.Enum.Importance.Importance
     , name : String
     , points : Int
-    , state : Api.ScalarCodecs.Uuid
+    , state : CustomScalarCodecs.Uuid
     , type_ : Api.Enum.IssueType.IssueType
     }
 
@@ -66,7 +59,7 @@ type alias IssueCreateInput =
 encodeIssueCreateInput : IssueCreateInput -> Value
 encodeIssueCreateInput input____ =
     Encode.maybeObject
-        [ ( "backlog", (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) input____.backlog |> Just ), ( "description", Encode.string input____.description |> Just ), ( "epic", (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) |> Encode.optional input____.epic ), ( "importance", Encode.enum Api.Enum.Importance.toString input____.importance |> Just ), ( "name", Encode.string input____.name |> Just ), ( "points", Encode.int input____.points |> Just ), ( "state", (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) input____.state |> Just ), ( "type", Encode.enum Api.Enum.IssueType.toString input____.type_ |> Just ) ]
+        [ ( "backlog", (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) input____.backlog |> Just ), ( "description", Encode.string input____.description |> Just ), ( "epic", (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) |> Encode.optional input____.epic ), ( "importance", Encode.enum Api.Enum.Importance.toString input____.importance |> Just ), ( "name", Encode.string input____.name |> Just ), ( "points", Encode.int input____.points |> Just ), ( "state", (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) input____.state |> Just ), ( "type", Encode.enum Api.Enum.IssueType.toString input____.type_ |> Just ) ]
 
 
 buildIssueUpdateInput :
@@ -83,16 +76,16 @@ buildIssueUpdateInput required____ fillOptionals____ =
 
 
 type alias IssueUpdateInputRequiredFields =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 type alias IssueUpdateInputOptionalFields =
     { description : OptionalArgument String
-    , epic : OptionalArgument Api.ScalarCodecs.Uuid
+    , epic : OptionalArgument CustomScalarCodecs.Uuid
     , importance : OptionalArgument Api.Enum.Importance.Importance
     , name : OptionalArgument String
     , points : OptionalArgument Int
-    , state : OptionalArgument Api.ScalarCodecs.Uuid
+    , state : OptionalArgument CustomScalarCodecs.Uuid
     }
 
 
@@ -100,12 +93,12 @@ type alias IssueUpdateInputOptionalFields =
 -}
 type alias IssueUpdateInput =
     { description : OptionalArgument String
-    , epic : OptionalArgument Api.ScalarCodecs.Uuid
-    , id : Api.ScalarCodecs.Uuid
+    , epic : OptionalArgument CustomScalarCodecs.Uuid
+    , id : CustomScalarCodecs.Uuid
     , importance : OptionalArgument Api.Enum.Importance.Importance
     , name : OptionalArgument String
     , points : OptionalArgument Int
-    , state : OptionalArgument Api.ScalarCodecs.Uuid
+    , state : OptionalArgument CustomScalarCodecs.Uuid
     }
 
 
@@ -114,4 +107,4 @@ type alias IssueUpdateInput =
 encodeIssueUpdateInput : IssueUpdateInput -> Value
 encodeIssueUpdateInput input____ =
     Encode.maybeObject
-        [ ( "description", Encode.string |> Encode.optional input____.description ), ( "epic", (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) |> Encode.optional input____.epic ), ( "id", (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) input____.id |> Just ), ( "importance", Encode.enum Api.Enum.Importance.toString |> Encode.optional input____.importance ), ( "name", Encode.string |> Encode.optional input____.name ), ( "points", Encode.int |> Encode.optional input____.points ), ( "state", (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) |> Encode.optional input____.state ) ]
+        [ ( "description", Encode.string |> Encode.optional input____.description ), ( "epic", (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) |> Encode.optional input____.epic ), ( "id", (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) input____.id |> Just ), ( "importance", Encode.enum Api.Enum.Importance.toString |> Encode.optional input____.importance ), ( "name", Encode.string |> Encode.optional input____.name ), ( "points", Encode.int |> Encode.optional input____.points ), ( "state", (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) |> Encode.optional input____.state ) ]

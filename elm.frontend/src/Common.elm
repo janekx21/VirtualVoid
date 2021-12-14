@@ -1,13 +1,14 @@
 module Common exposing (..)
 
-import Element exposing (Color, Element, centerX, centerY, el, fill, height, link, none, padding, paddingXY, px, rgb255, row, text, toRgb, width)
+import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, link, mouseOver, none, padding, paddingXY, px, rgb255, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
 
 
-breadcrumb : List String -> String -> Element msg
+breadcrumb : List { txt : String, url : String } -> String -> Element msg
 breadcrumb prev current =
     let
         spacer =
@@ -15,7 +16,7 @@ breadcrumb prev current =
     in
     row [ padding 5 ] <|
         (prev
-            |> List.map (\i -> row [] [ link [ Font.color blue, Font.underline ] { label = text i, url = i }, spacer ])
+            |> List.map (\i -> row [] [ link genericLink { label = text i.txt, url = i.url }, spacer ])
         )
             ++ [ text current ]
 
@@ -86,6 +87,27 @@ pill string color =
         ]
     <|
         text string
+
+
+title : String -> Element msg
+title txt =
+    el [ height (px 120), width fill, paddingXY 100 5, Background.color gray90 ] <|
+        row [ width fill, alignBottom ]
+            [ el [ Font.size 48 ] <| text txt
+            , el [ alignRight ] <| Element.html <| Outlined.translate 24 Inherit
+            ]
+
+
+body : Element msg -> Element msg
+body child =
+    el [ width fill, height fill, paddingXY 100 10 ] <|
+        el [ centerX, width fill, height fill ] <|
+            child
+
+
+genericLink : List (Attribute msg)
+genericLink =
+    [ Font.color blue, Font.underline, mouseOver [ Font.color lightBlue ] ]
 
 
 white =

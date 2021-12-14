@@ -1,7 +1,7 @@
 module Board exposing (main)
 
-import Common exposing (blue, breadcrumb, gray90, green, labelledCheckboxIcon, lightBlue, orange, pill, red, white)
-import Element exposing (Color, Element, alignBottom, alignRight, alignTop, centerX, centerY, column, el, fill, height, none, padding, paddingXY, paragraph, px, row, scrollbarX, spacing, text, width, wrappedRow)
+import Common exposing (blue, breadcrumb, gray90, green, labelledCheckboxIcon, lightBlue, orange, pill, red)
+import Element exposing (Color, Element, alignBottom, alignRight, alignTop, centerX, centerY, column, el, fill, height, padding, paddingXY, paragraph, px, row, scrollbarX, spacing, text, width, wrappedRow)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font

@@ -1,0 +1,32 @@
+module Views.HomeView exposing (..)
+
+import Element exposing (Element, column, link, none, text)
+import Html exposing (Html)
+
+
+type alias Model =
+    ()
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( (), Cmd.none )
+
+
+type Msg
+    = Never
+
+
+view : Model -> Html Msg
+view model =
+    Element.layout [] <| column [] [ text <| "home", link [] { url = "/projects", label = text "Projects" } ]
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    ( model, Cmd.none )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none

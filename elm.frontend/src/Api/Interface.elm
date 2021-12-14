@@ -5,5 +5,5 @@
 module Api.Interface exposing (..)
 
 
-type Data
-    = Data
+type HasID
+    = HasID

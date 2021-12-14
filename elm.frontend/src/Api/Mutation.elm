@@ -5,23 +5,19 @@
 module Api.Mutation exposing (..)
 
 import Api.InputObject
-import Api.Interface
 import Api.Object
 import Api.Scalar
-import Api.ScalarCodecs
-import Api.Union
+import CustomScalarCodecs
 import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
 import Graphql.Internal.Builder.Object as Object
 import Graphql.Internal.Encode as Encode exposing (Value)
 import Graphql.Operation exposing (RootMutation, RootQuery, RootSubscription)
-import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet exposing (SelectionSet)
-import Json.Decode as Decode exposing (Decoder)
 
 
 type alias CreateBacklogRequiredArguments =
     { title : String
-    , project : Api.ScalarCodecs.Uuid
+    , project : CustomScalarCodecs.Uuid
     }
 
 
@@ -32,7 +28,7 @@ createBacklog :
     -> SelectionSet decodesTo Api.Object.Backlog
     -> SelectionSet decodesTo RootMutation
 createBacklog requiredArgs____ object____ =
-    Object.selectionForCompositeField "createBacklog" [ Argument.required "title" requiredArgs____.title Encode.string, Argument.required "project" requiredArgs____.project (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "createBacklog" [ Argument.required "title" requiredArgs____.title Encode.string, Argument.required "project" requiredArgs____.project (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 type alias CreateIssueRequiredArguments =
@@ -66,7 +62,7 @@ createProject requiredArgs____ object____ =
 
 
 type alias RemoveBacklogRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Removes a Backlog
@@ -76,11 +72,11 @@ removeBacklog :
     -> SelectionSet decodesTo Api.Object.Backlog
     -> SelectionSet decodesTo RootMutation
 removeBacklog requiredArgs____ object____ =
-    Object.selectionForCompositeField "removeBacklog" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "removeBacklog" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 type alias RemoveIssueRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Remove an Issue
@@ -90,11 +86,11 @@ removeIssue :
     -> SelectionSet decodesTo Api.Object.Issue
     -> SelectionSet decodesTo RootMutation
 removeIssue requiredArgs____ object____ =
-    Object.selectionForCompositeField "removeIssue" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "removeIssue" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 type alias RemoveProjectRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Removes a Project
@@ -104,7 +100,7 @@ removeProject :
     -> SelectionSet decodesTo Api.Object.Project
     -> SelectionSet decodesTo RootMutation
 removeProject requiredArgs____ object____ =
-    Object.selectionForCompositeField "removeProject" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "removeProject" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 type alias UpdateIssueRequiredArguments =
@@ -122,7 +118,7 @@ updateIssue requiredArgs____ object____ =
 
 
 type alias UpdateProjectRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid
+    { id : CustomScalarCodecs.Uuid
     , name : String
     }
 
@@ -134,4 +130,4 @@ updateProject :
     -> SelectionSet decodesTo Api.Object.Project
     -> SelectionSet decodesTo RootMutation
 updateProject requiredArgs____ object____ =
-    Object.selectionForCompositeField "updateProject" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid), Argument.required "name" requiredArgs____.name Encode.string ] object____ Basics.identity
+    Object.selectionForCompositeField "updateProject" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid), Argument.required "name" requiredArgs____.name Encode.string ] object____ Basics.identity

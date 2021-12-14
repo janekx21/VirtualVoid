@@ -6,17 +6,10 @@ module Api.Object.Issue exposing (..)
 
 import Api.Enum.Importance
 import Api.Enum.IssueType
-import Api.InputObject
-import Api.Interface
 import Api.Object
 import Api.Scalar
-import Api.ScalarCodecs
-import Api.Union
-import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
+import CustomScalarCodecs
 import Graphql.Internal.Builder.Object as Object
-import Graphql.Internal.Encode as Encode exposing (Value)
-import Graphql.Operation exposing (RootMutation, RootQuery, RootSubscription)
-import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode
 
@@ -40,9 +33,9 @@ epic object____ =
     Object.selectionForCompositeField "epic" [] object____ (Basics.identity >> Decode.nullable)
 
 
-id : SelectionSet Api.ScalarCodecs.Uuid Api.Object.Issue
+id : SelectionSet CustomScalarCodecs.Uuid Api.Object.Issue
 id =
-    Object.selectionForField "ScalarCodecs.Uuid" "id" [] (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapCodecs |> .codecUuid |> .decoder)
+    Object.selectionForField "CustomScalarCodecs.Uuid" "id" [] (CustomScalarCodecs.codecs |> Api.Scalar.unwrapCodecs |> .codecUuid |> .decoder)
 
 
 importance : SelectionSet Api.Enum.Importance.Importance Api.Object.Issue

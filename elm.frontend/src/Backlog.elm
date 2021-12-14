@@ -1,6 +1,6 @@
 module Backlog exposing (..)
 
-import Common exposing (blue, breadcrumb, gray90, green, labelledCheckboxIcon, lightBlue, materialIcon, orange, pill, red, white)
+import Common exposing (blue, breadcrumb, gray90, green, labelledCheckboxIcon, lightBlue, materialIcon, orange, pill, red)
 import Element exposing (Color, Element, alignBottom, alignRight, centerX, centerY, column, el, fill, height, padding, paddingXY, paragraph, px, row, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border

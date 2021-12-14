@@ -4,23 +4,18 @@
 
 module Api.Query exposing (..)
 
-import Api.InputObject
-import Api.Interface
 import Api.Object
 import Api.Scalar
-import Api.ScalarCodecs
-import Api.Union
+import CustomScalarCodecs
 import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
 import Graphql.Internal.Builder.Object as Object
-import Graphql.Internal.Encode as Encode exposing (Value)
 import Graphql.Operation exposing (RootMutation, RootQuery, RootSubscription)
-import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode exposing (Decoder)
 
 
 type alias BacklogRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Finds a backlog
@@ -30,7 +25,7 @@ backlog :
     -> SelectionSet decodesTo Api.Object.Backlog
     -> SelectionSet decodesTo RootQuery
 backlog requiredArgs____ object____ =
-    Object.selectionForCompositeField "backlog" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "backlog" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 {-| Returns all backlogs
@@ -52,7 +47,7 @@ epics object____ =
 
 
 type alias IssueRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Finds an issue
@@ -62,7 +57,7 @@ issue :
     -> SelectionSet decodesTo Api.Object.Issue
     -> SelectionSet decodesTo RootQuery
 issue requiredArgs____ object____ =
-    Object.selectionForCompositeField "issue" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "issue" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 {-| Returns all issues
@@ -75,7 +70,7 @@ issues object____ =
 
 
 type alias ProjectRequiredArguments =
-    { id : Api.ScalarCodecs.Uuid }
+    { id : CustomScalarCodecs.Uuid }
 
 
 {-| Returns a project
@@ -85,7 +80,7 @@ project :
     -> SelectionSet decodesTo Api.Object.Project
     -> SelectionSet decodesTo RootQuery
 project requiredArgs____ object____ =
-    Object.selectionForCompositeField "project" [ Argument.required "id" requiredArgs____.id (Api.ScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "project" [ Argument.required "id" requiredArgs____.id (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 {-| Returns all projects
