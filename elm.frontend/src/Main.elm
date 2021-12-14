@@ -41,10 +41,6 @@ type Page
     | IssuesPage IssuesView.Model
 
 
-
--- | IssuePage IssueView.Model
-
-
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url navKey =
     let
