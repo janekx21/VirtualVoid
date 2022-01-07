@@ -50,7 +50,7 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg _ =
     case msg of
         GotFetch remoteData ->
             ( remoteData, Cmd.none )
@@ -100,7 +100,7 @@ query id =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 

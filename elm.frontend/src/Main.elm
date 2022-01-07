@@ -176,16 +176,22 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    case model.page of
-        IssuesPage mo ->
-            Sub.map IssuesPageMsg (IssuesView.subscriptions mo)
+subscriptions parentModel =
+    case parentModel.page of
+        IssuesPage model ->
+            Sub.map IssuesPageMsg (IssuesView.subscriptions model)
 
-        HomePage mo ->
-            Sub.map HomePageMsg (HomeView.subscriptions mo)
+        HomePage model ->
+            Sub.map HomePageMsg (HomeView.subscriptions model)
 
-        _ ->
+        NotFoundPage ->
             Sub.none
+
+        ProjectsPage _ ->
+            Sub.none
+
+        ProjectPage model ->
+            Sub.map ProjectPageMsg (ProjectView.subscriptions model)
 
 
 
