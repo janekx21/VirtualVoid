@@ -6,6 +6,7 @@ import Element exposing (Element, text)
 import Html exposing (Html)
 import Route exposing (Route(..))
 import Url exposing (Url)
+import Views.BacklogsView as BacklogsView
 import Views.HomeView as HomeView
 import Views.IssuesView as IssuesView
 import Views.ProjectView as ProjectView
@@ -41,6 +42,7 @@ type Page
     | ProjectsPage ProjectsView.Model
     | ProjectPage ProjectView.Model
     | IssuesPage IssuesView.Model
+    | BacklogsPage BacklogsView.Model
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -84,15 +86,19 @@ initCurrentPage ( model, existingCmds ) =
                     in
                     ( ProjectPage pageModel, Cmd.map ProjectPageMsg pageCmds )
 
-                IssuesRoute id ->
+                Route.IssuesRoute id ->
                     let
                         ( pageModel, pageCmds ) =
                             IssuesView.init id
                     in
                     ( IssuesPage pageModel, Cmd.map IssuesPageMsg pageCmds )
 
-                _ ->
-                    ( NotFoundPage, Cmd.none )
+                Route.BacklogsRoute id ->
+                    let
+                        ( pageModel, pageCmds ) =
+                            BacklogsView.init id
+                    in
+                    ( BacklogsPage pageModel, Cmd.map BacklogsPageMsg pageCmds )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -107,6 +113,7 @@ type Msg
     = HomePageMsg HomeView.Msg
     | ProjectsPageMsg ProjectsView.Msg
     | IssuesPageMsg IssuesView.Msg
+    | BacklogsPageMsg BacklogsView.Msg
     | ProjectPageMsg ProjectView.Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
@@ -151,6 +158,15 @@ update msg model =
             , Cmd.map ProjectPageMsg updatedCmd
             )
 
+        ( BacklogsPageMsg subMsg, BacklogsPage pageModel ) ->
+            let
+                ( updatedPageModel, updatedCmd ) =
+                    BacklogsView.update subMsg pageModel
+            in
+            ( { model | page = BacklogsPage updatedPageModel }
+            , Cmd.map BacklogsPageMsg updatedCmd
+            )
+
         ( LinkClicked urlRequest, _ ) ->
             case urlRequest of
                 Browser.Internal url ->
@@ -193,14 +209,17 @@ subscriptions parentModel =
         ProjectPage model ->
             Sub.map ProjectPageMsg (ProjectView.subscriptions model)
 
+        BacklogsPage model ->
+            Sub.map BacklogsPageMsg (BacklogsView.subscriptions model)
+
 
 
 -- view
 
 
 view : Model -> Document Msg
-view model =
-    case model.page of
+view parentModel =
+    case parentModel.page of
         NotFoundPage ->
             Document "Not Found" [ notFoundView ]
 
@@ -227,6 +246,14 @@ view model =
                 [ IssuesView.view pageModel
                     |> Html.map IssuesPageMsg
                 ]
+
+        BacklogsPage model ->
+            BacklogsView.view model |> document "Issues" BacklogsPageMsg
+
+
+document : String -> (msg -> Msg) -> Html msg -> Document Msg
+document name msg html =
+    Document name [ html |> Html.map msg ]
 
 
 notFoundView : Html msg
