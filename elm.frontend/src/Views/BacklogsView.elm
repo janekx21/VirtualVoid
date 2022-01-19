@@ -22,21 +22,21 @@ type alias IssueData =
     { id : UUID, name : String }
 
 
-type alias BacklogData =
-    { id : UUID, name : String, issues : List IssueData }
-
-
 type alias ProjectData =
-    { name : String, backlogs : List BacklogData }
+    { id : UUID, name : String }
+
+
+type alias BacklogData =
+    { id : UUID, name : String, issues : List IssueData, project : ProjectData }
 
 
 type alias Model =
-    ()
+    Maybe BacklogData
 
 
 init : UUID -> ( Model, Cmd Msg )
 init id =
-    ( (), fetch id )
+    ( Nothing, fetch id )
 
 
 type Msg
@@ -44,7 +44,7 @@ type Msg
 
 
 type alias Response =
-    ProjectData
+    BacklogData
 
 
 
@@ -58,10 +58,24 @@ view model =
 
 app : Model -> Element Msg
 app model =
-    column [ spacing 20 ]
-        [ breadcrumb [ { txt = "home", url = "/" }, { txt = "projects", url = "/projects" }, { txt = "parnet project", url = "/projects/uuid" } ] "backlog name"
-        , text <| "foo"
-        ]
+    let
+        link =
+            model
+                |> Maybe.map .project
+                |> Maybe.map (\p -> { label = p.name, url = "/projects/" ++ UUID.toString p.id })
+                |> Maybe.withDefault { label = "loading", url = "" }
+
+        page =
+            [ breadcrumb
+                [ { label = "home", url = "/" }
+                , { label = "projects", url = "/projects" }
+                , link
+                ]
+                "backlog name"
+            , text <| "foo"
+            ]
+    in
+    column [ spacing 20 ] page
 
 
 
@@ -70,7 +84,9 @@ app model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        GotFetch remoteData ->
+            ( RemoteData.toMaybe remoteData, Cmd.none )
 
 
 
@@ -84,23 +100,24 @@ fetch id =
         |> Graphql.Http.send (RemoteData.fromResult >> GotFetch)
 
 
-query : UUID -> SelectionSet ProjectData RootQuery
+query : UUID -> SelectionSet BacklogData RootQuery
 query id =
-    Query.project { id = id }
-        (SelectionSet.succeed ProjectData
-            |> with Api.Object.Project.name
+    Query.backlog { id = id }
+        (SelectionSet.succeed BacklogData
+            |> with Api.Object.Backlog.id
+            |> with Api.Object.Backlog.name
             |> with
-                (Api.Object.Project.backlogs
-                    (SelectionSet.succeed BacklogData
-                        |> with Api.Object.Backlog.id
-                        |> with Api.Object.Backlog.name
-                        |> with
-                            (Api.Object.Backlog.issues
-                                (SelectionSet.succeed IssueData
-                                    |> with Api.Object.Issue.id
-                                    |> with Api.Object.Issue.name
-                                )
-                            )
+                (Api.Object.Backlog.issues
+                    (SelectionSet.succeed IssueData
+                        |> with Api.Object.Issue.id
+                        |> with Api.Object.Issue.name
+                    )
+                )
+            |> with
+                (Api.Object.Backlog.project
+                    (SelectionSet.succeed ProjectData
+                        |> with Api.Object.Project.id
+                        |> with Api.Object.Project.name
                     )
                 )
         )
