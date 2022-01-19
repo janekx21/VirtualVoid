@@ -1,7 +1,7 @@
 package com.virtualvoid.backend.model
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
-import com.virtualvoid.backend.HasID
+import com.virtualvoid.backend.Entity
 import com.virtualvoid.backend.isZero
 import java.util.*
 
@@ -34,7 +34,7 @@ data class Issue(
     val state: State,
     val importance: Importance,
     val points: Int
-) : HasID {
+) : Entity {
     init {
         require(number > 0)
         require(name.length in 1..200)

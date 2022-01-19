@@ -1,6 +1,6 @@
 module Board exposing (main)
 
-import Common exposing (blue, breadcrumb, gray90, green, labelledCheckboxIcon, lightBlue, orange, pill, red)
+import Common exposing (breadcrumb, fatal, gray90, labelledCheckboxIcon, pill, primary, primaryLight, success, warning)
 import Element exposing (Color, Element, alignBottom, alignRight, alignTop, centerX, centerY, column, el, fill, height, padding, paddingXY, paragraph, px, row, scrollbarX, spacing, text, width, wrappedRow)
 import Element.Background as Background
 import Element.Border as Border
@@ -45,16 +45,16 @@ init : Model
 init =
     let
         backend =
-            Label "backend" orange
+            Label "backend" warning
 
         frontend =
-            Label "frontend" green
+            Label "frontend" success
     in
     { states =
         [ State "Todo"
-            [ Issue "Milestones swimlanes" Task [ Label "dev|plan" red, backend ] 80 "Janek"
+            [ Issue "Milestones swimlanes" Task [ Label "dev|plan" fatal, backend ] 80 "Janek"
             , Issue "Assign issue to epic" Task [ backend ] 45 "Tobi"
-            , Issue "Create group" Task [ frontend, Label "group-task" red ] 78 "Janek"
+            , Issue "Create group" Task [ frontend, Label "group-task" fatal ] 78 "Janek"
             , Issue "Remove issue from board" Task [] 38 "Tobi"
             ]
         , State "Doing"
@@ -63,10 +63,10 @@ init =
             , Issue "Update issue labels" Task [] 75 "Tobi"
             ]
         , State "Done"
-            [ Issue "Persist collapsed state of Swimlanes" Task [ Label "Deliverable" red, Label "test test" green ] 32 "Tobi"
-            , Issue "Remove list from board" Task [ Label "Caliber" red, Label "Colorado" green, Label "feature proposal" blue ] 44 "Janek"
+            [ Issue "Persist collapsed state of Swimlanes" Task [ Label "Deliverable" fatal, Label "test test" success ] 32 "Tobi"
+            , Issue "Remove list from board" Task [ Label "Caliber" fatal, Label "Colorado" success, Label "feature proposal" primary ] 44 "Janek"
             , Issue "Remove issue from Swimlane" Bug [ frontend ] 36 "Tobi"
-            , Issue "Expand diff to entire file" Task [ Label "Premium" orange, Label "dev" blue, Label "manage" red, frontend ] 25 "Tobi"
+            , Issue "Expand diff to entire file" Task [ Label "Premium" warning, Label "dev" primary, Label "manage" fatal, frontend ] 25 "Tobi"
             ]
         ]
     }
@@ -105,9 +105,9 @@ body model =
 filter : Element Msg
 filter =
     row [ Font.size 16, spacing 24 ]
-        [ Input.text [ width (px 250), Border.rounded 5, Border.color lightBlue ] { label = labelHidden "filter", onChange = SetFilter, placeholder = Just (placeholder [] <| text "Search or Filter results..."), text = "" }
+        [ Input.text [ width (px 250), Border.rounded 5, Border.color primaryLight ] { label = labelHidden "filter", onChange = SetFilter, placeholder = Just (placeholder [] <| text "Search or Filter results..."), text = "" }
         , Input.checkbox [] { onChange = SetLabelVisible, checked = True, label = labelLeft [ centerY ] <| text "Show labels:", icon = labelledCheckboxIcon }
-        , row [ spacing 6 ] [ text "Group by:", row [ Border.rounded 5, Border.width 1, Border.color lightBlue, padding 12 ] [ text "None", el [] <| Element.html <| Outlined.expand_more 16 Inherit ] ]
+        , row [ spacing 6 ] [ text "Group by:", row [ Border.rounded 5, Border.width 1, Border.color primaryLight, padding 12 ] [ text "None", el [] <| Element.html <| Outlined.expand_more 16 Inherit ] ]
         ]
 
 
@@ -126,7 +126,7 @@ viewState state =
 
 viewIssue : Issue -> Element Msg
 viewIssue i =
-    column [ width fill, padding 10, Border.color blue, Border.rounded 3, Border.width 1, Font.size 16, spacing 10 ]
+    column [ width fill, padding 10, Border.color primary, Border.rounded 3, Border.width 1, Font.size 16, spacing 10 ]
         [ paragraph [ Font.semiBold ] [ text i.title ]
         , wrappedRow [ spacing 5 ] (i.labels |> List.map (\l -> pill l.text l.color))
         , row [ width fill, spacing 5 ] [ issueIcon i.type_, text ("#" ++ String.fromInt i.number), el [ alignRight ] <| text ("assigned to " ++ i.assigned) ]

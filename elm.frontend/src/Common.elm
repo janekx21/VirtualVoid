@@ -8,16 +8,14 @@ import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
 
 
-breadcrumb : List { txt : String, url : String } -> String -> Element msg
+breadcrumb : List { label : String, url : String } -> String -> Element msg
 breadcrumb prev current =
     let
         spacer =
             el [ paddingXY 5 0 ] <| text "/"
     in
     row [ padding 5 ] <|
-        (prev
-            |> List.map (\i -> row [] [ link genericLink { label = text i.txt, url = i.url }, spacer ])
-        )
+        List.map (\i -> row [] [ link genericLink { label = text i.label, url = i.url }, spacer ]) prev
             ++ [ text current ]
 
 
@@ -42,10 +40,10 @@ labelledCheckboxIcon isChecked =
         , centerY
         , Border.rounded 999
         , Border.width 2
-        , Border.color blue
+        , Border.color primary
         , Background.color <|
             if isChecked then
-                lightBlue
+                primaryLight
 
             else
                 white
@@ -67,11 +65,11 @@ materialIcon icon size =
 pill : String -> Color -> Element msg
 pill string color =
     let
-        rgb =
+        { red, green, blue } =
             toRgb color
 
         flipFontColor =
-            (rgb.red + rgb.blue + rgb.green) / 3.0 < 0.5
+            (red + green + blue) / 3.0 < 0.5
     in
     el
         [ padding 6
@@ -107,30 +105,33 @@ body child =
 
 genericLink : List (Attribute msg)
 genericLink =
-    [ Font.color blue, Font.underline, mouseOver [ Font.color lightBlue ] ]
+    [ Font.color primary, Font.underline, mouseOver [ Font.color primaryLight ] ]
 
 
 white =
     rgb255 255 255 255
 
 
-blue =
+primary : Color
+primary =
     rgb255 21 94 231
 
 
-lightBlue =
+primaryLight : Color
+primaryLight =
     rgb255 200 211 248
 
 
-green =
+success : Color
+success =
     rgb255 9 182 18
 
 
-orange =
+warning =
     rgb255 218 158 6
 
 
-red =
+fatal =
     rgb255 183 8 54
 
 

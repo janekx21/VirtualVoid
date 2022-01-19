@@ -6,7 +6,7 @@ import Api.Object
 import Api.Object.Backlog
 import Api.Object.Project
 import Api.Query as Query
-import Common exposing (blue, body, breadcrumb, genericLink, pill, title)
+import Common exposing (body, breadcrumb, genericLink, pill, primary, title)
 import Element exposing (Element, centerY, column, el, fill, link, padding, row, spacing, text, width)
 import Element.Border as Border
 import Element.Font as Font
@@ -116,7 +116,7 @@ view model =
 app : Model -> Element Msg
 app model =
     column [ spacing 20 ]
-        [ breadcrumb [ { txt = "home", url = "/" }, { txt = "projects", url = "/projects" } ] (RemoteData.withDefault "Projects" (model |> RemoteData.map .name))
+        [ breadcrumb [ { label = "home", url = "/" }, { label = "projects", url = "/projects" } ] (RemoteData.withDefault "Projects" (model |> RemoteData.map .name))
         , maybeProjects model
         ]
 
@@ -144,7 +144,7 @@ projectView projectData =
 
 backlogView : BacklogData -> Element Msg
 backlogView backlogData =
-    column [ spacing 10, Border.color blue, Border.rounded 5, Border.width 1, padding 10 ]
+    column [ spacing 10, Border.color primary, Border.rounded 5, Border.width 1, padding 10 ]
         [ text <| backlogData.name
         , link genericLink { url = "/backlogs/" ++ UUID.toString backlogData.id, label = text <| "open backlog" }
         ]

@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest)
-import Browser.Navigation as Nav exposing (Key)
-import Element exposing (Element, text)
+import Browser.Navigation as Nav
+import Element exposing (text)
 import Html exposing (Html)
 import Route exposing (Route(..))
 import Url exposing (Url)

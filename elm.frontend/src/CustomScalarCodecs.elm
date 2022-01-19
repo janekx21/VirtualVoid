@@ -30,6 +30,6 @@ uuidCodec =
                             Decode.succeed parsedId
 
                         Nothing ->
-                            Decode.fail "Could not parse ID as an Int."
+                            Decode.fail "Could not parse String as an UUID."
                 )
     }

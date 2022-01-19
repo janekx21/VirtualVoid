@@ -5,7 +5,7 @@ module Views.ProjectsView exposing (..)
 import Api.Object
 import Api.Object.Project
 import Api.Query as Query
-import Common exposing (blue, body, breadcrumb, genericLink, pill, title)
+import Common exposing (body, breadcrumb, genericLink, pill, primary, title)
 import Element exposing (Element, centerY, column, el, fill, link, padding, row, spacing, text, width)
 import Element.Border as Border
 import Element.Font as Font
@@ -87,7 +87,7 @@ view model =
 app : Model -> Element Msg
 app model =
     column [ spacing 20 ]
-        [ breadcrumb [ { txt = "home", url = "/" } ] "projects"
+        [ breadcrumb [ { label = "home", url = "/" } ] "projects"
         , maybeProjects model
         ]
 
@@ -115,7 +115,7 @@ projectsView projectData =
 
 projectView : ProjectData -> Element Msg
 projectView project =
-    column [ Border.color blue, Border.rounded 5, Border.width 1, padding 10, spacing 10 ]
-        [ row [ spacing 10 ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short blue ]
+    column [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, spacing 10 ]
+        [ row [ spacing 10 ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
         , link genericLink { url = "/projects/" ++ UUID.toString project.id, label = text <| "Open Project" }
         ]

@@ -4,7 +4,7 @@ import Api.Object
 import Api.Object.Issue
 import Api.Query as Query
 import Browser
-import Common exposing (breadcrumb, gray40, gray90, materialIcon, orange, pill, red)
+import Common exposing (breadcrumb, fatal, gray40, gray90, materialIcon, pill, warning)
 import Element exposing (Color, Element, alignBottom, alignRight, centerX, column, el, fill, height, paddingXY, paragraph, px, row, spacing, text, textColumn, width)
 import Element.Background as Background
 import Element.Font as Font
@@ -77,7 +77,7 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     let
         backend =
-            Label "backend" orange
+            Label "backend" warning
 
         janek =
             Just "Janek"
@@ -90,7 +90,7 @@ init _ =
             ]
                 |> String.join "\n"
     in
-    ( { issue = Issue "Milestones swimlanes" Task Nothing [ Label "dev|plan" red, backend ] 80 janek des Nothing Middle 8, error = "no error" }, makeRequest )
+    ( { issue = Issue "Milestones swimlanes" Task Nothing [ Label "dev|plan" fatal, backend ] 80 janek des Nothing Middle 8, error = "no error" }, makeRequest )
 
 
 type alias Response =

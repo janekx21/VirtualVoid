@@ -1,6 +1,6 @@
 module Issue exposing (..)
 
-import Common exposing (breadcrumb, gray40, gray90, green, materialIcon, orange, pill, red)
+import Common exposing (breadcrumb, fatal, gray40, gray90, materialIcon, pill, success, warning)
 import Element exposing (Color, Element, alignBottom, alignRight, centerX, column, el, fill, height, paddingXY, paragraph, px, row, spacing, text, textColumn, width)
 import Element.Background as Background
 import Element.Font as Font
@@ -62,10 +62,10 @@ init : Model
 init =
     let
         backend =
-            Label "backend" orange
+            Label "backend" warning
 
         frontend =
-            Label "frontend" green
+            Label "frontend" success
 
         janek =
             Just "Janek"
@@ -81,7 +81,7 @@ init =
             ]
                 |> String.join "\n"
     in
-    { issue = Issue "Milestones swimlanes" Task Nothing [ Label "dev|plan" red, backend ] 80 janek des Nothing Middle 8 }
+    { issue = Issue "Milestones swimlanes" Task Nothing [ Label "dev|plan" fatal, backend ] 80 janek des Nothing Middle 8 }
 
 
 type Msg

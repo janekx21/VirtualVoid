@@ -1,6 +1,6 @@
 module Backlog exposing (..)
 
-import Common exposing (blue, breadcrumb, gray90, green, labelledCheckboxIcon, lightBlue, materialIcon, orange, pill, red)
+import Common exposing (breadcrumb, fatal, gray90, labelledCheckboxIcon, materialIcon, pill, primary, primaryLight, success, warning)
 import Element exposing (Color, Element, alignBottom, alignRight, centerX, centerY, column, el, fill, height, padding, paddingXY, paragraph, px, row, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -44,10 +44,10 @@ init : Model
 init =
     let
         backend =
-            Label "backend" orange
+            Label "backend" warning
 
         frontend =
-            Label "frontend" green
+            Label "frontend" success
 
         janek =
             Just "Janek"
@@ -56,17 +56,17 @@ init =
             Just "Tobi"
     in
     { issues =
-        [ Issue "Milestones swimlanes" Task Nothing [ Label "dev|plan" red, backend ] 80 janek
+        [ Issue "Milestones swimlanes" Task Nothing [ Label "dev|plan" fatal, backend ] 80 janek
         , Issue "Assign issue to epic" Task Nothing [ backend ] 45 tobi
-        , Issue "Create group" Task Nothing [ frontend, Label "group-task" red ] 78 janek
+        , Issue "Create group" Task Nothing [ frontend, Label "group-task" fatal ] 78 janek
         , Issue "Remove issue from board" Task Nothing [] 38 tobi
         , Issue "Update issue due date from sidebar" Task Nothing [ frontend ] 54 tobi
         , Issue "Update issue's labels from sidebar" Bug Nothing [ frontend ] 55 janek
         , Issue "Update issue labels" Task Nothing [] 75 tobi
-        , Issue "Persist collapsed state of Swimlanes" Task Nothing [ Label "Deliverable" red, Label "test test" green ] 32 tobi
-        , Issue "Remove list from board" Task Nothing [ Label "Caliber" red, Label "Colorado" green, Label "feature proposal" blue ] 44 janek
+        , Issue "Persist collapsed state of Swimlanes" Task Nothing [ Label "Deliverable" fatal, Label "test test" success ] 32 tobi
+        , Issue "Remove list from board" Task Nothing [ Label "Caliber" fatal, Label "Colorado" success, Label "feature proposal" primary ] 44 janek
         , Issue "Remove issue from Swimlane" Bug Nothing [ frontend ] 36 tobi
-        , Issue "Expand diff to entire file" Task Nothing [ Label "Premium" orange, Label "dev" blue, Label "manage" red, frontend ] 25 janek
+        , Issue "Expand diff to entire file" Task Nothing [ Label "Premium" warning, Label "dev" primary, Label "manage" fatal, frontend ] 25 janek
         ]
     }
 
@@ -104,9 +104,9 @@ body model =
 filter : Element Msg
 filter =
     row [ Font.size 16, spacing 24 ]
-        [ Input.text [ width (px 250), Border.rounded 5, Border.color lightBlue ] { label = labelHidden "filter", onChange = SetFilter, placeholder = Just (placeholder [] <| text "Search or Filter results..."), text = "" }
+        [ Input.text [ width (px 250), Border.rounded 5, Border.color primaryLight ] { label = labelHidden "filter", onChange = SetFilter, placeholder = Just (placeholder [] <| text "Search or Filter results..."), text = "" }
         , Input.checkbox [] { onChange = SetLabelVisible, checked = True, label = labelLeft [ centerY ] <| text "Show labels:", icon = labelledCheckboxIcon }
-        , row [ spacing 6 ] [ text "Group by:", row [ Border.rounded 5, Border.width 1, Border.color lightBlue, padding 12 ] [ text "None", materialIcon Outlined.expand_more 16 ] ]
+        , row [ spacing 6 ] [ text "Group by:", row [ Border.rounded 5, Border.width 1, Border.color primaryLight, padding 12 ] [ text "None", materialIcon Outlined.expand_more 16 ] ]
         ]
 
 
@@ -125,7 +125,7 @@ backlog issues =
 
 viewIssue : Issue -> Element Msg
 viewIssue i =
-    row [ width fill, padding 10, Border.color blue, Border.rounded 3, Border.width 1, Font.size 16, spacing 10 ]
+    row [ width fill, padding 10, Border.color primary, Border.rounded 3, Border.width 1, Font.size 16, spacing 10 ]
         [ issueIcon i.type_
         , text ("#" ++ String.fromInt i.number)
         , paragraph [ Font.semiBold ] [ text i.title ]

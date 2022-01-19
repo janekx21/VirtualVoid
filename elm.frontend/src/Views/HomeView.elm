@@ -1,6 +1,6 @@
 module Views.HomeView exposing (..)
 
-import Common exposing (blue, body, lightBlue, title)
+import Common exposing (body, primary, primaryLight, title)
 import Element exposing (Attribute, Element, column, fill, link, mouseOver, padding, text, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -34,7 +34,7 @@ links =
 
 projectLink : List (Attribute msg)
 projectLink =
-    [ Border.color blue, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color lightBlue ] ]
+    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color primaryLight ] ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
