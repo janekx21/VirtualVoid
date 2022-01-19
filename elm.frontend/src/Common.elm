@@ -8,7 +8,11 @@ import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
 
 
-breadcrumb : List { label : String, url : String } -> String -> Element msg
+type alias Link =
+    { label : String, url : String }
+
+
+breadcrumb : List Link -> String -> Element msg
 breadcrumb prev current =
     let
         spacer =
