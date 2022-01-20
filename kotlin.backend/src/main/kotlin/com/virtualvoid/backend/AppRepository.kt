@@ -40,9 +40,10 @@ class AppRepository {
             listOf(
                 Backlog(createID(), "Product Backlog", demoProject),
                 Backlog(createID(), "Sprint 1", demoProject),
-                Backlog(createID(), "Sprint 2 of asd", demoProject),
+                Backlog(createID(), "Sprint 2", demoProject),
             )
         )
+        val special = backlogs.add(Backlog(createID(), "Special", demoProject))
 
         issues.addAll(List(10) {
             Issue(
@@ -58,6 +59,141 @@ class AppRepository {
                 Random.nextInt(0..13)
             )
         })
+
+        issues.add(
+            Issue(
+                createID(), special, IssueType.BUG, 42, "Markdown Bug", """
+            # Heading
+            ## Heading 2
+            ### Heading 3
+            - list
+            - list2
+            - list 3
+            ---
+            1. foo
+            2. bar
+            3. fobar
+            
+            Das ist ein Paragraph zB
+        """.trimIndent(), null, states.random(), Importance.HIGH, 8
+            )
+        )
+
+        issues.add(
+            Issue(
+                createID(), special, IssueType.TASK, 1, "Readme", """
+## About The Project
+
+<!-- TODO write something about the project -->
+
+
+## Build With
+- Backend
+  - Kotlin
+  - GraphQL
+- Frontend
+  - Elm
+  - elm-ui
+  - Material Icons
+  - elm-graphql
+
+
+## Getting Started
+
+### Prerequisites
+Install Elm-Live for the frontend development server.
+```shell
+npm install -g elm-live
+```
+
+### Starting
+Start a live reload dev server for the frontend.
+```shell
+elm.frontend/develop.sh
+```
+
+## Usage
+### Entities
+
+- Project
+- Backlog
+- Issue
+- Epic
+- State
+
+### Features
+
+#### Project
+
+- [x] show all Projects
+- [x] show a Project by id
+- [x] add Project
+- [x] remove Project
+- [x] change Project name
+
+#### Backlog
+
+- [x] show all Backlogs
+- [x] show a Backlog by id
+- [x] add Backlog
+- [x] remove Backlog
+- [ ] change Backlog name
+
+#### Issue
+
+- [x] show all Issues
+- [x] show an Issue
+- [x] add Issue
+- [x] remove Issue
+- [x] change Issue
+
+#### Epic
+
+- [x] show all Epics
+- [ ] add Epic
+- [ ] remove Epic
+- [ ] change Epic name
+
+#### State
+
+- [x] show all States
+- [ ] add State
+- [ ] remove State
+- [ ] change State name
+
+### Routing
+
+#### `/`
+dash
+
+#### `/projects`
+all projects
+
+#### `/projects/{project}`
+a project
+
+#### `/projects/{project}/backlogs`
+all backlogs of a project
+
+#### `/projects/{project}/issues`
+all issues of a project
+
+#### `/issues/{issue}`
+an issue
+
+#### `/boards/{board}`
+a board
+
+
+## Roadmap
+1. [ ] Building a vertical slice
+
+## Contributing
+## License
+## Contact
+        """.trimIndent(), null, states.last(), Importance.LOW, 0
+            )
+        )
     }
 
     companion object {

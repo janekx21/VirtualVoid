@@ -1,6 +1,6 @@
 module Views.HomeView exposing (..)
 
-import Colors exposing (primary, primaryLight)
+import Colors exposing (gray90, primary, primaryActive, secondary)
 import Common exposing (bodyView, titleView)
 import Element exposing (Attribute, Element, column, fill, link, mouseOver, padding, text, width)
 import Element.Background as Background
@@ -21,9 +21,9 @@ type Msg
     = Never
 
 
-view : Model -> Html Msg
+view : Model -> Element Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Virtual Void", bodyView links ]
+    column [ width fill ] [ titleView "Virtual Void", bodyView links ]
 
 
 links : Element Msg
@@ -35,7 +35,7 @@ links =
 
 projectLink : List (Attribute msg)
 projectLink =
-    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color primaryLight ] ]
+    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color gray90 ] ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

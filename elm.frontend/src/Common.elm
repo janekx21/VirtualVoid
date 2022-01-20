@@ -1,6 +1,6 @@
 module Common exposing (..)
 
-import Colors exposing (black, gray90, primary, primaryLight, white)
+import Colors exposing (black, gray90, primary, secondary, white)
 import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, none, padding, paddingXY, px, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -46,7 +46,7 @@ labelledCheckboxIcon isChecked =
         , Border.color primary
         , Background.color <|
             if isChecked then
-                primaryLight
+                secondary
 
             else
                 white

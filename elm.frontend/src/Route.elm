@@ -10,7 +10,7 @@ type Route
     | ProjectsRoute
     | ProjectRoute UUID
     | BacklogRoute UUID
-    | IssuesRoute UUID
+    | IssueRoute UUID
     | NotFoundRoute
 
 
@@ -31,7 +31,7 @@ matchRoute =
         , map ProjectsRoute (s "projects")
         , map ProjectRoute (s "projects" </> uuid)
         , map BacklogRoute (s "backlogs" </> uuid)
-        , map IssuesRoute (s "issues" </> uuid)
+        , map IssueRoute (s "issues" </> uuid)
         ]
 
 

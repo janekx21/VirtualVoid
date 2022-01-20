@@ -7,15 +7,20 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (primary)
+import Colors exposing (fatal, primary)
 import Common exposing (bodyView, breadcrumb, materialIcon, pill, titleView)
-import Element exposing (Element, column, el, fill, link, none, padding, paragraph, row, spacing, text, width)
+import Element exposing (Element, alignRight, column, el, fill, height, inFront, link, minimum, none, paragraph, px, row, scrollbarY, spacing, text, width)
 import Element.Border as Border
 import Element.Font as Font
+import Element.Input exposing (button)
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Html exposing (Html)
+import InfoDialog exposing (InfoDialog)
+import Link exposing (buttonLink)
+import Markdown.Parser
+import Markdown.Renderer
 import Material.Icons.Outlined as Outlined
 import RemoteData exposing (RemoteData)
 import UUID exposing (UUID)
@@ -30,7 +35,7 @@ type alias EpicData =
 
 
 type alias IssueData =
-    { id : UUID, name : String, type_ : IssueType, number : Int, importance : Importance, epic : Maybe EpicData }
+    { id : UUID, name : String, type_ : IssueType, number : Int, points : Int, importance : Importance, epic : Maybe EpicData, description : String }
 
 
 type alias ProjectData =
@@ -42,16 +47,18 @@ type alias BacklogData =
 
 
 type alias Model =
-    Maybe BacklogData
+    { backlog : Maybe BacklogData, openIssue : Maybe IssueData }
 
 
 init : UUID -> ( Model, Cmd Msg )
 init id =
-    ( Nothing, fetch id )
+    ( Model Nothing Nothing, fetch id )
 
 
 type Msg
     = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
+    | OpenIssue IssueData
+    | CloseIssue
 
 
 type alias Response =
@@ -62,21 +69,64 @@ type alias Response =
 -- view
 
 
-view : Model -> Html Msg
+view : Model -> Element Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Backlog", bodyView <| app model ]
+    column [ width fill, height fill, inFront <| InfoDialog.view <| Maybe.map issueDialog model.openIssue ] [ titleView "Backlog", bodyView <| app model ]
+
+
+issueDialog : IssueData -> InfoDialog Msg
+issueDialog issue =
+    let
+        result : Result String (List (Html msg))
+        result =
+            render Markdown.Renderer.defaultHtmlRenderer issue.description
+
+        description =
+            case result of
+                Ok value ->
+                    paragraph [ width fill ] (value |> List.map Element.html |> List.map (el [ width fill ]))
+
+                Err error ->
+                    text <| error
+    in
+    { title = issue.name
+    , body =
+        column [ spacing 16, width fill, height fill, scrollbarY ]
+            [ row [ spacing 8 ] [ issueIcon issue.type_, text <| ("#" ++ String.fromInt issue.number) ]
+            , description
+            ]
+    , onClose = CloseIssue
+    }
+
+
+
+-- TODO elm-ui renderer
+
+
+render : Markdown.Renderer.Renderer view -> String -> Result String (List view)
+render renderer markdown =
+    markdown
+        |> Markdown.Parser.parse
+        |> Result.mapError deadEndsToString
+        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
+
+
+deadEndsToString deadEnds =
+    deadEnds
+        |> List.map Markdown.Parser.deadEndToString
+        |> String.join "\n"
 
 
 app : Model -> Element Msg
 app model =
     let
         link =
-            model
+            model.backlog
                 |> Maybe.map .project
                 |> Maybe.map (\p -> { label = p.name, url = "/projects/" ++ UUID.toString p.id })
 
         backlog =
-            case model of
+            case model.backlog of
                 Just a ->
                     viewBacklog a
 
@@ -90,11 +140,11 @@ app model =
                 , Just { label = "projects", url = "/projects" }
                 , link
                 ]
-                (model |> Maybe.map .name)
+                (model.backlog |> Maybe.map .name)
             , backlog
             ]
     in
-    column [ spacing 20 ] page
+    column [ spacing 20, width fill ] page
 
 
 viewBacklog : BacklogData -> Element Msg
@@ -111,19 +161,24 @@ viewBacklog backlog =
 
 
 viewIssue : IssueData -> Element Msg
-viewIssue i =
+viewIssue issue =
     let
         epic =
-            i.epic |> Maybe.map (\e -> pill e.name primary) |> Maybe.withDefault none
-    in
-    row [ width fill, padding 10, Border.color primary, Border.rounded 3, Border.width 1, Font.size 16, spacing 10 ]
-        [ issueIcon i.type_
-        , text ("#" ++ String.fromInt i.number)
-        , paragraph [ Font.semiBold ] [ text i.name ]
-        , row [ spacing 5 ] [ epic ]
+            issue.epic |> Maybe.map (\e -> pill e.name primary) |> Maybe.withDefault none
 
-        --, el [] <| text ("assigned to " ++ Maybe.withDefault "Nobody" i.assigned)
-        ]
+        element =
+            row [ spacing 10, width fill, Font.size 16 ]
+                [ issueIcon issue.type_
+                , text ("#" ++ String.fromInt issue.number)
+                , paragraph [ Font.semiBold ] [ text issue.name ]
+                , row [ spacing 5, alignRight ] [ epic ]
+                ]
+    in
+    button (buttonLink ++ [ width fill ]) { onPress = Just <| OpenIssue issue, label = element }
+
+
+
+--, el [] <| text ("assigned to " ++ Maybe.withDefault "Nobody" i.assigned)
 
 
 issueIcon : IssueType -> Element Msg
@@ -151,10 +206,16 @@ issueIcon issueType =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg _ =
+update msg model =
     case msg of
         GotFetch remoteData ->
-            ( RemoteData.toMaybe remoteData, Cmd.none )
+            ( { model | backlog = RemoteData.toMaybe remoteData }, Cmd.none )
+
+        OpenIssue issueData ->
+            ( { model | openIssue = Just issueData }, Cmd.none )
+
+        CloseIssue ->
+            ( { model | openIssue = Nothing }, Cmd.none )
 
 
 
@@ -181,8 +242,10 @@ query id =
                         |> with Api.Object.Issue.name
                         |> with Api.Object.Issue.type_
                         |> with Api.Object.Issue.number
+                        |> with Api.Object.Issue.points
                         |> with Api.Object.Issue.importance
                         |> with (Api.Object.Issue.epic (SelectionSet.succeed EpicData |> with Api.Object.Epic.name))
+                        |> with Api.Object.Issue.description
                     )
                 )
             |> with

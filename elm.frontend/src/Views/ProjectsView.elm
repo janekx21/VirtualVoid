@@ -81,9 +81,9 @@ selection =
 -- view
 
 
-view : Model -> Html Msg
+view : Model -> Element Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Projects", bodyView <| app model ]
+    column [ width fill ] [ titleView "Projects", bodyView <| app model ]
 
 
 app : Model -> Element Msg

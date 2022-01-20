@@ -1,4 +1,8 @@
+# development
 elm-stuff/
-index.html
+/index.html
 .idea/
+
+# build
+dist/
 

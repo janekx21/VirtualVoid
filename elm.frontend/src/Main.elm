@@ -2,8 +2,10 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
-import Element exposing (text)
+import Element exposing (Element, fill, text, width)
+import Element.Font as Font
 import Html exposing (Html)
+import Html.Attributes
 import Route exposing (Route(..))
 import Url exposing (Url)
 import Views.BacklogView as BacklogView
@@ -86,7 +88,7 @@ initCurrentPage ( model, existingCmds ) =
                     in
                     ( ProjectPage pageModel, Cmd.map ProjectPageMsg pageCmds )
 
-                Route.IssuesRoute id ->
+                Route.IssueRoute id ->
                     let
                         ( pageModel, pageCmds ) =
                             IssuesView.init id
@@ -223,23 +225,14 @@ view parentModel =
         NotFoundPage ->
             Document "Not Found" [ notFoundView ]
 
-        HomePage pageModel ->
-            Document "HomeView"
-                [ HomeView.view pageModel
-                    |> Html.map HomePageMsg
-                ]
+        HomePage model ->
+            HomeView.view model |> defaultLayout |> document "Home" HomePageMsg
 
-        ProjectsPage pageModel ->
-            Document "Projects"
-                [ ProjectsView.view pageModel
-                    |> Html.map ProjectsPageMsg
-                ]
+        ProjectsPage model ->
+            ProjectsView.view model |> defaultLayout |> document "Projects" ProjectsPageMsg
 
-        ProjectPage pageModel ->
-            Document "Project"
-                [ ProjectView.view pageModel
-                    |> Html.map ProjectPageMsg
-                ]
+        ProjectPage model ->
+            ProjectView.view model |> defaultLayout |> document "Project" ProjectPageMsg
 
         IssuesPage pageModel ->
             Document "Issues"
@@ -248,12 +241,25 @@ view parentModel =
                 ]
 
         BacklogPage model ->
-            BacklogView.view model |> document "Issues" BacklogPageMsg
+            BacklogView.view model |> defaultLayout |> document "Issues" BacklogPageMsg
+
+
+defaultLayout : Element msg -> Html msg
+defaultLayout =
+    Element.layout [ width fill, Font.size 16, Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ] ]
 
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg
 document name msg html =
-    Document name [ html |> Html.map msg ]
+    Document name [ fontLink, html |> Html.map msg ]
+
+
+fontLink =
+    Html.node "link" [ Html.Attributes.href fontURL, Html.Attributes.rel "stylesheet" ] []
+
+
+fontURL =
+    "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap"
 
 
 notFoundView : Html msg
