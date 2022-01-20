@@ -1,4 +1,5 @@
 <div id="top"></div>
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -58,14 +59,41 @@
 </details>
 -->
 
+
+## About The Project
+
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-# Virtual Void
+<!-- TODO write something about the project -->
 
-A super simple issue management software. The main focus
-is on super simple but qualitative and fast design.
 
-## Entities
+## Build With
+- Backend
+  - Kotlin
+  - GraphQL
+- Frontend
+  - Elm
+  - elm-ui
+  - Material Icons
+  - elm-graphql
+
+
+## Getting Started
+
+### Prerequisites
+Install Elm-Live for the frontend development server.
+```shell
+npm install -g elm-live
+```
+
+### Starting
+Start a live reload dev server for the frontend.
+```shell
+elm.frontend/develop.sh
+```
+
+## Usage
+### Entities
 
 - Project
 - Backlog
@@ -73,9 +101,9 @@ is on super simple but qualitative and fast design.
 - Epic
 - State
 
-## Features
+### Features
 
-### Project
+#### Project
 
 - [x] show all Projects
 - [x] show a Project by id
@@ -83,7 +111,7 @@ is on super simple but qualitative and fast design.
 - [x] remove Project
 - [x] change Project name
 
-### Backlog
+#### Backlog
 
 - [x] show all Backlogs
 - [x] show a Backlog by id
@@ -91,7 +119,7 @@ is on super simple but qualitative and fast design.
 - [x] remove Backlog
 - [ ] change Backlog name
 
-### Issue
+#### Issue
 
 - [x] show all Issues
 - [x] show an Issue
@@ -99,42 +127,50 @@ is on super simple but qualitative and fast design.
 - [x] remove Issue
 - [x] change Issue
 
-### Epic
+#### Epic
 
 - [x] show all Epics
 - [ ] add Epic
 - [ ] remove Epic
 - [ ] change Epic name
 
-### State
+#### State
 
 - [x] show all States
 - [ ] add State
 - [ ] remove State
 - [ ] change State name
 
-## Routing
+### Routing
 
-### `/`
+#### `/`
 dash
 
-### `/projects`
+#### `/projects`
 all projects
 
-### `/projects/{project}`
+#### `/projects/{project}`
 a project
 
-### `/projects/{project}/backlogs`
+#### `/projects/{project}/backlogs`
 all backlogs of a project
 
-### `/projects/{project}/issues`
+#### `/projects/{project}/issues`
 all issues of a project
 
-### `/issues/{issue}`
+#### `/issues/{issue}`
 an issue
 
-### `/boards/{board}`
+#### `/boards/{board}`
 a board
+
+
+## Roadmap
+1. [ ] Building a vertical slice
+
+## Contributing
+## License
+## Contact
 
 [contributors-shield]: https://img.shields.io/github/contributors/janekx21/VirtualVoid.svg?style=for-the-badge
 [contributors-url]: https://github.com/janekx21/VirtualVoid/graphs/contributors
