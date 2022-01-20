@@ -6,7 +6,7 @@ import Element exposing (text)
 import Html exposing (Html)
 import Route exposing (Route(..))
 import Url exposing (Url)
-import Views.BacklogsView as BacklogsView
+import Views.BacklogView as BacklogView
 import Views.HomeView as HomeView
 import Views.IssuesView as IssuesView
 import Views.ProjectView as ProjectView
@@ -42,7 +42,7 @@ type Page
     | ProjectsPage ProjectsView.Model
     | ProjectPage ProjectView.Model
     | IssuesPage IssuesView.Model
-    | BacklogsPage BacklogsView.Model
+    | BacklogPage BacklogView.Model
 
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -93,12 +93,12 @@ initCurrentPage ( model, existingCmds ) =
                     in
                     ( IssuesPage pageModel, Cmd.map IssuesPageMsg pageCmds )
 
-                Route.BacklogsRoute id ->
+                Route.BacklogRoute id ->
                     let
                         ( pageModel, pageCmds ) =
-                            BacklogsView.init id
+                            BacklogView.init id
                     in
-                    ( BacklogsPage pageModel, Cmd.map BacklogsPageMsg pageCmds )
+                    ( BacklogPage pageModel, Cmd.map BacklogPageMsg pageCmds )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -113,7 +113,7 @@ type Msg
     = HomePageMsg HomeView.Msg
     | ProjectsPageMsg ProjectsView.Msg
     | IssuesPageMsg IssuesView.Msg
-    | BacklogsPageMsg BacklogsView.Msg
+    | BacklogPageMsg BacklogView.Msg
     | ProjectPageMsg ProjectView.Msg
     | LinkClicked UrlRequest
     | UrlChanged Url
@@ -158,13 +158,13 @@ update msg model =
             , Cmd.map ProjectPageMsg updatedCmd
             )
 
-        ( BacklogsPageMsg subMsg, BacklogsPage pageModel ) ->
+        ( BacklogPageMsg subMsg, BacklogPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
-                    BacklogsView.update subMsg pageModel
+                    BacklogView.update subMsg pageModel
             in
-            ( { model | page = BacklogsPage updatedPageModel }
-            , Cmd.map BacklogsPageMsg updatedCmd
+            ( { model | page = BacklogPage updatedPageModel }
+            , Cmd.map BacklogPageMsg updatedCmd
             )
 
         ( LinkClicked urlRequest, _ ) ->
@@ -209,8 +209,8 @@ subscriptions parentModel =
         ProjectPage model ->
             Sub.map ProjectPageMsg (ProjectView.subscriptions model)
 
-        BacklogsPage model ->
-            Sub.map BacklogsPageMsg (BacklogsView.subscriptions model)
+        BacklogPage model ->
+            Sub.map BacklogPageMsg (BacklogView.subscriptions model)
 
 
 
@@ -247,8 +247,8 @@ view parentModel =
                     |> Html.map IssuesPageMsg
                 ]
 
-        BacklogsPage model ->
-            BacklogsView.view model |> document "Issues" BacklogsPageMsg
+        BacklogPage model ->
+            BacklogView.view model |> document "Issues" BacklogPageMsg
 
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg

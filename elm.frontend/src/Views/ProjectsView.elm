@@ -5,7 +5,8 @@ module Views.ProjectsView exposing (..)
 import Api.Object
 import Api.Object.Project
 import Api.Query as Query
-import Common exposing (body, breadcrumb, genericLink, pill, primary, title)
+import Colors exposing (primary)
+import Common exposing (bodyView, breadcrumb, pill, titleView)
 import Element exposing (Element, centerY, column, el, fill, link, padding, row, spacing, text, width)
 import Element.Border as Border
 import Element.Font as Font
@@ -13,6 +14,7 @@ import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
 import Html exposing (Html)
+import Link exposing (genericLink)
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 
@@ -81,13 +83,13 @@ selection =
 
 view : Model -> Html Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ title "Projects", body <| app model ]
+    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Projects", bodyView <| app model ]
 
 
 app : Model -> Element Msg
 app model =
     column [ spacing 20 ]
-        [ breadcrumb [ { label = "home", url = "/" } ] "projects"
+        [ breadcrumb [ Just { label = "home", url = "/" } ] (Just "projects")
         , maybeProjects model
         ]
 

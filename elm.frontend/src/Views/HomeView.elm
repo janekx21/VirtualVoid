@@ -1,6 +1,7 @@
 module Views.HomeView exposing (..)
 
-import Common exposing (body, primary, primaryLight, title)
+import Colors exposing (primary, primaryLight)
+import Common exposing (bodyView, titleView)
 import Element exposing (Attribute, Element, column, fill, link, mouseOver, padding, text, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -22,7 +23,7 @@ type Msg
 
 view : Model -> Html Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ title "Virtual Void", body links ]
+    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Virtual Void", bodyView links ]
 
 
 links : Element Msg

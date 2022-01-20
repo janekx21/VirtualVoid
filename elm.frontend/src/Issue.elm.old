@@ -1,6 +1,7 @@
 module Issue exposing (..)
 
-import Common exposing (breadcrumb, fatal, gray40, gray90, materialIcon, pill, success, warning)
+import Colors exposing (fatal, gray40, gray90, success)
+import Common exposing (breadcrumb, materialIcon, pill)
 import Element exposing (Color, Element, alignBottom, alignRight, centerX, column, el, fill, height, paddingXY, paragraph, px, row, spacing, text, textColumn, width)
 import Element.Background as Background
 import Element.Font as Font

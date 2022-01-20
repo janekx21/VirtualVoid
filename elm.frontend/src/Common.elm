@@ -1,26 +1,25 @@
 module Common exposing (..)
 
-import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, link, mouseOver, none, padding, paddingXY, px, rgb255, row, text, toRgb, width)
+import Colors exposing (black, gray90, primary, primaryLight, white)
+import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, none, padding, paddingXY, px, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import Link exposing (Link, linkPlaceholder)
 import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
+import Placeholder exposing (Loadable, textPlaceholder)
 
 
-type alias Link =
-    { label : String, url : String }
-
-
-breadcrumb : List Link -> String -> Element msg
+breadcrumb : List (Loadable Link) -> Loadable String -> Element msg
 breadcrumb prev current =
     let
         spacer =
             el [ paddingXY 5 0 ] <| text "/"
     in
     row [ padding 5 ] <|
-        List.map (\i -> row [] [ link genericLink { label = text i.label, url = i.url }, spacer ]) prev
-            ++ [ text current ]
+        List.map (\ml -> row [] [ linkPlaceholder ml, spacer ]) prev
+            ++ [ textPlaceholder current 120 ]
 
 
 labelledCheckboxIcon : Bool -> Element msg
@@ -91,8 +90,8 @@ pill string color =
         text string
 
 
-title : String -> Element msg
-title txt =
+titleView : String -> Element msg
+titleView txt =
     el [ height (px 120), width fill, paddingXY 100 5, Background.color gray90 ] <|
         row [ width fill, alignBottom ]
             [ el [ Font.size 48 ] <| text txt
@@ -100,52 +99,8 @@ title txt =
             ]
 
 
-body : Element msg -> Element msg
-body child =
+bodyView : Element msg -> Element msg
+bodyView child =
     el [ width fill, height fill, paddingXY 100 10 ] <|
         el [ centerX, width fill, height fill ] <|
             child
-
-
-genericLink : List (Attribute msg)
-genericLink =
-    [ Font.color primary, Font.underline, mouseOver [ Font.color primaryLight ] ]
-
-
-white =
-    rgb255 255 255 255
-
-
-primary : Color
-primary =
-    rgb255 21 94 231
-
-
-primaryLight : Color
-primaryLight =
-    rgb255 200 211 248
-
-
-success : Color
-success =
-    rgb255 9 182 18
-
-
-warning =
-    rgb255 218 158 6
-
-
-fatal =
-    rgb255 183 8 54
-
-
-gray90 =
-    rgb255 222 222 222
-
-
-gray40 =
-    rgb255 72 72 72
-
-
-black =
-    rgb255 0 0 0

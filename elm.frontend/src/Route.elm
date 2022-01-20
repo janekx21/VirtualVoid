@@ -9,7 +9,7 @@ type Route
     = HomeRoute
     | ProjectsRoute
     | ProjectRoute UUID
-    | BacklogsRoute UUID
+    | BacklogRoute UUID
     | IssuesRoute UUID
     | NotFoundRoute
 
@@ -30,7 +30,7 @@ matchRoute =
         [ map HomeRoute top
         , map ProjectsRoute (s "projects")
         , map ProjectRoute (s "projects" </> uuid)
-        , map BacklogsRoute (s "backlogs" </> uuid)
+        , map BacklogRoute (s "backlogs" </> uuid)
         , map IssuesRoute (s "issues" </> uuid)
         ]
 

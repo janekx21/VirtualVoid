@@ -1,4 +1,4 @@
-module Views.BacklogsView exposing (..)
+module Views.BacklogView exposing (..)
 
 import Api.Enum.Importance exposing (Importance)
 import Api.Enum.IssueType exposing (IssueType(..))
@@ -7,7 +7,8 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Common exposing (body, breadcrumb, materialIcon, pill, primary, title)
+import Colors exposing (primary)
+import Common exposing (bodyView, breadcrumb, materialIcon, pill, titleView)
 import Element exposing (Element, column, el, fill, link, none, padding, paragraph, row, spacing, text, width)
 import Element.Border as Border
 import Element.Font as Font
@@ -63,7 +64,7 @@ type alias Response =
 
 view : Model -> Html Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ title "Backlogs", body <| app model ]
+    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Backlog", bodyView <| app model ]
 
 
 app : Model -> Element Msg
@@ -73,7 +74,6 @@ app model =
             model
                 |> Maybe.map .project
                 |> Maybe.map (\p -> { label = p.name, url = "/projects/" ++ UUID.toString p.id })
-                |> Maybe.withDefault { label = "loading", url = "" }
 
         backlog =
             case model of
@@ -86,11 +86,11 @@ app model =
         -- TODO make loading link
         page =
             [ breadcrumb
-                [ { label = "home", url = "/" }
-                , { label = "projects", url = "/projects" }
+                [ Just { label = "home", url = "/" }
+                , Just { label = "projects", url = "/projects" }
                 , link
                 ]
-                "backlog name"
+                (model |> Maybe.map .name)
             , backlog
             ]
     in
@@ -104,7 +104,7 @@ viewBacklog backlog =
             backlog.issues |> List.sortBy .number
     in
     column [ spacing 10, width fill ]
-        ([ el [ Font.size 24, Font.bold ] <| text "Backlog"
+        ([ el [ Font.size 24, Font.bold ] <| text backlog.name
          ]
             ++ (sortedIssues |> List.map (\i -> viewIssue i))
         )

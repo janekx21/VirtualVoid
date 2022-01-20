@@ -2,18 +2,18 @@ module Views.ProjectView exposing (..)
 
 -- model
 
-import Api.Object
 import Api.Object.Backlog
 import Api.Object.Project
 import Api.Query as Query
-import Common exposing (body, breadcrumb, genericLink, pill, primary, title)
-import Element exposing (Element, centerY, column, el, fill, link, padding, row, spacing, text, width)
+import Colors exposing (primary)
+import Common exposing (bodyView, breadcrumb, titleView)
+import Element exposing (Element, column, fill, link, padding, spacing, text, width)
 import Element.Border as Border
-import Element.Font as Font
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Html exposing (Html)
+import Link exposing (genericLink)
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 
@@ -33,7 +33,7 @@ type alias ProjectData =
 init : UUID -> ( Model, Cmd Msg )
 init id =
     ( NotAsked
-    , fetchBacklogs id
+    , fetch id
     )
 
 
@@ -60,8 +60,8 @@ update msg _ =
 -- commands
 
 
-fetchBacklogs : UUID -> Cmd Msg
-fetchBacklogs id =
+fetch : UUID -> Cmd Msg
+fetch id =
     query id
         |> Graphql.Http.queryRequest "http://localhost:8080/graphql"
         |> Graphql.Http.send (RemoteData.fromResult >> GotFetch)
@@ -110,13 +110,13 @@ subscriptions _ =
 
 view : Model -> Html Msg
 view model =
-    Element.layout [ width fill ] <| column [ width fill ] [ title "Projects", body <| app model ]
+    Element.layout [ width fill ] <| column [ width fill ] [ titleView "Projects", bodyView <| app model ]
 
 
 app : Model -> Element Msg
 app model =
     column [ spacing 20 ]
-        [ breadcrumb [ { label = "home", url = "/" }, { label = "projects", url = "/projects" } ] (RemoteData.withDefault "Projects" (model |> RemoteData.map .name))
+        [ breadcrumb [ Just { label = "home", url = "/" }, Just { label = "projects", url = "/projects" } ] (RemoteData.toMaybe (model |> RemoteData.map .name))
         , maybeProjects model
         ]
 
