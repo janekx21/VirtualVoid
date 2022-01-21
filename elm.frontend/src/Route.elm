@@ -1,5 +1,6 @@
 module Route exposing (..)
 
+import CustomScalarCodecs exposing (url64ToUuid)
 import UUID exposing (UUID)
 import Url exposing (Url)
 import Url.Parser exposing ((</>), Parser, custom, map, oneOf, parse, s, top)
@@ -37,6 +38,4 @@ matchRoute =
 
 uuid : Parser (UUID -> a) a
 uuid =
-    custom "UUID" <|
-        \segment ->
-            Result.toMaybe (UUID.fromString segment)
+    custom "UUID" url64ToUuid

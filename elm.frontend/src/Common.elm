@@ -65,6 +65,11 @@ materialIcon icon size =
     el [] <| Element.html <| icon size Inherit
 
 
+coloredMaterialIcon : Icon msg -> Int -> Color -> Element msg
+coloredMaterialIcon icon size color =
+    el [ Font.color color ] <| Element.html <| icon size Inherit
+
+
 pill : String -> Color -> Element msg
 pill string color =
     let

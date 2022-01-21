@@ -1,11 +1,10 @@
 module Views.HomeView exposing (..)
 
-import Colors exposing (gray90, primary, primaryActive, secondary)
+import Colors exposing (gray90, primary)
 import Common exposing (bodyView, titleView)
 import Element exposing (Attribute, Element, column, fill, link, mouseOver, padding, text, width)
 import Element.Background as Background
 import Element.Border as Border
-import Html exposing (Html)
 
 
 type alias Model =

@@ -251,15 +251,19 @@ defaultLayout =
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg
 document name msg html =
-    Document name [ fontLink, html |> Html.map msg ]
+    Document name [ fontLink, rebootLink, html |> Html.map msg ]
+
+
+
+-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-reboot@4.5.6/reboot.css" integrity="sha256-NqCb52G5cOo+mE3Q1asDA+xnvGifFUpu4N5+7vWLyD0=" crossorigin="anonymous">
 
 
 fontLink =
-    Html.node "link" [ Html.Attributes.href fontURL, Html.Attributes.rel "stylesheet" ] []
+    Html.node "link" [ Html.Attributes.href "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap", Html.Attributes.rel "stylesheet" ] []
 
 
-fontURL =
-    "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap"
+rebootLink =
+    Html.node "link" [ Html.Attributes.href "https://cdn.jsdelivr.net/npm/bootstrap-reboot@4.5.6/reboot.css", Html.Attributes.rel "stylesheet" ] []
 
 
 notFoundView : Html msg

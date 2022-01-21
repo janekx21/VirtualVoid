@@ -7,13 +7,13 @@ import Api.Object.Project
 import Api.Query as Query
 import Colors exposing (primary)
 import Common exposing (bodyView, breadcrumb, pill, titleView)
+import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, centerY, column, el, fill, link, padding, row, spacing, text, width)
 import Element.Border as Border
 import Element.Font as Font
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
-import Html exposing (Html)
 import Link exposing (genericLink)
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
@@ -119,5 +119,5 @@ projectView : ProjectData -> Element Msg
 projectView project =
     column [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, spacing 10 ]
         [ row [ spacing 10 ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
-        , link genericLink { url = "/projects/" ++ UUID.toString project.id, label = text <| "Open Project" }
+        , link genericLink { url = "/projects/" ++ uuidToUrl64 project.id, label = text <| "Open Project" }
         ]

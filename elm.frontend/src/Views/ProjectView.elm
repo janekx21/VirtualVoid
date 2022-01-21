@@ -7,12 +7,12 @@ import Api.Object.Project
 import Api.Query as Query
 import Colors exposing (primary)
 import Common exposing (bodyView, breadcrumb, titleView)
+import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, column, fill, link, padding, spacing, text, width)
 import Element.Border as Border
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
-import Html exposing (Html)
 import Link exposing (genericLink)
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
@@ -146,5 +146,5 @@ backlogView : BacklogData -> Element Msg
 backlogView backlogData =
     column [ spacing 10, Border.color primary, Border.rounded 5, Border.width 1, padding 10 ]
         [ text <| backlogData.name
-        , link genericLink { url = "/backlogs/" ++ UUID.toString backlogData.id, label = text <| "open backlog" }
+        , link genericLink { url = "/backlogs/" ++ uuidToUrl64 backlogData.id, label = text <| "open backlog" }
         ]

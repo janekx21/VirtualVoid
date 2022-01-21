@@ -45,7 +45,7 @@ class AppRepository {
         )
         val special = backlogs.add(Backlog(createID(), "Special", demoProject))
 
-        issues.addAll(List(10) {
+        issues.addAll(List(20) {
             Issue(
                 createID(),
                 backlogs.values.random(),
