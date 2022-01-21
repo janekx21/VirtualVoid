@@ -5,6 +5,7 @@
 module Api.ScalarCodecs exposing (..)
 
 import Api.Scalar exposing (defaultCodecs)
+import Json.Decode as Decode exposing (Decoder)
 
 
 type alias Uuid =

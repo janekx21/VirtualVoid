@@ -4,8 +4,11 @@
 
 module Api.Subscription exposing (..)
 
+import Api.InputObject
+import Api.Interface
 import Api.Object
 import Api.Scalar
+import Api.Union
 import CustomScalarCodecs
 import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
 import Graphql.Internal.Builder.Object as Object

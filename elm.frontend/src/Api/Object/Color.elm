@@ -2,7 +2,7 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module Api.Object.Epic exposing (..)
+module Api.Object.Color exposing (..)
 
 import Api.InputObject
 import Api.Interface
@@ -19,23 +19,16 @@ import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode
 
 
-color :
-    SelectionSet decodesTo Api.Object.Color
-    -> SelectionSet decodesTo Api.Object.Epic
-color object____ =
-    Object.selectionForCompositeField "color" [] object____ Basics.identity
+blue : SelectionSet Float Api.Object.Color
+blue =
+    Object.selectionForField "Float" "blue" [] Decode.float
 
 
-id : SelectionSet CustomScalarCodecs.Uuid Api.Object.Epic
-id =
-    Object.selectionForField "CustomScalarCodecs.Uuid" "id" [] (CustomScalarCodecs.codecs |> Api.Scalar.unwrapCodecs |> .codecUuid |> .decoder)
+green : SelectionSet Float Api.Object.Color
+green =
+    Object.selectionForField "Float" "green" [] Decode.float
 
 
-name : SelectionSet String Api.Object.Epic
-name =
-    Object.selectionForField "String" "name" [] Decode.string
-
-
-short : SelectionSet String Api.Object.Epic
-short =
-    Object.selectionForField "String" "short" [] Decode.string
+red : SelectionSet Float Api.Object.Color
+red =
+    Object.selectionForField "Float" "red" [] Decode.float

@@ -5,5 +5,5 @@
 module Api.Interface exposing (..)
 
 
-type HasID
-    = HasID
+type Entity
+    = Entity

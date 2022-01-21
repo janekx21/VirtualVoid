@@ -5,18 +5,17 @@ module Views.ProjectsView exposing (..)
 import Api.Object
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (glasColor, gray20, mask10, primary, white)
+import Colors exposing (glasColor, mask10, primary)
 import Common exposing (backdropBlur, bodyView, breadcrumb, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Element exposing (Element, behindContent, centerY, column, el, fill, fillPortion, height, inFront, link, maximum, minimum, mouseOver, none, padding, px, row, spacing, text, width, wrappedRow)
+import Element exposing (Element, centerY, column, el, fill, height, inFront, link, mouseOver, none, padding, px, row, spacing, text, width, wrappedRow)
 import Element.Background as Background
-import Element.Border as Border
 import Element.Font as Font
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
 import Html.Attributes
-import Link exposing (genericLink)
+import Link
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 

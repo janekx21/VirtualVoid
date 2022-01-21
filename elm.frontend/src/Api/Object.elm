@@ -9,6 +9,10 @@ type Backlog
     = Backlog
 
 
+type Color
+    = Color
+
+
 type Epic
     = Epic
 

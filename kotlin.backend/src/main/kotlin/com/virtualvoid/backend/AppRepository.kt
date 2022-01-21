@@ -10,10 +10,10 @@ import kotlin.random.nextInt
 @Repository
 class AppRepository {
     val epics = mutableListOf(
-        Epic(createID(), "Frontend", "FE"),
-        Epic(createID(), "Backend", "BE"),
-        Epic(createID(), "Security", "SY"),
-        Epic(createID(), "API", "AP"),
+        Epic(createID(), "Frontend", "FE", randomColor()),
+        Epic(createID(), "Backend", "BE", randomColor()),
+        Epic(createID(), "Security", "SY", randomColor()),
+        Epic(createID(), "API", "AP", randomColor()),
     )
     val states = mutableListOf(
         State(createID(), "Todo"),
@@ -197,6 +197,7 @@ a board
     }
 
     companion object {
+        fun randomColor() = Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
         fun randomSentence(len: Int): String = List(len) { randomWord() }.joinToString(" ")
         private fun randomWord(): String = words.random()
         private val words = listOf(

@@ -2,7 +2,9 @@ module Views.BacklogView exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
+import Api.Object
 import Api.Object.Backlog
+import Api.Object.Color
 import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
@@ -10,7 +12,7 @@ import Api.Query as Query
 import Colors exposing (fatal, gray10, gray20, mask10, primary, success, warning)
 import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Element exposing (Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
+import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input exposing (button)
@@ -33,7 +35,7 @@ import UUID exposing (UUID)
 
 
 type alias EpicData =
-    { name : String }
+    { name : String, color : Color }
 
 
 type alias IssueData =
@@ -166,7 +168,7 @@ viewIssue : IssueData -> Element Msg
 viewIssue issue =
     let
         epic =
-            issue.epic |> Maybe.map (\e -> pill e.name primary) |> Maybe.withDefault none
+            issue.epic |> Maybe.map (\e -> pill e.name e.color) |> Maybe.withDefault none
 
         points =
             if issue.points > 0 then
@@ -272,7 +274,13 @@ query id =
                         |> with Api.Object.Issue.number
                         |> with Api.Object.Issue.points
                         |> with Api.Object.Issue.importance
-                        |> with (Api.Object.Issue.epic (SelectionSet.succeed EpicData |> with Api.Object.Epic.name))
+                        |> with
+                            (Api.Object.Issue.epic
+                                (SelectionSet.succeed EpicData
+                                    |> with Api.Object.Epic.name
+                                    |> with (Api.Object.Epic.color colorSelection)
+                                )
+                            )
                         |> with Api.Object.Issue.description
                     )
                 )
@@ -284,6 +292,14 @@ query id =
                     )
                 )
         )
+
+
+colorSelection : SelectionSet Color Api.Object.Color
+colorSelection =
+    SelectionSet.map3 (\r g b -> rgb r g b)
+        Api.Object.Color.red
+        Api.Object.Color.green
+        Api.Object.Color.blue
 
 
 

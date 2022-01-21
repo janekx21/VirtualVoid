@@ -2,14 +2,21 @@
 -- https://github.com/dillonkearns/elm-graphql
 
 
-module Api.Interface.HasID exposing (..)
+module Api.Interface.Entity exposing (..)
 
+import Api.InputObject
 import Api.Interface
 import Api.Object
 import Api.Scalar
+import Api.Union
 import CustomScalarCodecs
+import Graphql.Internal.Builder.Argument as Argument exposing (Argument)
 import Graphql.Internal.Builder.Object as Object
+import Graphql.Internal.Encode as Encode exposing (Value)
+import Graphql.Operation exposing (RootMutation, RootQuery, RootSubscription)
+import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet exposing (FragmentSelectionSet(..), SelectionSet(..))
+import Json.Decode as Decode
 
 
 type alias Fragments decodesTo =
@@ -23,7 +30,7 @@ type alias Fragments decodesTo =
 -}
 fragments :
     Fragments decodesTo
-    -> SelectionSet decodesTo Api.Interface.HasID
+    -> SelectionSet decodesTo Api.Interface.Entity
 fragments selections____ =
     Object.exhaustiveFragmentSelection
         [ Object.buildFragment "Backlog" selections____.onBacklog
@@ -43,6 +50,6 @@ maybeFragments =
     }
 
 
-id : SelectionSet CustomScalarCodecs.Uuid Api.Interface.HasID
+id : SelectionSet CustomScalarCodecs.Uuid Api.Interface.Entity
 id =
     Object.selectionForField "CustomScalarCodecs.Uuid" "id" [] (CustomScalarCodecs.codecs |> Api.Scalar.unwrapCodecs |> .codecUuid |> .decoder)
