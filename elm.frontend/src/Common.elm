@@ -1,6 +1,6 @@
 module Common exposing (..)
 
-import Colors exposing (black, gray90, primary, secondary, white)
+import Colors exposing (black, gray20, primary, secondary, white)
 import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, none, padding, paddingXY, px, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -97,10 +97,30 @@ pill string color =
 
 titleView : String -> Element msg
 titleView txt =
-    el [ height (px 120), width fill, paddingXY 100 5, Background.color gray90 ] <|
+    el [ height (px 220), width fill, paddingXY 100 32, Background.color black ] <|
         row [ width fill, alignBottom ]
-            [ el [ Font.size 48 ] <| text txt
-            , el [ alignRight ] <| Element.html <| Outlined.translate 24 Inherit
+            [ el [ Font.size 52, Font.color white, Font.extraLight ] <| text txt
+            , el [ alignRight ] <| coloredMaterialIcon Outlined.translate 24 white
+            ]
+
+
+iconTitleView : String -> Icon msg -> Element msg
+iconTitleView txt icon =
+    el [ height (px 220), width fill, paddingXY 100 32, Background.color black ] <|
+        row [ width fill, alignBottom ]
+            [ coloredMaterialIcon icon 52 white
+            , el [ Font.size 52, Font.color white, Font.extraLight ] <| text txt
+            , el [ alignRight ] <| coloredMaterialIcon Outlined.translate 24 white
+            ]
+
+
+imageTitleView : String -> Element msg -> Element msg
+imageTitleView txt image =
+    el [ height (px 220), width fill, paddingXY 100 32, Background.color black ] <|
+        row [ width fill, alignBottom ]
+            [ image
+            , el [ Font.size 52, Font.color white, Font.extraLight ] <| text txt
+            , el [ alignRight ] <| coloredMaterialIcon Outlined.translate 24 white
             ]
 
 

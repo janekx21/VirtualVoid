@@ -24,4 +24,4 @@ genericLink =
 
 buttonLink : List (Attribute msg)
 buttonLink =
-    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color gray90 ] ]
+    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color gray20 ] ]

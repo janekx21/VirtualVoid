@@ -7,44 +7,92 @@ white =
     rgb255 255 255 255
 
 
+black =
+    rgb255 0 0 0
+
+
+red50 =
+    rgb255 250 77 86
+
+
+red60 =
+    rgb255 218 30 40
+
+
+blue90 =
+    rgb255 0 29 108
+
+
+blue70 =
+    rgb255 0 67 206
+
+
+blue60 =
+    rgb255 15 98 254
+
+
+green50 =
+    rgb255 36 162 72
+
+
+green60 =
+    rgb255 25 128 56
+
+
+gray80 =
+    rgb255 57 57 57
+
+
+gray70 =
+    rgb255 82 82 82
+
+
+gray60 =
+    rgb255 111 111 111
+
+
+gray30 =
+    rgb255 198 198 198
+
+
+gray20 =
+    rgb255 224 224 224
+
+
+gray10 =
+    rgb255 244 244 244
+
+
+orange40 =
+    rgb255 255 131 43
+
+
 primary : Color
 primary =
-    rgb255 21 94 231
+    blue60
 
 
 primaryActive : Color
 primaryActive =
-    rgb255 3 32 91
+    blue90
 
 
 secondary : Color
 secondary =
-    rgb255 138 155 182
+    gray60
 
 
 success : Color
 success =
-    rgb255 9 182 18
+    green60
 
 
 warning =
-    rgb255 218 158 6
+    orange40
 
 
 fatal =
-    rgb255 183 8 54
-
-
-gray90 =
-    rgb255 222 222 222
-
-
-gray40 =
-    rgb255 72 72 72
-
-
-black =
-    rgb255 0 0 0
+    red60
 
 
 glasColor =

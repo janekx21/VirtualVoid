@@ -110,7 +110,7 @@ subscriptions _ =
 
 view : Model -> Element Msg
 view model =
-    column [ width fill ] [ titleView "Projects", bodyView <| app model ]
+    column [ width fill ] [ titleView "Project", bodyView <| app model ]
 
 
 app : Model -> Element Msg

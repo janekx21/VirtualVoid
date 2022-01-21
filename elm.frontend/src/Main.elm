@@ -259,7 +259,7 @@ document name msg html =
 
 
 fontLink =
-    Html.node "link" [ Html.Attributes.href "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap", Html.Attributes.rel "stylesheet" ] []
+    Html.node "link" [ Html.Attributes.href "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap", Html.Attributes.rel "stylesheet" ] []
 
 
 rebootLink =

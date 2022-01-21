@@ -7,8 +7,8 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (fatal, gray90, primary, success, warning)
-import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, materialIcon, pill, titleView)
+import Colors exposing (fatal, gray20, primary, success, warning)
+import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
 import Element.Background as Background
@@ -73,7 +73,7 @@ type alias Response =
 
 view : Model -> Element Msg
 view model =
-    column [ width fill, height fill, inFront <| InfoDialog.view <| Maybe.map issueDialog model.openIssue ] [ titleView "Backlog", bodyView <| app model ]
+    column [ width fill, height fill, inFront <| InfoDialog.view <| Maybe.map issueDialog model.openIssue ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
 
 
 issueDialog : IssueData -> InfoDialog Msg
@@ -158,7 +158,7 @@ viewBacklog backlog =
     in
     column [ width fill, spacing 32 ]
         [ el [ Font.size 28 ] <| text backlog.name
-        , column [ width fill ] (sortedIssues |> List.map (\i -> viewIssue i) |> List.intersperse (el [ width fill, height (px 1), Background.color gray90 ] <| none))
+        , column [ width fill ] (sortedIssues |> List.map (\i -> viewIssue i) |> List.intersperse (el [ width fill, height (px 1), Background.color gray20 ] <| none))
         ]
 
 
@@ -177,7 +177,7 @@ viewIssue issue =
                 , row [ spacing 5, alignRight ] [ epic ]
                 ]
     in
-    button [ width fill, mouseOver [ Background.color gray90 ], padding 8 ] { onPress = Just <| OpenIssue issue, label = element }
+    button [ width fill, mouseOver [ Background.color gray20 ], padding 8 ] { onPress = Just <| OpenIssue issue, label = element }
 
 
 

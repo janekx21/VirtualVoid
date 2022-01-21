@@ -17,4 +17,4 @@ textPlaceholder maybeString w =
 
 placeholder : Int -> Element msg
 placeholder pixelWidth =
-    el [ Background.color gray90, height fill, width (px pixelWidth), Border.rounded 2 ] <| none
+    el [ Background.color gray20, height fill, width (px pixelWidth), Border.rounded 2 ] <| none

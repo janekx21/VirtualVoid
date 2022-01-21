@@ -1,8 +1,8 @@
 module Views.HomeView exposing (..)
 
-import Colors exposing (gray90, primary)
-import Common exposing (bodyView, titleView)
-import Element exposing (Attribute, Element, column, fill, link, mouseOver, padding, text, width)
+import Colors exposing (gray20, primary)
+import Common exposing (bodyView, imageTitleView, titleView)
+import Element exposing (Attribute, Element, column, fill, image, link, mouseOver, padding, px, text, width)
 import Element.Background as Background
 import Element.Border as Border
 
@@ -22,7 +22,7 @@ type Msg
 
 view : Model -> Element Msg
 view model =
-    column [ width fill ] [ titleView "Virtual Void", bodyView links ]
+    column [ width fill ] [ imageTitleView "Virtual Void" (image [ width (px 52) ] { src = "assets/logo_white.svg", description = "Virtual Void Logo" }), bodyView links ]
 
 
 links : Element Msg
@@ -34,7 +34,7 @@ links =
 
 projectLink : List (Attribute msg)
 projectLink =
-    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color gray90 ] ]
+    [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, mouseOver [ Background.color gray20 ] ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

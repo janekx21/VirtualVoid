@@ -1,6 +1,6 @@
 module InfoDialog exposing (..)
 
-import Colors exposing (glasColor, gray40)
+import Colors exposing (glasColor, gray70)
 import Common exposing (materialIcon)
 import Element exposing (Element, alignRight, column, el, fill, height, inFront, minimum, none, padding, rgba, row, scrollbarY, spacing, text, width)
 import Element.Background as Background
@@ -39,7 +39,7 @@ viewDialog config =
                 el [ width (fill |> minimum 750), height (fill |> minimum 300), mh ] <|
                     column [ padding 16, width fill, height fill, mh, spacing 16 ]
                         [ column [ spacing 8 ]
-                            [ el [ Font.size 12, Font.color gray40 ] <| text <| config.label
+                            [ el [ Font.size 12, Font.color gray70 ] <| text <| config.label
                             , el [ Font.size 20 ] <| text <| config.title
                             ]
                         , el [ width fill, scrollbarY, Element.htmlAttribute <| Html.Attributes.style "flex-basis" "auto" ] <| config.body
