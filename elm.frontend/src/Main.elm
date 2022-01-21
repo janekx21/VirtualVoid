@@ -2,7 +2,9 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
+import Colors exposing (gray10)
 import Element exposing (Element, fill, text, width)
+import Element.Background as Background
 import Element.Font as Font
 import Html exposing (Html)
 import Html.Attributes
@@ -246,7 +248,7 @@ view parentModel =
 
 defaultLayout : Element msg -> Html msg
 defaultLayout =
-    Element.layout [ width fill, Font.size 16, Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ] ]
+    Element.layout [ width fill, Font.size 16, Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ], Background.color gray10 ]
 
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg

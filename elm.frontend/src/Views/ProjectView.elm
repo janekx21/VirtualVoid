@@ -6,7 +6,7 @@ import Api.Object.Backlog
 import Api.Object.Project
 import Api.Query as Query
 import Colors exposing (primary)
-import Common exposing (bodyView, breadcrumb, titleView)
+import Common exposing (bodyView, breadcrumb, iconTitleView, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, column, fill, link, padding, spacing, text, width)
 import Element.Border as Border
@@ -14,6 +14,7 @@ import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Link exposing (genericLink)
+import Material.Icons
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 
@@ -110,7 +111,7 @@ subscriptions _ =
 
 view : Model -> Element Msg
 view model =
-    column [ width fill ] [ titleView "Project", bodyView <| app model ]
+    column [ width fill ] [ iconTitleView "Project" Material.Icons.domain, bodyView <| app model ]
 
 
 app : Model -> Element Msg

@@ -7,7 +7,7 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (fatal, gray20, primary, success, warning)
+import Colors exposing (fatal, gray10, gray20, mask10, primary, success, warning)
 import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
@@ -168,6 +168,13 @@ viewIssue issue =
         epic =
             issue.epic |> Maybe.map (\e -> pill e.name primary) |> Maybe.withDefault none
 
+        points =
+            if issue.points > 0 then
+                String.fromInt issue.points
+
+            else
+                "-"
+
         element =
             row [ spacing 10, width fill, Font.size 16 ]
                 [ issueIcon issue.type_
@@ -175,9 +182,10 @@ viewIssue issue =
                 , text ("#" ++ String.fromInt issue.number)
                 , paragraph [ Font.semiBold ] [ text issue.name ]
                 , row [ spacing 5, alignRight ] [ epic ]
+                , el [ alignRight ] <| pill points gray20
                 ]
     in
-    button [ width fill, mouseOver [ Background.color gray20 ], padding 8 ] { onPress = Just <| OpenIssue issue, label = element }
+    button [ width fill, mouseOver [ Background.color mask10 ], padding 8 ] { onPress = Just <| OpenIssue issue, label = element }
 
 
 

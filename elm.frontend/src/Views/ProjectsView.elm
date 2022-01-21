@@ -5,15 +5,17 @@ module Views.ProjectsView exposing (..)
 import Api.Object
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (primary)
-import Common exposing (bodyView, breadcrumb, pill, titleView)
+import Colors exposing (glasColor, gray20, mask10, primary, white)
+import Common exposing (backdropBlur, bodyView, breadcrumb, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Element exposing (Element, centerY, column, el, fill, link, padding, row, spacing, text, width)
+import Element exposing (Element, behindContent, centerY, column, el, fill, fillPortion, height, inFront, link, maximum, minimum, mouseOver, none, padding, px, row, spacing, text, width, wrappedRow)
+import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
+import Html.Attributes
 import Link exposing (genericLink)
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
@@ -88,7 +90,7 @@ view model =
 
 app : Model -> Element Msg
 app model =
-    column [ spacing 20 ]
+    column [ spacing 20, width fill ]
         [ breadcrumb [ Just { label = "home", url = "/" } ] (Just "projects")
         , maybeProjects model
         ]
@@ -112,12 +114,25 @@ maybeProjects model =
 
 projectsView : List ProjectData -> Element Msg
 projectsView projectData =
-    column [] (projectData |> List.map (\p -> projectView p))
+    wrappedRow
+        [ width fill, spacing 2 ]
+        (projectData |> List.map (List.repeat 19) |> List.concat |> List.map (\p -> projectView p))
 
 
 projectView : ProjectData -> Element Msg
 projectView project =
-    column [ Border.color primary, Border.rounded 5, Border.width 1, padding 10, spacing 10 ]
-        [ row [ spacing 10 ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
-        , link genericLink { url = "/projects/" ++ uuidToUrl64 project.id, label = text <| "Open Project" }
+    let
+        label =
+            column [ width (px (256 + 128)), Element.htmlAttribute <| Html.Attributes.style "aspect-ratio" "1/1" ]
+                [ row [ spacing 10, Background.color glasColor, backdropBlur 5, padding 16, width fill ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
+                ]
+    in
+    link
+        [ inFront <| el [ mouseOver [ Background.color mask10 ], width fill, height fill ] <| none
+        , Background.image "assets/pexels-mikhael-mayim-8826427.jpg"
         ]
+        { url = "/projects/" ++ uuidToUrl64 project.id, label = label }
+
+
+
+-- behindContent <| el [ width fill, height fill, Background.color white]

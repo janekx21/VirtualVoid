@@ -97,3 +97,15 @@ fatal =
 
 glasColor =
     rgba255 255 255 255 0.6
+
+
+focusedColor =
+    rgb255 134 168 223
+
+
+transparent =
+    rgba255 0 0 0 0
+
+
+mask10 =
+    rgba255 0 0 0 0.1

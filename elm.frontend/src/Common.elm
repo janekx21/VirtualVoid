@@ -5,6 +5,7 @@ import Element exposing (Attribute, Color, Element, alignBottom, alignRight, cen
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import Html.Attributes
 import Link exposing (Link, linkPlaceholder)
 import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
@@ -17,9 +18,8 @@ breadcrumb prev current =
         spacer =
             el [ paddingXY 5 0 ] <| text "/"
     in
-    row [ padding 5 ] <|
-        List.map (\ml -> row [] [ linkPlaceholder ml, spacer ]) prev
-            ++ [ textPlaceholder current 120 ]
+    row [ padding 5 ]
+        (List.map linkPlaceholder prev ++ [ textPlaceholder current 120 ] |> List.intersperse spacer)
 
 
 labelledCheckboxIcon : Bool -> Element msg
@@ -129,3 +129,8 @@ bodyView child =
     el [ width fill, height fill, paddingXY 100 10 ] <|
         el [ centerX, width fill, height fill ] <|
             child
+
+
+backdropBlur : Int -> Attribute msg
+backdropBlur amount =
+    Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" ("blur( " ++ String.fromInt amount ++ "px)")

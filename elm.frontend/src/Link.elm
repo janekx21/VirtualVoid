@@ -1,7 +1,7 @@
 module Link exposing (..)
 
 import Colors exposing (..)
-import Element exposing (Attribute, Element, link, mouseOver, padding, text)
+import Element exposing (Attribute, Element, focused, link, mouseOver, padding, text)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -19,7 +19,7 @@ linkPlaceholder maybeLink =
 
 genericLink : List (Attribute msg)
 genericLink =
-    [ Font.color primary, Font.underline, mouseOver [ Font.color primaryActive ] ]
+    [ Font.color primary, Font.underline, Border.width 3, Border.color transparent, mouseOver [ Font.color primaryActive ], focused [ Border.color focusedColor ] ]
 
 
 buttonLink : List (Attribute msg)
