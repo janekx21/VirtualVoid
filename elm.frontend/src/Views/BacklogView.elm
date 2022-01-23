@@ -158,8 +158,11 @@ viewBacklog backlog =
         sortedIssues =
             backlog.issues |> List.sortBy .number
 
+        head =
+            row [ width fill ] [ el [ alignRight ] <| addButton ]
+
         lines =
-            [ row [ width fill ] [ el [ alignRight ] <| addButton ] ] ++ (sortedIssues |> List.map viewIssue)
+            head :: (sortedIssues |> List.map viewIssue)
 
         separator =
             el [ width fill, height (px 1), Background.color gray20 ] <| none

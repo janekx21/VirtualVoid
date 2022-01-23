@@ -36,8 +36,8 @@ viewDialog config =
                 , inFront <| button [ alignRight, padding 14 ] { label = materialIcon Material.Icons.close 20, onPress = Just config.onClose }
                 ]
             <|
-                el [ width (fill |> minimum 750), height (fill |> minimum 300), mh ] <|
-                    column [ padding 16, width fill, height fill, mh, spacing 16 ]
+                el [ width (fill |> minimum 750), height (fill |> minimum 300), maxHeightFill ] <|
+                    column [ padding 16, width fill, height fill, maxHeightFill, spacing 16 ]
                         [ column [ spacing 8 ]
                             [ el [ Font.size 12, Font.color gray70 ] <| text <| config.label
                             , el [ Font.size 20 ] <| text <| config.title
@@ -64,7 +64,7 @@ viewDialog config =
             ]
 
 
-mh =
+maxHeightFill =
     Element.htmlAttribute <| Html.Attributes.style "max-height" "100%"
 
 

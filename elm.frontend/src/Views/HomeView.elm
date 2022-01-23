@@ -5,6 +5,7 @@ import Common exposing (bodyView, imageTitleView, titleView)
 import Element exposing (Attribute, Element, column, fill, image, link, mouseOver, padding, px, text, width)
 import Element.Background as Background
 import Element.Border as Border
+import Link exposing (buttonLink)
 
 
 type alias Model =
@@ -28,7 +29,7 @@ view model =
 links : Element Msg
 links =
     column []
-        [ link projectLink { url = "/projects", label = text "Projects" }
+        [ link buttonLink { url = "/projects", label = text "Projects" }
         ]
 
 

@@ -111,7 +111,7 @@ glasColor =
 
 
 focusedColor =
-    rgb255 134 168 223
+    rgb255 155 203 255
 
 
 transparent =

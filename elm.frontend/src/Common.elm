@@ -19,9 +19,9 @@ breadcrumb : List (Loadable Link) -> Loadable String -> Element msg
 breadcrumb prev current =
     let
         spacer =
-            el [ paddingXY 5 0 ] <| text "/"
+            el [ paddingXY 4 0 ] <| text "/"
     in
-    row [ padding 5 ]
+    row [ padding 4 ]
         (List.map linkPlaceholder prev ++ [ textPlaceholder current 120 ] |> List.intersperse spacer)
 
 

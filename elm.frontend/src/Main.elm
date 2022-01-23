@@ -243,7 +243,7 @@ view parentModel =
                 ]
 
         BacklogPage model ->
-            BacklogView.view model |> defaultLayout |> document "Issues" BacklogPageMsg
+            BacklogView.view model |> defaultLayout |> document "Backlog | Virtual Void" BacklogPageMsg
 
 
 defaultLayout : Element msg -> Html msg
@@ -261,11 +261,11 @@ document name msg html =
 
 
 fontLink =
-    Html.node "link" [ Html.Attributes.href "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap", Html.Attributes.rel "stylesheet" ] []
+    Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;700&display=swap" ] []
 
 
 rebootLink =
-    Html.node "link" [ Html.Attributes.href "https://cdn.jsdelivr.net/npm/bootstrap-reboot@4.5.6/reboot.css", Html.Attributes.rel "stylesheet" ] []
+    Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "https://cdn.jsdelivr.net/npm/bootstrap-reboot@4.5.6/reboot.css" ] []
 
 
 notFoundView : Html msg

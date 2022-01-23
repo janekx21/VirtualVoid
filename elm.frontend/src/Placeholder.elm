@@ -12,7 +12,7 @@ type alias Loadable a =
 
 textPlaceholder : Loadable String -> Int -> Element msg
 textPlaceholder maybeString w =
-    maybeString |> Maybe.map text |> Maybe.withDefault (placeholder w)
+    el [ padding 4 ] <| (maybeString |> Maybe.map text |> Maybe.withDefault (placeholder w))
 
 
 placeholder : Int -> Element msg
