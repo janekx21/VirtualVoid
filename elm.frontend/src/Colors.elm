@@ -1,6 +1,17 @@
 module Colors exposing (..)
 
-import Element exposing (Color, rgb255, rgba255)
+import Api.Object
+import Api.Object.Color
+import Element exposing (Color, rgb, rgb255, rgba255)
+import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
+
+
+colorSelection : SelectionSet Color Api.Object.Color
+colorSelection =
+    SelectionSet.map3 (\r g b -> rgb r g b)
+        Api.Object.Color.red
+        Api.Object.Color.green
+        Api.Object.Color.blue
 
 
 white =

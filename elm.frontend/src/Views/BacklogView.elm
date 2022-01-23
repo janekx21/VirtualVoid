@@ -9,7 +9,7 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (fatal, gray10, gray20, mask10, primary, success, warning)
+import Colors exposing (colorSelection, fatal, gray10, gray20, mask10, primary, primaryActive, success, warning, white)
 import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, rgb, row, spacing, text, width)
@@ -21,7 +21,7 @@ import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Html exposing (Html)
 import InfoDialog exposing (InfoDialog)
-import Link
+import Link exposing (boxButton)
 import Markdown.Parser
 import Markdown.Renderer
 import Material.Icons
@@ -88,7 +88,7 @@ issueDialog issue =
         description =
             case result of
                 Ok value ->
-                    paragraph [ width fill ] (value |> List.map Element.html |> List.map (el [ width fill ]))
+                    paragraph [ width fill, spacing 6 ] (value |> List.map Element.html)
 
                 Err error ->
                     text <| error
@@ -157,11 +157,29 @@ viewBacklog backlog =
     let
         sortedIssues =
             backlog.issues |> List.sortBy .number
+
+        lines =
+            [ row [ width fill ] [ el [ alignRight ] <| addButton ] ] ++ (sortedIssues |> List.map viewIssue)
+
+        separator =
+            el [ width fill, height (px 1), Background.color gray20 ] <| none
     in
     column [ width fill, spacing 32 ]
         [ el [ Font.size 28 ] <| text backlog.name
-        , column [ width fill ] (sortedIssues |> List.map (\i -> viewIssue i) |> List.intersperse (el [ width fill, height (px 1), Background.color gray20 ] <| none))
+        , column [ width fill ] (lines |> List.intersperse separator)
         ]
+
+
+addButton : Element Msg
+addButton =
+    button boxButton
+        { onPress = Nothing
+        , label =
+            row [ width fill ]
+                [ text <| "New Issue"
+                , el [ alignRight ] <| coloredMaterialIcon Material.Icons.add 24 white
+                ]
+        }
 
 
 viewIssue : IssueData -> Element Msg
@@ -292,14 +310,6 @@ query id =
                     )
                 )
         )
-
-
-colorSelection : SelectionSet Color Api.Object.Color
-colorSelection =
-    SelectionSet.map3 (\r g b -> rgb r g b)
-        Api.Object.Color.red
-        Api.Object.Color.green
-        Api.Object.Color.blue
 
 
 

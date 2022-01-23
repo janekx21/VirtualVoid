@@ -1,12 +1,15 @@
 module Common exposing (..)
 
-import Colors exposing (black, gray20, primary, secondary, white)
+import Api.Enum.Importance exposing (Importance(..))
+import Api.Enum.IssueType exposing (IssueType(..))
+import Colors exposing (black, fatal, gray20, primary, secondary, success, warning, white)
 import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, none, padding, paddingXY, px, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes
 import Link exposing (Link, linkPlaceholder)
+import Material.Icons
 import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
 import Placeholder exposing (Loadable, textPlaceholder)
@@ -134,3 +137,40 @@ bodyView child =
 backdropBlur : Int -> Attribute msg
 backdropBlur amount =
     Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" ("blur( " ++ String.fromInt amount ++ "px)")
+
+
+issueIcon : IssueType -> Element msg
+issueIcon issueType =
+    let
+        ( icon, color ) =
+            case issueType of
+                Task ->
+                    ( Outlined.task_alt, primary )
+
+                Bug ->
+                    ( Outlined.bug_report, fatal )
+
+                Improvement ->
+                    ( Outlined.arrow_circle_up, success )
+
+                Dept ->
+                    ( Outlined.compare, warning )
+    in
+    coloredMaterialIcon icon 20 color
+
+
+importanceIcon : Importance -> Element msg
+importanceIcon importance =
+    let
+        icon =
+            case importance of
+                Low ->
+                    Material.Icons.trending_down
+
+                Medium ->
+                    Material.Icons.trending_flat
+
+                High ->
+                    Material.Icons.trending_up
+    in
+    materialIcon icon 20
