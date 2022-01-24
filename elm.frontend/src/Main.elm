@@ -3,7 +3,8 @@ module Main exposing (..)
 import Browser exposing (Document, UrlRequest)
 import Browser.Navigation as Nav
 import Colors exposing (gray10)
-import Element exposing (Element, fill, text, width)
+import Dialog exposing (Dialog)
+import Element exposing (Element, el, fill, inFront, none, text, width)
 import Element.Background as Background
 import Element.Font as Font
 import Html exposing (Html)
@@ -228,13 +229,13 @@ view parentModel =
             Document "Not Found" [ notFoundView ]
 
         HomePage model ->
-            HomeView.view model |> defaultLayout |> document "Home" HomePageMsg
+            ( HomeView.view model, Nothing ) |> defaultLayout |> document "Home" HomePageMsg
 
         ProjectsPage model ->
-            ProjectsView.view model |> defaultLayout |> document "Projects" ProjectsPageMsg
+            ( ProjectsView.view model, Nothing ) |> defaultLayout |> document "Projects" ProjectsPageMsg
 
         ProjectPage model ->
-            ProjectView.view model |> defaultLayout |> document "Project" ProjectPageMsg
+            ( ProjectView.view model, Nothing ) |> defaultLayout |> document "Project" ProjectPageMsg
 
         IssuesPage pageModel ->
             Document "Issues"
@@ -246,18 +247,21 @@ view parentModel =
             BacklogView.view model |> defaultLayout |> document "Backlog | Virtual Void" BacklogPageMsg
 
 
-defaultLayout : Element msg -> Html msg
-defaultLayout =
-    Element.layout [ width fill, Font.size 16, Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ], Background.color gray10 ]
+defaultLayout : ( Element msg, Maybe (Dialog msg) ) -> Html msg
+defaultLayout ( el, maybeDialog ) =
+    Element.layout
+        [ width fill
+        , Font.size 16
+        , Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ]
+        , Background.color gray10
+        , inFront <| (maybeDialog |> Maybe.map Dialog.view |> Maybe.withDefault none)
+        ]
+        el
 
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg
 document name msg html =
     Document name [ fontLink, rebootLink, html |> Html.map msg ]
-
-
-
--- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-reboot@4.5.6/reboot.css" integrity="sha256-NqCb52G5cOo+mE3Q1asDA+xnvGifFUpu4N5+7vWLyD0=" crossorigin="anonymous">
 
 
 fontLink =

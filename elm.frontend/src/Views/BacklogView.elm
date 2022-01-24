@@ -12,6 +12,7 @@ import Api.Query as Query
 import Colors exposing (colorSelection, fatal, gray10, gray20, mask10, primary, primaryActive, success, warning, white)
 import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
+import Dialog exposing (Dialog, InfoDialog)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
@@ -20,7 +21,6 @@ import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Html exposing (Html)
-import InfoDialog exposing (InfoDialog)
 import Link exposing (boxButton)
 import Markdown.Parser
 import Markdown.Renderer
@@ -73,9 +73,11 @@ type alias Response =
 -- view
 
 
-view : Model -> Element Msg
+view : Model -> ( Element Msg, Maybe (Dialog Msg) )
 view model =
-    column [ width fill, height fill, inFront <| InfoDialog.view <| Maybe.map issueDialog model.openIssue ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
+    ( column [ width fill, height fill ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
+    , model.openIssue |> Maybe.map issueDialog |> Maybe.map Dialog.Info
+    )
 
 
 issueDialog : IssueData -> InfoDialog Msg
