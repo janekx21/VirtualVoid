@@ -23,7 +23,6 @@ genericLink =
     [ Font.color primary
     , Border.color transparent
     , mouseOver [ Font.color primaryActive ]
-    , inFront <| focusBorder
     , padding 4
     ]
 
@@ -35,23 +34,7 @@ buttonLink =
     , Border.width 1
     , padding 10
     , mouseOver [ Background.color gray20 ]
-    , inFront <| focusBorder
     ]
-
-
-focusBorder =
-    el
-        [ Border.color transparent
-        , Border.width 3
-        , width fill
-        , height fill
-        , focused [ Border.color focusedColor ]
-        , Element.htmlAttribute <| Html.Attributes.style "margin" "-2px"
-        , Element.htmlAttribute <| Html.Attributes.style "width" "auto"
-        , Element.htmlAttribute <| Html.Attributes.style "z-index" "1"
-        ]
-    <|
-        none
 
 
 boxButton =

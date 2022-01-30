@@ -110,10 +110,6 @@ glasColor =
     rgba255 255 255 255 0.6
 
 
-focusedColor =
-    rgb255 155 203 255
-
-
 transparent =
     rgba255 0 0 0 0
 

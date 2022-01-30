@@ -2,9 +2,7 @@ module Views.BacklogView exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
-import Api.Object
 import Api.Object.Backlog
-import Api.Object.Color
 import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
@@ -16,7 +14,7 @@ import Dialog exposing (ChoiceDialog, Dialog, InfoDialog)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
-import Element.Input exposing (button)
+import Element.Input as Input exposing (button)
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
@@ -69,6 +67,7 @@ type Msg
     | OpenIssue IssueData
     | CloseDialog
     | CreateIssue
+    | ChangeIssueName String
 
 
 type alias Response =
@@ -82,8 +81,8 @@ type alias Response =
 view : Model -> ( Element Msg, Maybe (Dialog Msg) )
 view model =
     let
-        foo : Maybe (Dialog Msg)
-        foo =
+        element : Maybe (Dialog Msg)
+        element =
             case model.openDialog of
                 Just dialog ->
                     case dialog of
@@ -97,7 +96,7 @@ view model =
                     Nothing
     in
     ( column [ width fill, height fill ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
-    , foo
+    , element
     )
 
 
@@ -132,11 +131,23 @@ createIssueDialog =
     { title = "Create Issue"
     , label = "Issue"
     , body =
-        text "Foo Bar"
+        foo
     , onClose = CloseDialog
     , onOk = CreateIssue
     , okText = "Create"
     }
+
+
+foo : Element Msg
+foo =
+    column []
+        [ Input.text []
+            { text = "fo"
+            , label = Input.labelAbove [ Font.size 14 ] <| text "Foo"
+            , placeholder = Just <| Input.placeholder [] <| text "place"
+            , onChange = ChangeIssueName
+            }
+        ]
 
 
 
@@ -305,6 +316,9 @@ update msg model =
 
         CreateIssue ->
             ( { model | openDialog = Nothing }, Cmd.none )
+
+        ChangeIssueName string ->
+            ( model, Cmd.none )
 
 
 

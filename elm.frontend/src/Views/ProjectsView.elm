@@ -16,7 +16,6 @@ import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
 import Html.Attributes
-import Link exposing (focusBorder)
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 
@@ -133,7 +132,7 @@ projectView project =
                 ]
     in
     link
-        [ inFront <| el [ mouseOver [ Background.color mask10 ], width fill, height fill, inFront <| focusBorder ] <| none
+        [ inFront <| el [ mouseOver [ Background.color mask10 ], width fill, height fill ] <| none
         , Background.image "assets/pexels-mikhael-mayim-8826427.jpg"
         ]
         { url = "/projects/" ++ uuidToUrl64 project.id, label = label }

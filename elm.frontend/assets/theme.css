@@ -1,0 +1,23 @@
+.focusable:focus, .focus-within:focus-within {
+    box-shadow: none !important;
+}
+
+.focusable:before, .focus-within:before, a:before {
+    content: "\a0";
+    display: block;
+    border: transparent solid 3px;
+    transition: border-color 50ms;
+    margin: -2px;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}
+
+.focusable:focus:before, .focus-within:focus-within:before, a:focus:before {
+    z-index: 1;
+    border-color: rgb(155 203 255);
+}
+

@@ -272,7 +272,7 @@ defaultLayout ( el, maybeDialog ) =
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg
 document name msg html =
-    Document name [ fontLink, rebootLink, html |> Html.map msg ]
+    Document name [ fontLink, rebootLink, themeLink, html |> Html.map msg ]
 
 
 fontLink =
@@ -281,6 +281,10 @@ fontLink =
 
 rebootLink =
     Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "https://cdn.jsdelivr.net/npm/bootstrap-reboot@4.5.6/reboot.css" ] []
+
+
+themeLink =
+    Html.node "link" [ Html.Attributes.rel "stylesheet", Html.Attributes.href "/assets/theme.css" ] []
 
 
 notFoundView : Html msg

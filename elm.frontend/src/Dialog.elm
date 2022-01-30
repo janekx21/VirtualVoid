@@ -2,7 +2,7 @@ module Dialog exposing (..)
 
 import Colors exposing (glasColor, gray70, primary, secondary)
 import Common exposing (materialIcon)
-import Element exposing (Element, alignBottom, alignRight, column, el, fill, height, inFront, minimum, none, padding, rgba, row, scrollbarY, spacing, text, width)
+import Element exposing (Element, alignBottom, alignRight, column, el, fill, height, inFront, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events exposing (onClick)
@@ -85,7 +85,8 @@ viewChoiceDialog config =
                         [ el [ Font.size 12, Font.color gray70 ] <| text <| config.label
                         , el [ Font.size 20 ] <| text <| config.title
                         ]
-                    , el [ width fill, scrollbarY, Element.htmlAttribute <| Html.Attributes.style "flex-basis" "auto" ] <| config.body
+                    , el [ width fill, height fill, scrollbarY, padding 4, Element.htmlAttribute <| Html.Attributes.style "flex-basis" "auto" ] <| config.body
+                    , el [ height (px 48) ] none
                     ]
 
 
