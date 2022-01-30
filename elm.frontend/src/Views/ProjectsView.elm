@@ -5,6 +5,7 @@ module Views.ProjectsView exposing (..)
 import Api.Object
 import Api.Object.Project
 import Api.Query as Query
+import Browser.Navigation exposing (Key, pushUrl, replaceUrl)
 import Colors exposing (glasColor, mask10, primary)
 import Common exposing (backdropBlur, bodyView, breadcrumb, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
@@ -47,11 +48,16 @@ type Msg
     = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Msg -> Key -> Model -> ( Model, Cmd Msg )
+update msg key model =
     case msg of
         GotFetch remoteData ->
-            ( remoteData, Cmd.none )
+            case remoteData of
+                Failure _ ->
+                    ( model, replaceUrl key "/offline" )
+
+                _ ->
+                    ( remoteData, Cmd.none )
 
 
 

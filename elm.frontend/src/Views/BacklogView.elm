@@ -12,7 +12,7 @@ import Api.Query as Query
 import Colors exposing (colorSelection, fatal, gray10, gray20, mask10, primary, primaryActive, success, warning, white)
 import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Dialog exposing (Dialog, InfoDialog)
+import Dialog exposing (ChoiceDialog, Dialog, InfoDialog)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
@@ -50,19 +50,25 @@ type alias BacklogData =
     { id : UUID, name : String, issues : List IssueData, project : ProjectData }
 
 
+type OpenDialog
+    = IssueDialog IssueData
+    | CreateDialog
+
+
 type alias Model =
-    { backlog : Maybe BacklogData, openIssue : Maybe IssueData }
+    { backlog : Maybe BacklogData, openDialog : Maybe OpenDialog }
 
 
 init : UUID -> ( Model, Cmd Msg )
 init id =
-    ( Model Nothing Nothing, fetch id )
+    ( Model Nothing (Just CreateDialog), fetch id )
 
 
 type Msg
     = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
     | OpenIssue IssueData
-    | CloseIssue
+    | CloseDialog
+    | CreateIssue
 
 
 type alias Response =
@@ -75,8 +81,23 @@ type alias Response =
 
 view : Model -> ( Element Msg, Maybe (Dialog Msg) )
 view model =
+    let
+        foo : Maybe (Dialog Msg)
+        foo =
+            case model.openDialog of
+                Just dialog ->
+                    case dialog of
+                        IssueDialog issueData ->
+                            Just (Dialog.Info (issueDialog issueData))
+
+                        CreateDialog ->
+                            Just (Dialog.Choice createIssueDialog)
+
+                Nothing ->
+                    Nothing
+    in
     ( column [ width fill, height fill ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
-    , model.openIssue |> Maybe.map issueDialog |> Maybe.map Dialog.Info
+    , foo
     )
 
 
@@ -102,7 +123,19 @@ issueDialog issue =
             [ row [ spacing 8 ] [ issueIcon issue.type_, text <| ("#" ++ String.fromInt issue.number) ]
             , description
             ]
-    , onClose = CloseIssue
+    , onClose = CloseDialog
+    }
+
+
+createIssueDialog : ChoiceDialog Msg
+createIssueDialog =
+    { title = "Create Issue"
+    , label = "Issue"
+    , body =
+        text "Foo Bar"
+    , onClose = CloseDialog
+    , onOk = CreateIssue
+    , okText = "Create"
     }
 
 
@@ -265,10 +298,13 @@ update msg model =
             ( { model | backlog = RemoteData.toMaybe remoteData }, Cmd.none )
 
         OpenIssue issueData ->
-            ( { model | openIssue = Just issueData }, Cmd.none )
+            ( { model | openDialog = Just <| IssueDialog issueData }, Cmd.none )
 
-        CloseIssue ->
-            ( { model | openIssue = Nothing }, Cmd.none )
+        CloseDialog ->
+            ( { model | openDialog = Nothing }, Cmd.none )
+
+        CreateIssue ->
+            ( { model | openDialog = Nothing }, Cmd.none )
 
 
 

@@ -14,6 +14,7 @@ import Url exposing (Url)
 import Views.BacklogView as BacklogView
 import Views.HomeView as HomeView
 import Views.IssuesView as IssuesView
+import Views.OfflineView as OfflineView
 import Views.ProjectView as ProjectView
 import Views.ProjectsView as ProjectsView
 
@@ -43,6 +44,7 @@ type alias Model =
 
 type Page
     = NotFoundPage
+    | OfflinePage
     | HomePage HomeView.Model
     | ProjectsPage ProjectsView.Model
     | ProjectPage ProjectView.Model
@@ -104,6 +106,9 @@ initCurrentPage ( model, existingCmds ) =
                             BacklogView.init id
                     in
                     ( BacklogPage pageModel, Cmd.map BacklogPageMsg pageCmds )
+
+                Route.OfflineRoute ->
+                    ( OfflinePage, Cmd.none )
     in
     ( { model | page = currentPage }
     , Cmd.batch [ existingCmds, mappedPageCmds ]
@@ -148,7 +153,7 @@ update msg model =
         ( ProjectsPageMsg subMsg, ProjectsPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
-                    ProjectsView.update subMsg pageModel
+                    ProjectsView.update subMsg model.navKey pageModel
             in
             ( { model | page = ProjectsPage updatedPageModel }
             , Cmd.map ProjectsPageMsg updatedCmd
@@ -217,6 +222,9 @@ subscriptions parentModel =
         BacklogPage model ->
             Sub.map BacklogPageMsg (BacklogView.subscriptions model)
 
+        OfflinePage ->
+            Sub.none
+
 
 
 -- view
@@ -229,22 +237,25 @@ view parentModel =
             Document "Not Found" [ notFoundView ]
 
         HomePage model ->
-            ( HomeView.view model, Nothing ) |> defaultLayout |> document "Home" HomePageMsg
+            ( HomeView.view model, Nothing ) |> defaultLayout |> document "Virtual Void" HomePageMsg
 
         ProjectsPage model ->
-            ( ProjectsView.view model, Nothing ) |> defaultLayout |> document "Projects" ProjectsPageMsg
+            ( ProjectsView.view model, Nothing ) |> defaultLayout |> document "Projects | Virtual Void" ProjectsPageMsg
 
         ProjectPage model ->
-            ( ProjectView.view model, Nothing ) |> defaultLayout |> document "Project" ProjectPageMsg
+            ( ProjectView.view model, Nothing ) |> defaultLayout |> document "Project | Virtual Void" ProjectPageMsg
 
         IssuesPage pageModel ->
-            Document "Issues"
+            Document "Issues | Virtual Void"
                 [ IssuesView.view pageModel
                     |> Html.map IssuesPageMsg
                 ]
 
         BacklogPage model ->
             BacklogView.view model |> defaultLayout |> document "Backlog | Virtual Void" BacklogPageMsg
+
+        OfflinePage ->
+            Document "Offline" [ defaultLayout ( OfflineView.view, Nothing ) ]
 
 
 defaultLayout : ( Element msg, Maybe (Dialog msg) ) -> Html msg

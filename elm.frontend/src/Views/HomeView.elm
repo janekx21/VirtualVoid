@@ -1,8 +1,8 @@
 module Views.HomeView exposing (..)
 
 import Colors exposing (gray20, primary)
-import Common exposing (bodyView, imageTitleView, titleView)
-import Element exposing (Attribute, Element, column, fill, image, link, mouseOver, padding, px, text, width)
+import Common exposing (bodyView, imageTitleView)
+import Element exposing (Attribute, Element, column, fill, height, image, link, mouseOver, padding, px, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Link exposing (buttonLink)
@@ -23,7 +23,7 @@ type Msg
 
 view : Model -> Element Msg
 view model =
-    column [ width fill ] [ imageTitleView "Virtual Void" (image [ width (px 52) ] { src = "assets/logo_white.svg", description = "Virtual Void Logo" }), bodyView links ]
+    column [ width fill, height fill ] [ imageTitleView "Virtual Void" (image [ width (px 52) ] { src = "assets/logo_white.svg", description = "Virtual Void Logo" }), bodyView links ]
 
 
 links : Element Msg

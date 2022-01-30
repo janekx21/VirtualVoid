@@ -100,7 +100,7 @@ pill string color =
 
 titleView : String -> Element msg
 titleView txt =
-    el [ height (px 220), width fill, paddingXY 100 32, Background.color black ] <|
+    el titleBar <|
         row [ width fill, alignBottom ]
             [ el [ Font.size 52, Font.color white, Font.extraLight ] <| text txt
             , el [ alignRight ] <| coloredMaterialIcon Outlined.translate 24 white
@@ -109,7 +109,7 @@ titleView txt =
 
 iconTitleView : String -> Icon msg -> Element msg
 iconTitleView txt icon =
-    el [ height (px 220), width fill, paddingXY 100 32, Background.color black ] <|
+    el titleBar <|
         row [ width fill, alignBottom ]
             [ coloredMaterialIcon icon 52 white
             , el [ Font.size 52, Font.color white, Font.extraLight ] <| text txt
@@ -119,12 +119,24 @@ iconTitleView txt icon =
 
 imageTitleView : String -> Element msg -> Element msg
 imageTitleView txt image =
-    el [ height (px 220), width fill, paddingXY 100 32, Background.color black ] <|
+    el
+        titleBar
+    <|
         row [ width fill, alignBottom ]
             [ image
             , el [ Font.size 52, Font.color white, Font.extraLight ] <| text txt
             , el [ alignRight ] <| coloredMaterialIcon Outlined.translate 24 white
             ]
+
+
+titleBar =
+    [ Background.color black, height (px 220), width fill, paddingXY 100 32 ]
+
+
+gridBackground =
+    [ Background.tiled "assets/dots_white.svg"
+    , Element.htmlAttribute <| Html.Attributes.style "background-size" "16px"
+    ]
 
 
 bodyView : Element msg -> Element msg

@@ -13,6 +13,7 @@ type Route
     | BacklogRoute UUID
     | IssueRoute UUID
     | NotFoundRoute
+    | OfflineRoute
 
 
 parseUrl : Url -> Route
@@ -33,6 +34,7 @@ matchRoute =
         , map ProjectRoute (s "projects" </> uuid)
         , map BacklogRoute (s "backlogs" </> uuid)
         , map IssueRoute (s "issues" </> uuid)
+        , map OfflineRoute (s "offline")
         ]
 
 

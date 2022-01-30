@@ -90,7 +90,7 @@ primaryActive =
 
 secondary : Color
 secondary =
-    gray60
+    gray70
 
 
 success : Color
@@ -120,3 +120,7 @@ transparent =
 
 mask10 =
     rgba255 0 0 0 0.1
+
+
+mask20 =
+    rgba255 0 0 0 0.2

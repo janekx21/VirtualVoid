@@ -1,7 +1,7 @@
 module Link exposing (..)
 
 import Colors exposing (..)
-import Element exposing (Attribute, Element, el, fill, focused, height, inFront, link, mouseOver, none, padding, px, scale, text, width)
+import Element exposing (Attribute, Element, el, fill, focused, height, inFront, link, mouseOver, none, padding, paddingEach, px, scale, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -56,3 +56,11 @@ focusBorder =
 
 boxButton =
     [ padding 10, Background.color primary, Font.color white, width (px 180), mouseOver [ Background.color primaryActive ] ]
+
+
+
+-- padding 24 48
+
+
+boxButtonBig color =
+    [ paddingEach { top = 16, left = 16, bottom = 32, right = 16 }, Background.color color, Font.color white, width (px 196), inFront <| el [ width fill, height fill, mouseOver [ Background.color mask20 ] ] <| none ]
