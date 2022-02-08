@@ -7,6 +7,7 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
+import Browser.Dom
 import Colors exposing (colorSelection, gray20, mask10, white)
 import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, pill)
 import CustomScalarCodecs exposing (uuidToUrl64)
@@ -22,6 +23,7 @@ import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpl
 import Link exposing (boxButton)
 import Material.Icons
 import RemoteData exposing (RemoteData)
+import Task
 import UUID exposing (UUID)
 
 
@@ -66,6 +68,7 @@ type Msg
     | OpenCreateDialog
     | CreateIssue
     | ChangeIssue SimpleIssue
+    | NoOp
 
 
 type alias Response =
@@ -198,7 +201,7 @@ update msg model =
             ( { model | backlog = RemoteData.toMaybe remoteData }, Cmd.none )
 
         OpenIssue issueData ->
-            ( { model | currentDialog = Just <| IssueDialog issueData }, Cmd.none )
+            ( { model | currentDialog = Just <| IssueDialog issueData }, Browser.Dom.focus "focus" |> Task.attempt (\_ -> NoOp) )
 
         CloseDialog ->
             ( { model | currentDialog = Nothing }, Cmd.none )
@@ -221,6 +224,9 @@ update msg model =
 
         OpenCreateDialog ->
             ( { model | currentDialog = Just <| CreateDialog initSimpleIssue }, Cmd.none )
+
+        NoOp ->
+            ( model, Cmd.none )
 
 
 

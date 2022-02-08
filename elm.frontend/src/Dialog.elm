@@ -2,7 +2,7 @@ module Dialog exposing (..)
 
 import Colors exposing (glasColor, gray70, primary, secondary, warning)
 import Common exposing (materialIcon)
-import Element exposing (Element, alignBottom, alignRight, column, el, fill, height, inFront, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
+import Element exposing (Element, alignBottom, alignRight, column, el, fill, height, htmlAttribute, inFront, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events exposing (onClick)
@@ -47,7 +47,7 @@ viewInfoDialog config =
             , Element.htmlAttribute <| Html.Attributes.style "max-height" "100vh"
             , height fill
             , width fill
-            , inFront <| button [ alignRight, padding 14 ] { label = materialIcon Material.Icons.close 20, onPress = Just config.onClose }
+            , inFront <| button [ alignRight, padding 14, htmlAttribute <| Html.Attributes.id "focus" ] { label = materialIcon Material.Icons.close 20, onPress = Just config.onClose }
             ]
         <|
             el [ width (fill |> minimum 750), height (fill |> minimum 300), maxHeightFill ] <|
