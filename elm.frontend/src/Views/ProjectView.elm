@@ -10,7 +10,7 @@ import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
 import Colors exposing (colorSelection, gray20, mask10, primary)
-import Common exposing (bodyView, breadcrumb, iconTitleView, importanceIcon, issueIcon, pill, titleView)
+import Common exposing (bodyView, breadcrumb, iconTitleView, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, link, mouseOver, none, padding, paddingXY, paragraph, px, row, spacing, text, width)
 import Element.Background as Background
@@ -20,6 +20,7 @@ import Element.Input exposing (button)
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
+import Issue exposing (importanceIcon, issueIcon)
 import Link exposing (genericLink)
 import Material.Icons
 import RemoteData exposing (RemoteData(..))

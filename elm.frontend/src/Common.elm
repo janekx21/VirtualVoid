@@ -9,6 +9,8 @@ import Element.Border as Border
 import Element.Font as Font
 import Html.Attributes
 import Link exposing (Link, linkPlaceholder)
+import Markdown.Parser
+import Markdown.Renderer
 import Material.Icons
 import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
@@ -151,38 +153,24 @@ backdropBlur amount =
     Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" ("blur( " ++ String.fromInt amount ++ "px)")
 
 
-issueIcon : IssueType -> Element msg
-issueIcon issueType =
-    let
-        ( icon, color ) =
-            case issueType of
-                Task ->
-                    ( Outlined.task_alt, primary )
-
-                Bug ->
-                    ( Outlined.bug_report, fatal )
-
-                Improvement ->
-                    ( Outlined.arrow_circle_up, success )
-
-                Dept ->
-                    ( Outlined.compare, warning )
-    in
-    coloredMaterialIcon icon 20 color
+render : Markdown.Renderer.Renderer view -> String -> Result String (List view)
+render renderer markdown =
+    markdown
+        |> Markdown.Parser.parse
+        |> Result.mapError deadEndsToString
+        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
 
 
-importanceIcon : Importance -> Element msg
-importanceIcon importance =
-    let
-        icon =
-            case importance of
-                Low ->
-                    Material.Icons.trending_down
+deadEndsToString deadEnds =
+    deadEnds
+        |> List.map Markdown.Parser.deadEndToString
+        |> String.join "\n"
 
-                Medium ->
-                    Material.Icons.trending_flat
 
-                High ->
-                    Material.Icons.trending_up
-    in
-    materialIcon icon 20
+validateWith : (a -> Bool) -> a -> Maybe a
+validateWith function a =
+    if function a then
+        Just a
+
+    else
+        Nothing

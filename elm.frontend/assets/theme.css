@@ -5,9 +5,10 @@
 .focusable:before, .focus-within:before, a:before {
     content: "\a0";
     display: block;
-    border: transparent solid 3px;
-    transition: border-color 50ms;
+    border: transparent solid 0;
+    /*transition: border-color 50ms;*/
     margin: -2px;
+    pointer-events: none;
 
     position: absolute;
     left: 0;
@@ -19,5 +20,6 @@
 .focusable:focus:before, .focus-within:focus-within:before, a:focus:before {
     z-index: 1;
     border-color: rgb(155 203 255);
+    border-width: 3px;
 }
 

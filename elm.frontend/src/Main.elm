@@ -1,11 +1,12 @@
 module Main exposing (..)
 
-import Browser exposing (Document, UrlRequest)
+import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
-import Colors exposing (gray10)
-import Dialog exposing (Dialog)
-import Element exposing (Element, el, fill, inFront, none, text, width)
+import Colors exposing (gray10, primary, warning, white)
+import Dialog exposing (Dialog, mask)
+import Element exposing (Element, el, fill, height, inFront, mouseDown, mouseOver, moveRight, none, px, text, width)
 import Element.Background as Background
+import Element.Events exposing (onMouseDown)
 import Element.Font as Font
 import Html exposing (Html)
 import Html.Attributes
@@ -259,7 +260,7 @@ view parentModel =
 
 
 defaultLayout : ( Element msg, Maybe (Dialog msg) ) -> Html msg
-defaultLayout ( el, maybeDialog ) =
+defaultLayout ( element, maybeDialog ) =
     Element.layout
         [ width fill
         , Font.size 16
@@ -267,7 +268,7 @@ defaultLayout ( el, maybeDialog ) =
         , Background.color gray10
         , inFront <| (maybeDialog |> Maybe.map Dialog.view |> Maybe.withDefault none)
         ]
-        el
+        element
 
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg

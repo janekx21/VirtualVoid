@@ -1,6 +1,6 @@
 module Dialog exposing (..)
 
-import Colors exposing (glasColor, gray70, primary, secondary)
+import Colors exposing (glasColor, gray70, primary, secondary, warning)
 import Common exposing (materialIcon)
 import Element exposing (Element, alignBottom, alignRight, column, el, fill, height, inFront, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
 import Element.Background as Background
@@ -68,7 +68,6 @@ viewChoiceDialog config =
             , Border.color glasColor
             , Border.width 1
             , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px)"
-            , Element.htmlAttribute <| Html.Attributes.style "max-height" "100vh"
             , height fill
             , width fill
             , inFront <| button [ alignRight, padding 14 ] { label = materialIcon Material.Icons.close 20, onPress = Just config.onClose }
@@ -79,13 +78,13 @@ viewChoiceDialog config =
                     ]
             ]
         <|
-            el [ width (fill |> minimum 750), height (fill |> minimum 300), maxHeightFill ] <|
-                column [ padding 16, width fill, height fill, maxHeightFill, spacing 16 ]
+            el [ width (fill |> minimum 750), height (fill |> minimum 300) ] <|
+                column [ padding 16, width fill, height fill, spacing 16 ]
                     [ column [ spacing 8 ]
                         [ el [ Font.size 12, Font.color gray70 ] <| text <| config.label
                         , el [ Font.size 20 ] <| text <| config.title
                         ]
-                    , el [ width fill, height fill, scrollbarY, padding 4, Element.htmlAttribute <| Html.Attributes.style "flex-basis" "auto" ] <| config.body
+                    , el [ width fill, height fill, padding 4, Element.htmlAttribute <| Html.Attributes.style "flex-basis" "auto" ] <| config.body
                     , el [ height (px 48) ] none
                     ]
 

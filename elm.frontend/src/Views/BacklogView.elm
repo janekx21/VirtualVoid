@@ -7,23 +7,20 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (colorSelection, fatal, gray10, gray20, mask10, primary, primaryActive, success, warning, white)
-import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, materialIcon, pill, titleView)
+import Colors exposing (colorSelection, gray20, mask10, white)
+import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, pill)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Dialog exposing (ChoiceDialog, Dialog, InfoDialog)
-import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, rgb, row, spacing, text, width)
+import Element exposing (Color, Element, alignRight, column, el, fill, height, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
-import Element.Input as Input exposing (button)
+import Element.Input exposing (button)
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
-import Html exposing (Html)
+import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, issueIcon)
 import Link exposing (boxButton)
-import Markdown.Parser
-import Markdown.Renderer
 import Material.Icons
-import Material.Icons.Outlined as Outlined
 import RemoteData exposing (RemoteData)
 import UUID exposing (UUID)
 
@@ -50,24 +47,25 @@ type alias BacklogData =
 
 type OpenDialog
     = IssueDialog IssueData
-    | CreateDialog
+    | CreateDialog SimpleIssue
 
 
 type alias Model =
-    { backlog : Maybe BacklogData, openDialog : Maybe OpenDialog }
+    { backlog : Maybe BacklogData, currentDialog : Maybe OpenDialog }
 
 
 init : UUID -> ( Model, Cmd Msg )
 init id =
-    ( Model Nothing (Just CreateDialog), fetch id )
+    ( Model Nothing (Just <| CreateDialog initSimpleIssue), fetch id )
 
 
 type Msg
     = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
     | OpenIssue IssueData
     | CloseDialog
+    | OpenCreateDialog
     | CreateIssue
-    | ChangeIssueName String
+    | ChangeIssue SimpleIssue
 
 
 type alias Response =
@@ -81,91 +79,22 @@ type alias Response =
 view : Model -> ( Element Msg, Maybe (Dialog Msg) )
 view model =
     let
-        element : Maybe (Dialog Msg)
-        element =
-            case model.openDialog of
-                Just dialog ->
-                    case dialog of
-                        IssueDialog issueData ->
-                            Just (Dialog.Info (issueDialog issueData))
+        viewDialog : OpenDialog -> Dialog Msg
+        viewDialog dialog =
+            case dialog of
+                IssueDialog issue ->
+                    Dialog.Info <| issueDialog issue CloseDialog
 
-                        CreateDialog ->
-                            Just (Dialog.Choice createIssueDialog)
-
-                Nothing ->
-                    Nothing
+                CreateDialog data ->
+                    Dialog.Choice <| createIssueDialog data CreateIssue CloseDialog ChangeIssue
     in
     ( column [ width fill, height fill ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
-    , element
+    , model.currentDialog |> Maybe.map viewDialog
     )
-
-
-issueDialog : IssueData -> InfoDialog Msg
-issueDialog issue =
-    let
-        result : Result String (List (Html msg))
-        result =
-            render Markdown.Renderer.defaultHtmlRenderer issue.description
-
-        description =
-            case result of
-                Ok value ->
-                    paragraph [ width fill, spacing 6 ] (value |> List.map Element.html)
-
-                Err error ->
-                    text <| error
-    in
-    { title = issue.name
-    , label = "Issue"
-    , body =
-        column [ spacing 16, width fill ]
-            [ row [ spacing 8 ] [ issueIcon issue.type_, text <| ("#" ++ String.fromInt issue.number) ]
-            , description
-            ]
-    , onClose = CloseDialog
-    }
-
-
-createIssueDialog : ChoiceDialog Msg
-createIssueDialog =
-    { title = "Create Issue"
-    , label = "Issue"
-    , body =
-        foo
-    , onClose = CloseDialog
-    , onOk = CreateIssue
-    , okText = "Create"
-    }
-
-
-foo : Element Msg
-foo =
-    column []
-        [ Input.text []
-            { text = "fo"
-            , label = Input.labelAbove [ Font.size 14 ] <| text "Foo"
-            , placeholder = Just <| Input.placeholder [] <| text "place"
-            , onChange = ChangeIssueName
-            }
-        ]
 
 
 
 -- TODO elm-ui renderer
-
-
-render : Markdown.Renderer.Renderer view -> String -> Result String (List view)
-render renderer markdown =
-    markdown
-        |> Markdown.Parser.parse
-        |> Result.mapError deadEndsToString
-        |> Result.andThen (\ast -> Markdown.Renderer.render renderer ast)
-
-
-deadEndsToString deadEnds =
-    deadEnds
-        |> List.map Markdown.Parser.deadEndToString
-        |> String.join "\n"
 
 
 app : Model -> Element Msg
@@ -222,7 +151,7 @@ viewBacklog backlog =
 addButton : Element Msg
 addButton =
     button boxButton
-        { onPress = Nothing
+        { onPress = Just OpenCreateDialog
         , label =
             row [ width fill ]
                 [ text <| "New Issue"
@@ -259,46 +188,6 @@ viewIssue issue =
 
 
 --, el [] <| text ("assigned to " ++ Maybe.withDefault "Nobody" i.assigned)
-
-
-issueIcon : IssueType -> Element Msg
-issueIcon issueType =
-    let
-        ( icon, color ) =
-            case issueType of
-                Task ->
-                    ( Outlined.task_alt, primary )
-
-                Bug ->
-                    ( Outlined.bug_report, fatal )
-
-                Improvement ->
-                    ( Outlined.arrow_circle_up, success )
-
-                Dept ->
-                    ( Outlined.compare, warning )
-    in
-    coloredMaterialIcon icon 20 color
-
-
-importanceIcon : Importance -> Element Msg
-importanceIcon importance =
-    let
-        icon =
-            case importance of
-                Low ->
-                    Material.Icons.trending_down
-
-                Medium ->
-                    Material.Icons.trending_flat
-
-                High ->
-                    Material.Icons.trending_up
-    in
-    materialIcon icon 20
-
-
-
 -- update
 
 
@@ -309,16 +198,29 @@ update msg model =
             ( { model | backlog = RemoteData.toMaybe remoteData }, Cmd.none )
 
         OpenIssue issueData ->
-            ( { model | openDialog = Just <| IssueDialog issueData }, Cmd.none )
+            ( { model | currentDialog = Just <| IssueDialog issueData }, Cmd.none )
 
         CloseDialog ->
-            ( { model | openDialog = Nothing }, Cmd.none )
+            ( { model | currentDialog = Nothing }, Cmd.none )
 
         CreateIssue ->
-            ( { model | openDialog = Nothing }, Cmd.none )
+            ( { model | currentDialog = Nothing }, Cmd.none )
 
-        ChangeIssueName string ->
-            ( model, Cmd.none )
+        ChangeIssue data ->
+            model.currentDialog
+                |> Maybe.andThen
+                    (\dialog ->
+                        case dialog of
+                            CreateDialog _ ->
+                                Just ( { model | currentDialog = Just <| CreateDialog data }, Cmd.none )
+
+                            _ ->
+                                Nothing
+                    )
+                |> Maybe.withDefault ( model, Cmd.none )
+
+        OpenCreateDialog ->
+            ( { model | currentDialog = Just <| CreateDialog initSimpleIssue }, Cmd.none )
 
 
 
