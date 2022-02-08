@@ -2,9 +2,9 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
-import Colors exposing (gray10, primary, warning, white)
+import Colors exposing (focus, gray10, primary, warning, white)
 import Dialog exposing (Dialog, mask)
-import Element exposing (Element, el, fill, height, inFront, mouseDown, mouseOver, moveRight, none, px, text, width)
+import Element exposing (Element, el, fill, focusStyle, height, inFront, mouseDown, mouseOver, moveRight, none, px, text, width)
 import Element.Background as Background
 import Element.Events exposing (onMouseDown)
 import Element.Font as Font
@@ -261,7 +261,7 @@ view parentModel =
 
 defaultLayout : ( Element msg, Maybe (Dialog msg) ) -> Html msg
 defaultLayout ( element, maybeDialog ) =
-    Element.layout
+    Element.layoutWith { options = [ focusStyle { shadow = Nothing, borderColor = Just focus, backgroundColor = Nothing } ] }
         [ width fill
         , Font.size 16
         , Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ]
