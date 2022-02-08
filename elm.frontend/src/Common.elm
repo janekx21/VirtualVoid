@@ -2,8 +2,9 @@ module Common exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
+import Browser.Dom
 import Colors exposing (black, fatal, gray20, primary, secondary, success, warning, white)
-import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, none, padding, paddingXY, px, row, text, toRgb, width)
+import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, htmlAttribute, none, padding, paddingXY, px, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -15,6 +16,7 @@ import Material.Icons
 import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
 import Placeholder exposing (Loadable, textPlaceholder)
+import Task
 
 
 breadcrumb : List (Loadable Link) -> Loadable String -> Element msg
@@ -174,3 +176,11 @@ validateWith function a =
 
     else
         Nothing
+
+
+defaultFocusTarget =
+    htmlAttribute <| Html.Attributes.id "focus"
+
+
+focusDefaultTarget onSuccess =
+    Browser.Dom.focus "focus" |> Task.attempt (\_ -> onSuccess)

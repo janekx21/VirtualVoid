@@ -89,7 +89,7 @@ createIssueDialog issue onCreate onClose onChange =
                     , placeholder = Just <| Input.placeholder [ alignRight ] <| text "0"
                     , onChange = \string -> onChange { issue | points = string |> parsePoints |> Maybe.withDefault issue.points }
                     }
-                , Input.multiline [ width fill, height (fill |> minimum 100) ]
+                , Input.multiline [ width fill, height (fill |> minimum 128) ]
                     { text = issue.description
                     , spellcheck = True
                     , placeholder = Just <| Input.placeholder [] <| text "Describe your Issue here"

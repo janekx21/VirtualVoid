@@ -1,8 +1,8 @@
 module Dialog exposing (..)
 
-import Colors exposing (glasColor, gray70, primary, secondary, warning)
-import Common exposing (materialIcon)
-import Element exposing (Element, alignBottom, alignRight, column, el, fill, height, htmlAttribute, inFront, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
+import Colors exposing (glassColor, gray70, primary, secondary, warning)
+import Common exposing (defaultFocusTarget, materialIcon)
+import Element exposing (Element, alignBottom, alignRight, behindContent, centerX, centerY, column, el, fill, height, htmlAttribute, inFront, maximum, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events exposing (onClick)
@@ -40,18 +40,16 @@ viewInfoDialog : InfoDialog msg -> Element msg
 viewInfoDialog config =
     framework config.onClose <|
         el
-            [ Background.color glasColor
-            , Border.color glasColor
-            , Border.width 1
-            , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px)"
-            , Element.htmlAttribute <| Html.Attributes.style "max-height" "100vh"
-            , height fill
-            , width fill
-            , inFront <| button [ alignRight, padding 14, htmlAttribute <| Html.Attributes.id "focus" ] { label = materialIcon Material.Icons.close 20, onPress = Just config.onClose }
-            ]
+            ([ centerX
+             , centerY
+             , inFront <| closeButton config.onClose
+             , height100
+             ]
+                ++ glassPanel
+            )
         <|
-            el [ width (fill |> minimum 750), height (fill |> minimum 300), maxHeightFill ] <|
-                column [ padding 16, width fill, height fill, maxHeightFill, spacing 16 ]
+            el [ width (fill |> minimum 750), height (fill |> minimum 300 |> maximum 800), height100 ] <|
+                column [ padding 16, width fill, height fill, spacing 16, height100 ]
                     [ column [ spacing 8 ]
                         [ el [ Font.size 12, Font.color gray70 ] <| text <| config.label
                         , el [ Font.size 20 ] <| text <| config.title
@@ -60,26 +58,37 @@ viewInfoDialog config =
                     ]
 
 
+closeButton onClose =
+    button [ alignRight, padding 14, defaultFocusTarget ] { label = materialIcon Material.Icons.close 20, onPress = Just onClose }
+
+
+glassPanel =
+    [ Background.color glassColor
+    , Border.color glassColor
+    , Border.width 1
+    , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px)"
+    ]
+
+
 viewChoiceDialog : ChoiceDialog msg -> Element msg
 viewChoiceDialog config =
     framework config.onClose <|
         el
-            [ Background.color glasColor
-            , Border.color glasColor
-            , Border.width 1
-            , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px)"
-            , height fill
-            , width fill
-            , inFront <| button [ alignRight, padding 14 ] { label = materialIcon Material.Icons.close 20, onPress = Just config.onClose }
-            , inFront <|
+            ([ centerX
+             , centerY
+             , height100
+             , inFront <| closeButton config.onClose
+             , inFront <|
                 row [ alignRight, alignBottom ]
                     [ button (boxButtonBig secondary) { label = text "Cancel", onPress = Just config.onClose }
                     , button (boxButtonBig primary) { label = text config.okText, onPress = Just config.onOk }
                     ]
-            ]
+             ]
+                ++ glassPanel
+            )
         <|
-            el [ width (fill |> minimum 750), height (fill |> minimum 300) ] <|
-                column [ padding 16, width fill, height fill, spacing 16 ]
+            el [ width (fill |> minimum 750), height (fill |> minimum 300), height100 ] <|
+                column [ padding 16, width fill, height fill, spacing 16, height100 ]
                     [ column [ spacing 8 ]
                         [ el [ Font.size 12, Font.color gray70 ] <| text <| config.label
                         , el [ Font.size 20 ] <| text <| config.title
@@ -93,26 +102,13 @@ framework : msg -> Element msg -> Element msg
 framework onClose element =
     let
         cancelZone =
-            el [ onClick onClose, width fill, height fill ] <| none
+            el [ onClick onClose, width fill, height fill, Background.color mask ] <| none
     in
-    el
-        [ Background.color mask
-        , width fill
-        , height fill
-        ]
-    <|
-        column [ width fill, height fill ]
-            [ cancelZone
-            , row [ width fill, height fill ]
-                [ cancelZone
-                , element
-                , cancelZone
-                ]
-            , cancelZone
-            ]
+    el [ behindContent cancelZone, width fill, height fill, padding 120, height100 ] <|
+        element
 
 
-maxHeightFill =
+height100 =
     Element.htmlAttribute <| Html.Attributes.style "max-height" "100%"
 
 

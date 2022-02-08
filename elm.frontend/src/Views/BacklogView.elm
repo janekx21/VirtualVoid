@@ -9,7 +9,7 @@ import Api.Object.Project
 import Api.Query as Query
 import Browser.Dom
 import Colors exposing (colorSelection, gray20, mask10, white)
-import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, iconTitleView, pill)
+import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, focusDefaultTarget, iconTitleView, pill)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Dialog exposing (ChoiceDialog, Dialog, InfoDialog)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
@@ -201,7 +201,7 @@ update msg model =
             ( { model | backlog = RemoteData.toMaybe remoteData }, Cmd.none )
 
         OpenIssue issueData ->
-            ( { model | currentDialog = Just <| IssueDialog issueData }, Browser.Dom.focus "focus" |> Task.attempt (\_ -> NoOp) )
+            ( { model | currentDialog = Just <| IssueDialog issueData }, focusDefaultTarget NoOp )
 
         CloseDialog ->
             ( { model | currentDialog = Nothing }, Cmd.none )

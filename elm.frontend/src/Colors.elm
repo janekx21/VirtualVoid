@@ -106,7 +106,7 @@ fatal =
     red60
 
 
-glasColor =
+glassColor =
     rgba255 255 255 255 0.6
 
 

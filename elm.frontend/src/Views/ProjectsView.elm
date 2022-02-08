@@ -6,7 +6,7 @@ import Api.Object
 import Api.Object.Project
 import Api.Query as Query
 import Browser.Navigation exposing (Key, pushUrl, replaceUrl)
-import Colors exposing (glasColor, mask10, primary)
+import Colors exposing (glassColor, mask10, primary)
 import Common exposing (backdropBlur, bodyView, breadcrumb, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, centerY, column, el, fill, height, inFront, link, mouseOver, none, padding, px, row, spacing, text, width, wrappedRow)
@@ -128,7 +128,7 @@ projectView project =
     let
         label =
             column [ width (px (256 + 128)), Element.htmlAttribute <| Html.Attributes.style "aspect-ratio" "1/1" ]
-                [ row [ spacing 10, Background.color glasColor, backdropBlur 5, padding 16, width fill ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
+                [ row [ spacing 10, Background.color glassColor, backdropBlur 5, padding 16, width fill ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
                 ]
     in
     link
