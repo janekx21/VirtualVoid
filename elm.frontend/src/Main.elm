@@ -2,11 +2,10 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
-import Colors exposing (focus, gray10, primary, warning, white)
-import Dialog exposing (Dialog, mask)
-import Element exposing (Element, el, fill, focusStyle, height, inFront, mouseDown, mouseOver, moveRight, none, px, text, width)
+import Colors exposing (focus, gray10)
+import Dialog exposing (Dialog)
+import Element exposing (Element, fill, focusStyle, inFront, none, text, width)
 import Element.Background as Background
-import Element.Events exposing (onMouseDown)
 import Element.Font as Font
 import Html exposing (Html)
 import Html.Attributes

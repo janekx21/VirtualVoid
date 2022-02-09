@@ -1,18 +1,18 @@
 module Common exposing (..)
 
-import Api.Enum.Importance exposing (Importance(..))
-import Api.Enum.IssueType exposing (IssueType(..))
 import Browser.Dom
-import Colors exposing (black, fatal, gray20, primary, secondary, success, warning, white)
+import Colors exposing (black, primary, secondary, white)
 import Element exposing (Attribute, Color, Element, alignBottom, alignRight, centerX, centerY, el, fill, height, htmlAttribute, none, padding, paddingXY, px, row, text, toRgb, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import Graphql.Http
+import Graphql.Operation exposing (RootMutation, RootQuery)
+import Graphql.SelectionSet exposing (SelectionSet)
 import Html.Attributes
 import Link exposing (Link, linkPlaceholder)
 import Markdown.Parser
 import Markdown.Renderer
-import Material.Icons
 import Material.Icons.Outlined as Outlined
 import Material.Icons.Types exposing (Coloring(..), Icon)
 import Placeholder exposing (Loadable, textPlaceholder)
@@ -184,3 +184,21 @@ defaultFocusTarget =
 
 focusDefaultTarget onSuccess =
     Browser.Dom.focus "focus" |> Task.attempt (\_ -> onSuccess)
+
+
+query : (Result (Graphql.Http.Error decodesTo) decodesTo -> msg) -> SelectionSet decodesTo RootQuery -> Cmd msg
+query msg selectionSet =
+    selectionSet
+        |> Graphql.Http.queryRequest graphqlUrl
+        |> Graphql.Http.send msg
+
+
+mutate : (Result (Graphql.Http.Error decodesTo) decodesTo -> msg) -> SelectionSet decodesTo RootMutation -> Cmd msg
+mutate msg selectionSet =
+    selectionSet
+        |> Graphql.Http.mutationRequest graphqlUrl
+        |> Graphql.Http.send msg
+
+
+graphqlUrl =
+    "http://localhost:8080/graphql"

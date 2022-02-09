@@ -137,8 +137,8 @@ class AppMutation(val repo: AppRepository) : Mutation {
         repo.issues.values.maxOfOrNull { it.number } ?: 1,
         create.name,
         create.description,
-        repo.findEpic(Optional.ofNullable(create.epic).orElse(zeroID)),
-        repo.findState(create.state),
+        if (create.epic == null) null else repo.findEpic(create.epic),
+        if (create.state == null) repo.states.first() else repo.findState(create.state),
         create.importance,
         create.points
     )

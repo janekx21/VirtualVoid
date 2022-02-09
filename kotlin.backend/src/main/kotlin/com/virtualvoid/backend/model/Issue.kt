@@ -37,7 +37,7 @@ data class Issue(
 ) : Entity {
     init {
         require(number > 0)
-        require(name.length in 1..200)
+        require(name.length in 1..200) { "name length not in range 1..200" }
         require(points in 0..99)
         require(!id.isZero)
     }
@@ -53,7 +53,7 @@ data class IssueCreate(
     val epic: UUID? = null,
     val importance: Importance = Importance.MEDIUM,
     val type: IssueType,
-    val state: UUID,
+    val state: UUID? = null,
     val points: Int,
 )
 

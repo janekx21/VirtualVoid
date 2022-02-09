@@ -2,14 +2,15 @@ module Views.BacklogView exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
+import Api.InputObject
+import Api.Mutation
 import Api.Object.Backlog
 import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
-import Api.Query as Query
-import Browser.Dom
+import Api.Query
 import Colors exposing (colorSelection, gray20, mask10, white)
-import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, focusDefaultTarget, iconTitleView, pill)
+import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, focusDefaultTarget, iconTitleView, mutate, pill, query)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Dialog exposing (ChoiceDialog, Dialog, InfoDialog)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
@@ -17,13 +18,13 @@ import Element.Background as Background
 import Element.Font as Font
 import Element.Input exposing (button)
 import Graphql.Http
-import Graphql.Operation exposing (RootQuery)
+import Graphql.Operation exposing (RootMutation, RootQuery)
+import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, issueIcon)
 import Link exposing (boxButton)
 import Material.Icons
-import RemoteData exposing (RemoteData)
-import Task
+import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 
 
@@ -44,7 +45,7 @@ type alias ProjectData =
 
 
 type alias BacklogData =
-    { id : UUID, name : String, issues : List IssueData, project : ProjectData }
+    { name : String, issues : List IssueData, project : ProjectData }
 
 
 type OpenDialog
@@ -53,20 +54,21 @@ type OpenDialog
 
 
 type alias Model =
-    { backlog : Maybe BacklogData, currentDialog : Maybe OpenDialog }
+    { id : UUID, backlog : Maybe BacklogData, currentDialog : Maybe OpenDialog }
 
 
 init : UUID -> ( Model, Cmd Msg )
 init id =
-    ( Model Nothing (Just <| CreateDialog initSimpleIssue), fetch id )
+    ( Model id Nothing Nothing, fetch id )
 
 
 type Msg
-    = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
+    = GotFetch (Result (Graphql.Http.Error Response) Response)
+    | GotMutation (Result (Graphql.Http.Error ()) ())
     | OpenIssue IssueData
     | CloseDialog
     | OpenCreateDialog
-    | CreateIssue
+    | CreateIssue SimpleIssue
     | ChangeIssue SimpleIssue
     | NoOp
 
@@ -89,7 +91,7 @@ view model =
                     Dialog.Info <| issueDialog issue CloseDialog
 
                 CreateDialog data ->
-                    Dialog.Choice <| createIssueDialog data CreateIssue CloseDialog ChangeIssue
+                    Dialog.Choice <| createIssueDialog data (CreateIssue data) CloseDialog ChangeIssue
     in
     ( column [ width fill, height fill ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
     , model.currentDialog |> Maybe.map viewDialog
@@ -198,7 +200,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GotFetch remoteData ->
-            ( { model | backlog = RemoteData.toMaybe remoteData }, Cmd.none )
+            ( { model | backlog = Result.toMaybe remoteData }, Cmd.none )
 
         OpenIssue issueData ->
             ( { model | currentDialog = Just <| IssueDialog issueData }, focusDefaultTarget NoOp )
@@ -206,8 +208,8 @@ update msg model =
         CloseDialog ->
             ( { model | currentDialog = Nothing }, Cmd.none )
 
-        CreateIssue ->
-            ( { model | currentDialog = Nothing }, Cmd.none )
+        CreateIssue issueData ->
+            ( model, createIssueMutation model.id issueData )
 
         ChangeIssue data ->
             model.currentDialog
@@ -223,10 +225,38 @@ update msg model =
                 |> Maybe.withDefault ( model, Cmd.none )
 
         OpenCreateDialog ->
-            ( { model | currentDialog = Just <| CreateDialog initSimpleIssue }, Cmd.none )
+            ( { model | currentDialog = Just <| CreateDialog initSimpleIssue }, focusDefaultTarget NoOp )
 
         NoOp ->
             ( model, Cmd.none )
+
+        GotMutation remoteData ->
+            let
+                _ =
+                    Debug.log "got mutation" remoteData
+            in
+            case remoteData of
+                Ok _ ->
+                    ( { model | currentDialog = Nothing }, fetch model.id )
+
+                Err err ->
+                    case err of
+                        Graphql.Http.GraphqlError _ errList ->
+                            let
+                                _ =
+                                    Debug.log "err"
+                                        (errList
+                                            |> List.map .message
+                                            |> List.map (String.split " : ")
+                                            |> List.map List.tail
+                                            |> List.map (Maybe.withDefault [])
+                                            |> List.concat
+                                        )
+                            in
+                            ( model, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
 
 
 
@@ -235,44 +265,56 @@ update msg model =
 
 fetch : UUID -> Cmd Msg
 fetch id =
-    query id
-        |> Graphql.Http.queryRequest "http://localhost:8080/graphql"
-        |> Graphql.Http.send (RemoteData.fromResult >> GotFetch)
-
-
-query : UUID -> SelectionSet BacklogData RootQuery
-query id =
-    Query.backlog { id = id }
-        (SelectionSet.succeed BacklogData
-            |> with Api.Object.Backlog.id
-            |> with Api.Object.Backlog.name
-            |> with
-                (Api.Object.Backlog.issues
-                    (SelectionSet.succeed IssueData
-                        |> with Api.Object.Issue.id
-                        |> with Api.Object.Issue.name
-                        |> with Api.Object.Issue.type_
-                        |> with Api.Object.Issue.number
-                        |> with Api.Object.Issue.points
-                        |> with Api.Object.Issue.importance
-                        |> with
-                            (Api.Object.Issue.epic
-                                (SelectionSet.succeed EpicData
-                                    |> with Api.Object.Epic.name
-                                    |> with (Api.Object.Epic.color colorSelection)
+    query GotFetch
+        (Api.Query.backlog { id = id }
+            (SelectionSet.succeed BacklogData
+                |> with Api.Object.Backlog.name
+                |> with
+                    (Api.Object.Backlog.issues
+                        (SelectionSet.succeed IssueData
+                            |> with Api.Object.Issue.id
+                            |> with Api.Object.Issue.name
+                            |> with Api.Object.Issue.type_
+                            |> with Api.Object.Issue.number
+                            |> with Api.Object.Issue.points
+                            |> with Api.Object.Issue.importance
+                            |> with
+                                (Api.Object.Issue.epic
+                                    (SelectionSet.succeed EpicData
+                                        |> with Api.Object.Epic.name
+                                        |> with (Api.Object.Epic.color colorSelection)
+                                    )
                                 )
-                            )
-                        |> with Api.Object.Issue.description
+                            |> with Api.Object.Issue.description
+                        )
                     )
-                )
-            |> with
-                (Api.Object.Backlog.project
-                    (SelectionSet.succeed ProjectData
-                        |> with Api.Object.Project.id
-                        |> with Api.Object.Project.name
+                |> with
+                    (Api.Object.Backlog.project
+                        (SelectionSet.succeed ProjectData
+                            |> with Api.Object.Project.id
+                            |> with Api.Object.Project.name
+                        )
                     )
-                )
+            )
         )
+
+
+createIssueMutation : UUID -> SimpleIssue -> Cmd Msg
+createIssueMutation backlog issue =
+    let
+        create : Api.InputObject.IssueCreateInput
+        create =
+            { description = issue.description
+            , name = issue.name
+            , points = issue.points
+            , type_ = Task
+            , importance = Medium
+            , epic = Null
+            , state = Null
+            , backlog = backlog
+            }
+    in
+    mutate GotMutation (Api.Mutation.createIssue { create = create } (SelectionSet.succeed ()))
 
 
 
