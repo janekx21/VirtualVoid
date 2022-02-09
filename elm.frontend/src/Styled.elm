@@ -19,7 +19,7 @@ border =
 multiline : String -> String -> String -> (String -> msg) -> Element msg
 multiline txt placeholder label onChange =
     labeled label <|
-        Input.multiline ([ width fill, height (fill |> minimum 128) ] ++ border)
+        Input.multiline ([ width fill, height (shrink |> minimum 128 |> maximum 256) ] ++ border)
             { text = txt
             , spellcheck = True
             , placeholder = Just <| Input.placeholder [] <| text placeholder

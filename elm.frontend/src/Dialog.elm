@@ -1,15 +1,15 @@
 module Dialog exposing (..)
 
-import Colors exposing (glassColor, gray70, primary, secondary, warning)
+import Colors exposing (gray70, lightGlassColor, mask20, primary, secondary)
 import Common exposing (defaultFocusTarget, materialIcon)
-import Element exposing (Element, alignBottom, alignRight, behindContent, centerX, centerY, column, el, fill, height, htmlAttribute, inFront, maximum, minimum, none, padding, px, rgba, row, scrollbarY, spacing, text, width)
+import Element exposing (Element, alignBottom, alignRight, behindContent, centerX, centerY, column, el, fill, height, inFront, maximum, minimum, none, padding, px, row, scrollbarY, spacing, text, width)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Events exposing (onClick)
 import Element.Font as Font
 import Element.Input exposing (button)
 import Html.Attributes
-import Link exposing (boxButton, boxButtonBig)
+import Link exposing (boxButtonBig)
 import Material.Icons
 
 
@@ -63,10 +63,10 @@ viewInfoDialog config =
 
 
 glassPanel =
-    [ Background.color glassColor
-    , Border.color glassColor
+    [ Background.color lightGlassColor
+    , Border.color lightGlassColor
     , Border.width 1
-    , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px)"
+    , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px) grayscale(70%)"
     ]
 
 
@@ -106,7 +106,7 @@ framework : msg -> Element msg -> Element msg
 framework onClose element =
     let
         cancelZone =
-            el [ onClick onClose, width fill, height fill, Background.color mask ] <| none
+            el [ onClick onClose, width fill, height fill, Background.color mask20 ] <| none
     in
     el [ behindContent cancelZone, width fill, height fill, padding 120, height100 ] <|
         element
@@ -119,7 +119,3 @@ height100 =
 cancel : msg -> Element msg
 cancel message =
     el [ onClick message, width fill, height fill ] <| none
-
-
-mask =
-    rgba 0 0 0 0.2

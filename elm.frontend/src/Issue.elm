@@ -2,7 +2,7 @@ module Issue exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
-import Colors exposing (black, fatal, gray40, gray50, primary, secondary, success, warning, white)
+import Colors exposing (fatal, gray50, primary, success, warning, white)
 import Common exposing (Direction(..), coloredMaterialIcon, materialIcon, render, tooltip, validateWith)
 import Dialog exposing (ChoiceDialog, InfoDialog)
 import Element exposing (..)
@@ -10,7 +10,6 @@ import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html)
-import Html.Attributes
 import Markdown.Renderer exposing (defaultHtmlRenderer)
 import Material.Icons
 import Material.Icons.Outlined as Outlined
@@ -40,15 +39,12 @@ issueDialog issue onClose =
 
                 Err error ->
                     text <| error
-
-        typeIcon =
-            el (tooltip Right <| typeText issue.type_) <| issueIcon issue.type_
     in
     { title = issue.name
     , label = "Issue"
     , body =
         column [ spacing 16, width fill ]
-            [ row [ spacing 8 ] [ typeIcon, text <| ("#" ++ String.fromInt issue.number) ]
+            [ row [ spacing 8 ] [ typeIcon issue.type_, text <| ("#" ++ String.fromInt issue.number) ]
             , description
             ]
     , onClose = onClose
@@ -115,28 +111,11 @@ pointInput issue onChange =
                 , placeholder = Just <| Input.placeholder [ alignRight ] <| text "0"
                 , onChange = \string -> onChange { issue | points = string |> parsePoints |> Maybe.withDefault issue.points }
                 }
-            , Input.button [ height fill, Background.color gray50, Font.color white ] { label = materialIcon Material.Icons.add 24, onPress = Just <| onChange { issue | points = issue.points + 1 } }
+            , Input.button [ height fill, Background.color gray50, Font.color white ]
+                { label = materialIcon Material.Icons.add 24
+                , onPress = Just <| onChange { issue | points = issue.points + 1 }
+                }
             ]
-
-
-issueIcon : IssueType -> Element msg
-issueIcon issueType =
-    let
-        ( icon, color ) =
-            case issueType of
-                Task ->
-                    ( Outlined.task_alt, primary )
-
-                Bug ->
-                    ( Outlined.bug_report, fatal )
-
-                Improvement ->
-                    ( Outlined.arrow_circle_up, success )
-
-                Dept ->
-                    ( Outlined.compare, warning )
-    in
-    coloredMaterialIcon icon 20 color
 
 
 importanceIcon : Importance -> Element msg
@@ -170,6 +149,30 @@ typeText type_ =
 
         Task ->
             "Task / Subtask"
+
+
+typeIcon type_ =
+    let
+        matIcon : IssueType -> Element msg
+        matIcon issueType =
+            let
+                ( icon, color ) =
+                    case issueType of
+                        Task ->
+                            ( Outlined.task_alt, primary )
+
+                        Bug ->
+                            ( Outlined.bug_report, fatal )
+
+                        Improvement ->
+                            ( Outlined.arrow_circle_up, success )
+
+                        Dept ->
+                            ( Outlined.compare, warning )
+            in
+            coloredMaterialIcon icon 20 color
+    in
+    el (tooltip Right <| typeText type_) <| matIcon type_
 
 
 validPoints num =

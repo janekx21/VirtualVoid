@@ -71,7 +71,8 @@ class AppRepository {
                 "https://images.pexels.com/photos/8427830/pexels-photo-8427830.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
             )
         )
-        projects.add(
+
+        val l = projects.add(
             Project(
                 createID(),
                 "LUCILIUD",
@@ -79,6 +80,7 @@ class AppRepository {
                 "https://images.pexels.com/photos/6998682/pexels-photo-6998682.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
             )
         )
+
 
         issues.addAll(List(20) {
             Issue(
@@ -94,6 +96,8 @@ class AppRepository {
                 Random.nextInt(0..13)
             )
         })
+
+        backlogs.add(Backlog(createID(), "Leeres Backlog das eienen ganz besonders langen namen trägt", l))
 
         issues.add(
             Issue(

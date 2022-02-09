@@ -1,7 +1,5 @@
 module Views.ProjectView exposing (..)
 
--- model
-
 import Api.Enum.Importance exposing (Importance)
 import Api.Enum.IssueType exposing (IssueType)
 import Api.Object.Backlog
@@ -9,23 +7,25 @@ import Api.Object.Epic
 import Api.Object.Issue
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (colorSelection, gray20, mask10, primary)
-import Common exposing (bodyView, breadcrumb, iconTitleView, pill, titleView)
+import Colors exposing (colorSelection, gray20, gray30, mask10, primary, secondary, white)
+import Common exposing (bodyView, breadcrumb, iconTitleView, materialIcon, pill)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Element exposing (Color, Element, alignRight, column, el, fill, height, link, mouseOver, none, padding, paddingXY, paragraph, px, row, spacing, text, width)
+import Element exposing (Color, Element, alignRight, column, el, fill, height, inFront, link, mouseOver, moveUp, none, padding, paddingXY, paragraph, px, row, spacing, text, width)
 import Element.Background as Background
-import Element.Border as Border
 import Element.Font as Font
 import Element.Input exposing (button)
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
-import Issue exposing (importanceIcon, issueIcon)
+import Issue exposing (importanceIcon, typeIcon)
 import Link exposing (genericLink)
 import Material.Icons
 import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
-import Views.BacklogView exposing (EpicData)
+
+
+
+-- model
 
 
 type alias Model =
@@ -178,10 +178,10 @@ projectView project =
     let
         backlogs =
             if List.isEmpty project.backlogs then
-                paragraph [ Font.bold, Font.size 96 ] [ text "There are no Backlogs here \u{1F978} maybe just add one?" ]
+                paragraph [ Font.bold, Font.size 32 ] [ text "There are no Backlogs here \u{1F978} maybe just add one?" ]
 
             else
-                column [ spacing 16, width fill ] (project.backlogs |> List.map (\b -> backlogView b))
+                column [ spacing 16, width fill ] (project.backlogs |> List.map backlogView)
     in
     column [ width fill, spacing 32 ]
         [ el [ Font.size 28 ] <| text project.name
@@ -191,22 +191,39 @@ projectView project =
 
 backlogView : BacklogData -> Element Msg
 backlogView backlogData =
-    column [ width fill, spacing 10, Border.color primary, Border.rounded 5, Border.width 1, padding 10 ]
-        [ text <| backlogData.name
-        , link genericLink { url = "/backlogs/" ++ uuidToUrl64 backlogData.id, label = text <| "open backlog" }
+    column
+        [ width fill
+        , spacing 24
+        , padding 16
+        , Background.color gray20
+        , inFront <|
+            row [ alignRight ]
+                [ button [ padding 10, Background.color primary, Font.color white, height (px 44) ] { label = text "New Issue", onPress = Nothing }
+                , el [ padding 10, mouseOver [ Background.color mask10 ] ] <|
+                    materialIcon Material.Icons.more_horiz 24
+                ]
+        ]
+        [ row [ spacing 8, width fill ]
+            [ el [ Font.bold ] <| text <| backlogData.name
+            , link genericLink { url = "/backlogs/" ++ uuidToUrl64 backlogData.id, label = text <| "open backlog" }
+            ]
         , viewBacklog backlogData
         ]
 
 
 viewBacklog : BacklogData -> Element Msg
 viewBacklog backlog =
-    let
-        sortedIssues =
-            backlog.issues |> List.sortBy .number
-    in
-    column [ width fill, spacing 32 ]
-        [ column [ width fill ] (sortedIssues |> List.map (\i -> viewIssue i) |> List.intersperse (el [ width fill, height (px 1), Background.color gray20 ] <| none))
-        ]
+    if List.isEmpty backlog.issues then
+        column [ padding 32, spacing 16 ] [ materialIcon Material.Icons.hourglass_empty 64, text "This Backlog is empty" ]
+
+    else
+        let
+            sortedIssues =
+                backlog.issues |> List.sortBy .number
+        in
+        column [ width fill, spacing 32 ]
+            [ column [ width fill ] (sortedIssues |> List.map (\i -> viewIssue i) |> List.intersperse (el [ width fill, height (px 1), Background.color Colors.mask10 ] <| none))
+            ]
 
 
 viewIssue : IssueData -> Element Msg
@@ -224,10 +241,10 @@ viewIssue issue =
     in
     el [ width fill, paddingXY 8 2 ] <|
         row [ spacing 10, width fill, Font.size 16 ]
-            [ issueIcon issue.type_
+            [ typeIcon issue.type_
             , importanceIcon issue.importance
             , text ("#" ++ String.fromInt issue.number)
             , paragraph [ spacing 5 ] [ text issue.name ]
             , row [ spacing 5, alignRight ] [ epic ]
-            , el [ alignRight ] <| pill points gray20
+            , el [ alignRight ] <| pill points white
             ]

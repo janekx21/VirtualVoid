@@ -1,7 +1,7 @@
 module Views.HomeView exposing (..)
 
 import Colors exposing (gray20, primary)
-import Common exposing (bodyView, imageTitleView)
+import Common exposing (Direction(..), bodyView, imageTitleView, tooltip)
 import Element exposing (Attribute, Element, column, fill, height, image, link, minimum, mouseOver, padding, px, text, width)
 import Element.Background as Background
 import Element.Border as Border
@@ -30,7 +30,7 @@ view model =
 links : Model -> Element Msg
 links model =
     column []
-        [ link buttonLink { url = "/projects", label = text "Projects" }
+        [ link (buttonLink ++ tooltip Right "Go to Projects") { url = "/projects", label = text "Projects" }
         , Input.multiline [ height (fill |> minimum 200) ] { text = model, placeholder = Nothing, label = labelHidden "FOo", onChange = Change, spellcheck = True }
         , text "Das ist ein langer langer langer text was geht ab"
         ]

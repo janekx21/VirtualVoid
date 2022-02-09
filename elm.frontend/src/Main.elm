@@ -2,18 +2,21 @@ module Main exposing (..)
 
 import Browser exposing (Document, UrlRequest(..))
 import Browser.Navigation as Nav
-import Colors exposing (focus, gray10)
+import Colors exposing (darkGlassColor, focus, gray10, gray70, white)
+import Common exposing (coloredMaterialIcon)
 import Dialog exposing (Dialog)
-import Element exposing (Element, fill, focusStyle, inFront, none, text, width)
+import Element exposing (Element, alignRight, el, fill, focusStyle, height, image, inFront, link, none, padding, paddingXY, px, row, spacing, text, width)
 import Element.Background as Background
+import Element.Border as Border
 import Element.Font as Font
 import Html exposing (Html)
 import Html.Attributes
+import Material.Icons
 import Route exposing (Route(..))
 import Url exposing (Url)
 import Views.BacklogView as BacklogView
 import Views.HomeView as HomeView
-import Views.IssuesView as IssuesView
+import Views.IssueView as IssuesView
 import Views.OfflineView as OfflineView
 import Views.ProjectView as ProjectView
 import Views.ProjectsView as ProjectsView
@@ -265,9 +268,32 @@ defaultLayout ( element, maybeDialog ) =
         , Font.size 16
         , Font.family [ Font.typeface "IBM Plex Sans", Font.sansSerif ]
         , Background.color gray10
+        , inFront <| header
         , inFront <| (maybeDialog |> Maybe.map Dialog.view |> Maybe.withDefault none)
         ]
         element
+
+
+header : Element msg
+header =
+    let
+        corp =
+            row [ spacing 8 ]
+                [ image [ width (px 32), height (px 32) ] { src = "/assets/logo_white.svg", description = "logo" }
+                , el [ Font.light, Font.size 24, Font.color white ] <| text "Virtual Void"
+                ]
+    in
+    row
+        [ height (px 48)
+        , width fill
+        , Background.color darkGlassColor
+        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+        , Border.color gray70
+        , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(8px) grayscale(70%)"
+        ]
+        [ link [ height fill, paddingXY 10 0 ] { label = corp, url = "/" }
+        , el [ alignRight, padding 8 ] <| coloredMaterialIcon Material.Icons.apps 32 white
+        ]
 
 
 document : String -> (msg -> Msg) -> Html msg -> Document Msg

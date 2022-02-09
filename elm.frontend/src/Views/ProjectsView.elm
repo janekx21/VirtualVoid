@@ -6,7 +6,7 @@ import Api.Object
 import Api.Object.Project
 import Api.Query as Query
 import Browser.Navigation exposing (Key, pushUrl, replaceUrl)
-import Colors exposing (glassColor, mask10, primary)
+import Colors exposing (lightGlassColor, mask10, primary)
 import Common exposing (backdropBlur, bodyView, breadcrumb, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Element exposing (Element, alignTop, centerY, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width, wrappedRow)
@@ -140,7 +140,7 @@ projectView project =
             column [ width (px (256 + 128)), Element.htmlAttribute <| Html.Attributes.style "aspect-ratio" "1/1" ]
                 [ wrappedRow
                     [ spacing 10
-                    , Background.color glassColor
+                    , Background.color lightGlassColor
                     , backdropBlur 5
                     , padding 16
                     , width fill

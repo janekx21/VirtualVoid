@@ -118,8 +118,12 @@ fatal =
     red60
 
 
-glassColor =
+lightGlassColor =
     rgba255 255 255 255 0.6
+
+
+darkGlassColor =
+    rgba255 38 38 38 0.8
 
 
 transparent =

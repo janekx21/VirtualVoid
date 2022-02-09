@@ -1,4 +1,4 @@
-module Views.IssuesView exposing (..)
+module Views.IssueView exposing (..)
 
 -- model
 

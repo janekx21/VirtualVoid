@@ -18,13 +18,11 @@ import Element.Background as Background
 import Element.Font as Font
 import Element.Input exposing (button)
 import Graphql.Http
-import Graphql.Operation exposing (RootMutation, RootQuery)
 import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
-import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, issueIcon, validPoints)
+import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, typeIcon, validPoints)
 import Link exposing (boxButton)
 import Material.Icons
-import RemoteData exposing (RemoteData(..))
 import UUID exposing (UUID)
 
 
@@ -184,7 +182,7 @@ viewIssue issue =
 
         element =
             row [ spacing 10, width fill, Font.size 16 ]
-                [ issueIcon issue.type_
+                [ typeIcon issue.type_
                 , importanceIcon issue.importance
                 , text ("#" ++ String.fromInt issue.number)
                 , paragraph [ Font.semiBold ] [ text issue.name ]
