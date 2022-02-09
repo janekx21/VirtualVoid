@@ -38,6 +38,10 @@ view dialog =
 
 viewInfoDialog : InfoDialog msg -> Element msg
 viewInfoDialog config =
+    let
+        closeButton onClose =
+            button [ alignRight, padding 14, defaultFocusTarget ] { label = materialIcon Material.Icons.close 20, onPress = Just onClose }
+    in
     framework config.onClose <|
         el
             ([ centerX
@@ -58,10 +62,6 @@ viewInfoDialog config =
                     ]
 
 
-closeButton onClose =
-    button [ alignRight, padding 14, defaultFocusTarget ] { label = materialIcon Material.Icons.close 20, onPress = Just onClose }
-
-
 glassPanel =
     [ Background.color glassColor
     , Border.color glassColor
@@ -72,6 +72,10 @@ glassPanel =
 
 viewChoiceDialog : ChoiceDialog msg -> Element msg
 viewChoiceDialog config =
+    let
+        closeButton onClose =
+            button [ alignRight, padding 14 ] { label = materialIcon Material.Icons.close 20, onPress = Just onClose }
+    in
     framework config.onClose <|
         el
             ([ centerX

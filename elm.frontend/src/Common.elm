@@ -202,3 +202,30 @@ mutate msg selectionSet =
 
 graphqlUrl =
     "http://localhost:8080/graphql"
+
+
+type Direction
+    = Top
+    | Bottom
+    | Left
+    | Right
+
+
+tooltip : Direction -> String -> List (Attribute msg)
+tooltip direction txt =
+    let
+        dir =
+            case direction of
+                Top ->
+                    "top"
+
+                Bottom ->
+                    "bottom"
+
+                Left ->
+                    "left"
+
+                Right ->
+                    "right"
+    in
+    [ htmlAttribute <| Html.Attributes.attribute "tooltip" txt, htmlAttribute <| Html.Attributes.class dir ]

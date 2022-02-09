@@ -2,14 +2,15 @@ module Issue exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
-import Colors exposing (fatal, gray40, gray50, primary, secondary, success, warning, white)
-import Common exposing (coloredMaterialIcon, materialIcon, render, validateWith)
+import Colors exposing (black, fatal, gray40, gray50, primary, secondary, success, warning, white)
+import Common exposing (Direction(..), coloredMaterialIcon, materialIcon, render, tooltip, validateWith)
 import Dialog exposing (ChoiceDialog, InfoDialog)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html)
+import Html.Attributes
 import Markdown.Renderer exposing (defaultHtmlRenderer)
 import Material.Icons
 import Material.Icons.Outlined as Outlined
@@ -39,12 +40,15 @@ issueDialog issue onClose =
 
                 Err error ->
                     text <| error
+
+        typeIcon =
+            el (tooltip Right <| typeText issue.type_) <| issueIcon issue.type_
     in
     { title = issue.name
     , label = "Issue"
     , body =
         column [ spacing 16, width fill ]
-            [ row [ spacing 8 ] [ issueIcon issue.type_, text <| ("#" ++ String.fromInt issue.number) ]
+            [ row [ spacing 8 ] [ typeIcon, text <| ("#" ++ String.fromInt issue.number) ]
             , description
             ]
     , onClose = onClose
@@ -57,7 +61,7 @@ createIssueDialog issue onCreate onClose onChange =
         body : Element msg
         body =
             column [ spacing 16, width fill ]
-                [ Styled.input []
+                [ Styled.input [ Common.defaultFocusTarget ]
                     { text = issue.name
                     , label = Input.labelAbove [ Font.size 14 ] <| text "Name"
                     , placeholder = Just <| Input.placeholder [] <| text "Your Issue Name"
@@ -150,6 +154,22 @@ importanceIcon importance =
                     Material.Icons.trending_up
     in
     materialIcon icon 20
+
+
+typeText : IssueType -> String
+typeText type_ =
+    case type_ of
+        Improvement ->
+            "Improvement"
+
+        Bug ->
+            "Bug / Issue"
+
+        Dept ->
+            "Technical Dept / Dept"
+
+        Task ->
+            "Task / Subtask"
 
 
 validPoints num =

@@ -19,3 +19,48 @@
     border-width: 3px;
 }
 
+*[tooltip]:after {
+    content: attr(tooltip);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    background: black;
+    padding: 8px;
+    font-size: 16px;
+    z-index: 1;
+
+    /* popup animation */
+    opacity: 0;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-fill-mode: both;
+    display: none;
+}
+
+*[tooltip].left:after {
+    transform: translate(calc(-100% - 8px), 0);
+}
+
+*[tooltip].right:after {
+    left: calc(100% + 8px);
+}
+
+*[tooltip].bottom:after {
+    top: calc(100% + 8px);
+}
+
+*[tooltip].top:after {
+    transform: translate(0, calc(-100% - 8px));
+}
+
+*[tooltip]:hover:after {
+    animation-name: plop;
+    display: block;
+}
+
+@keyframes plop {
+    90%  {opacity: 0;}
+    100%  {opacity: 1;}
+}
