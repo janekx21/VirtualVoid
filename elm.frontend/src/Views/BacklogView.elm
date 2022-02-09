@@ -21,7 +21,7 @@ import Graphql.Http
 import Graphql.Operation exposing (RootMutation, RootQuery)
 import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
-import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, issueIcon)
+import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, issueIcon, validPoints)
 import Link exposing (boxButton)
 import Material.Icons
 import RemoteData exposing (RemoteData(..))
@@ -134,23 +134,27 @@ app model =
 
 viewBacklog : BacklogData -> Element Msg
 viewBacklog backlog =
-    let
-        sortedIssues =
-            backlog.issues |> List.sortBy .number
+    if List.isEmpty backlog.issues then
+        el [ Font.bold, Font.size 32 ] <| text "There are no Issue"
 
-        head =
-            row [ width fill ] [ el [ alignRight ] <| addButton ]
+    else
+        let
+            sortedIssues =
+                backlog.issues |> List.sortBy .number
 
-        lines =
-            head :: (sortedIssues |> List.map viewIssue)
+            head =
+                row [ width fill ] [ el [ alignRight ] <| addButton ]
 
-        separator =
-            el [ width fill, height (px 1), Background.color gray20 ] <| none
-    in
-    column [ width fill, spacing 32 ]
-        [ el [ Font.size 28 ] <| text backlog.name
-        , column [ width fill ] (lines |> List.intersperse separator)
-        ]
+            lines =
+                head :: (sortedIssues |> List.map viewIssue)
+
+            separator =
+                el [ width fill, height (px 1), Background.color gray20 ] <| none
+        in
+        column [ width fill, spacing 32 ]
+            [ el [ Font.size 28 ] <| text backlog.name
+            , column [ width fill ] (lines |> List.intersperse separator)
+            ]
 
 
 addButton : Element Msg
@@ -217,7 +221,11 @@ update msg model =
                     (\dialog ->
                         case dialog of
                             CreateDialog _ ->
-                                Just ( { model | currentDialog = Just <| CreateDialog data }, Cmd.none )
+                                if validPoints data.points then
+                                    Just ( { model | currentDialog = Just <| CreateDialog data }, Cmd.none )
+
+                                else
+                                    Just ( model, Cmd.none )
 
                             _ ->
                                 Nothing

@@ -35,7 +35,7 @@ class AppRepository {
     fun resolveEpic(id: UUID): Epic? = if (id.isZero) null else findEpic(id)
 
     init {
-        val demoProject = projects.add(Project(createID(), "Demo", "DMO"))
+        val demoProject = projects.add(Project(createID(), "Demo", "DMO", "/assets/pexels-mikhael-mayim-8826427.jpg"))
         backlogs.addAll(
             listOf(
                 Backlog(createID(), "Product Backlog", demoProject),
@@ -44,6 +44,41 @@ class AppRepository {
             )
         )
         val special = backlogs.add(Backlog(createID(), "Special", demoProject))
+
+        projects.add(
+            Project(
+                createID(),
+                "Workshop",
+                "WS",
+                "https://images.pexels.com/photos/245535/pexels-photo-245535.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
+            )
+        )
+
+        projects.add(
+            Project(
+                createID(),
+                "Skyscraper Glas Front",
+                "SCGF",
+                "https://images.pexels.com/photos/3735677/pexels-photo-3735677.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+            )
+        )
+
+        projects.add(
+            Project(
+                createID(),
+                "pergamon",
+                "PG",
+                "https://images.pexels.com/photos/8427830/pexels-photo-8427830.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+            )
+        )
+        projects.add(
+            Project(
+                createID(),
+                "LUCILIUD",
+                "L",
+                "https://images.pexels.com/photos/6998682/pexels-photo-6998682.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+            )
+        )
 
         issues.addAll(List(20) {
             Issue(

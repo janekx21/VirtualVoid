@@ -175,9 +175,17 @@ maybeProjects model =
 
 projectView : ProjectData -> Element Msg
 projectView project =
+    let
+        backlogs =
+            if List.isEmpty project.backlogs then
+                paragraph [ Font.bold, Font.size 96 ] [ text "There are no Backlogs here \u{1F978} maybe just add one?" ]
+
+            else
+                column [ spacing 16, width fill ] (project.backlogs |> List.map (\b -> backlogView b))
+    in
     column [ width fill, spacing 32 ]
         [ el [ Font.size 28 ] <| text project.name
-        , column [ spacing 16, width fill ] (project.backlogs |> List.map (\b -> backlogView b))
+        , backlogs
         ]
 
 

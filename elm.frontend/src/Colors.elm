@@ -62,6 +62,14 @@ gray60 =
     rgb255 111 111 111
 
 
+gray50 =
+    rgb255 141 141 141
+
+
+gray40 =
+    rgb255 168 168 168
+
+
 gray30 =
     rgb255 198 198 198
 
@@ -76,6 +84,10 @@ gray10 =
 
 orange40 =
     rgb255 255 131 43
+
+
+buildInGray =
+    rgb255 186 189 182
 
 
 primary : Color

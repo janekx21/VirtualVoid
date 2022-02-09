@@ -34,6 +34,11 @@ short =
     Object.selectionForField "String" "short" [] Decode.string
 
 
+thumbnailUrl : SelectionSet String Api.Object.Project
+thumbnailUrl =
+    Object.selectionForField "String" "thumbnailUrl" [] Decode.string
+
+
 backlogs :
     SelectionSet decodesTo Api.Object.Backlog
     -> SelectionSet (List decodesTo) Api.Object.Project

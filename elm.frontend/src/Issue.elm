@@ -2,16 +2,18 @@ module Issue exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
-import Colors exposing (fatal, primary, success, warning)
+import Colors exposing (fatal, gray40, gray50, primary, secondary, success, warning, white)
 import Common exposing (coloredMaterialIcon, materialIcon, render, validateWith)
 import Dialog exposing (ChoiceDialog, InfoDialog)
 import Element exposing (..)
+import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html)
 import Markdown.Renderer exposing (defaultHtmlRenderer)
 import Material.Icons
 import Material.Icons.Outlined as Outlined
+import Styled exposing (labeled, multiline)
 
 
 type alias SimpleIssue =
@@ -52,43 +54,16 @@ issueDialog issue onClose =
 createIssueDialog : SimpleIssue -> msg -> msg -> (SimpleIssue -> msg) -> ChoiceDialog msg
 createIssueDialog issue onCreate onClose onChange =
     let
-        emptyToZero str =
-            if String.isEmpty str then
-                "0"
-
-            else
-                str
-
-        parsePoints string =
-            string
-                |> emptyToZero
-                |> String.toInt
-                |> Maybe.andThen (validateWith validPoints)
-
         body : Element msg
         body =
             column [ spacing 16, width fill ]
-                [ Input.text []
+                [ Styled.input []
                     { text = issue.name
                     , label = Input.labelAbove [ Font.size 14 ] <| text "Name"
                     , placeholder = Just <| Input.placeholder [] <| text "Your Issue Name"
                     , onChange = \string -> onChange { issue | name = string }
                     }
-                , Input.text [ width (px 48) ]
-                    { text =
-                        issue.points
-                            |> String.fromInt
-                            |> (\d ->
-                                    if d == "0" then
-                                        ""
-
-                                    else
-                                        d
-                               )
-                    , label = Input.labelAbove [ Font.size 14 ] <| text "Points"
-                    , placeholder = Just <| Input.placeholder [ alignRight ] <| text "0"
-                    , onChange = \string -> onChange { issue | points = string |> parsePoints |> Maybe.withDefault issue.points }
-                    }
+                , pointInput issue onChange
                 , multiline issue.description "Describe your Issue here" "Description" (\string -> onChange { issue | description = string })
                 ]
     in
@@ -102,18 +77,42 @@ createIssueDialog issue onCreate onClose onChange =
     }
 
 
-multiline : String -> String -> String -> (String -> msg) -> Element msg
-multiline txt placeholder label onChange =
-    column [ width fill, spacing 5 ]
-        [ el [ Font.size 14 ] <| text label
-        , Input.multiline [ width fill, height (fill |> minimum 128) ]
-            { text = txt
-            , spellcheck = True
-            , placeholder = Just <| Input.placeholder [] <| text placeholder
-            , label = Input.labelHidden label
-            , onChange = onChange
-            }
-        ]
+pointInput : { a | points : Int } -> ({ a | points : Int } -> b) -> Element b
+pointInput issue onChange =
+    let
+        emptyToZero str =
+            if String.isEmpty str then
+                "0"
+
+            else
+                str
+
+        parsePoints string =
+            string
+                |> emptyToZero
+                |> String.toInt
+                |> Maybe.andThen (validateWith validPoints)
+    in
+    labeled "Points" <|
+        row []
+            [ Input.button [ height fill, Background.color gray50, Font.color white ] { label = materialIcon Material.Icons.remove 24, onPress = Just <| onChange { issue | points = issue.points - 1 } }
+            , Styled.input [ width (px 48) ]
+                { text =
+                    issue.points
+                        |> String.fromInt
+                        |> (\d ->
+                                if d == "0" then
+                                    ""
+
+                                else
+                                    d
+                           )
+                , label = Input.labelHidden "Points"
+                , placeholder = Just <| Input.placeholder [ alignRight ] <| text "0"
+                , onChange = \string -> onChange { issue | points = string |> parsePoints |> Maybe.withDefault issue.points }
+                }
+            , Input.button [ height fill, Background.color gray50, Font.color white ] { label = materialIcon Material.Icons.add 24, onPress = Just <| onChange { issue | points = issue.points + 1 } }
+            ]
 
 
 issueIcon : IssueType -> Element msg

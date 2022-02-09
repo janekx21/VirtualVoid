@@ -9,9 +9,10 @@ import Browser.Navigation exposing (Key, pushUrl, replaceUrl)
 import Colors exposing (glassColor, mask10, primary)
 import Common exposing (backdropBlur, bodyView, breadcrumb, pill, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Element exposing (Element, centerY, column, el, fill, height, inFront, link, mouseOver, none, padding, px, row, spacing, text, width, wrappedRow)
+import Element exposing (Element, alignTop, centerY, column, el, fill, height, inFront, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width, wrappedRow)
 import Element.Background as Background
 import Element.Font as Font
+import Element.Input exposing (button)
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
@@ -25,7 +26,7 @@ type alias Model =
 
 
 type alias ProjectData =
-    { id : UUID, name : String, short : String }
+    { id : UUID, name : String, short : String, thumbnailUrl : String }
 
 
 init : ( Model, Cmd Msg )
@@ -45,6 +46,11 @@ type alias Response =
 
 type Msg
     = GotFetch (RemoteData (Graphql.Http.Error Response) Response)
+    | OpenProject ProjectData
+
+
+
+-- url = "/projects/" ++ uuidToUrl64 project.id
 
 
 update : Msg -> Key -> Model -> ( Model, Cmd Msg )
@@ -57,6 +63,9 @@ update msg key model =
 
                 _ ->
                     ( remoteData, Cmd.none )
+
+        OpenProject project ->
+            ( model, pushUrl key ("/projects/" ++ uuidToUrl64 project.id) )
 
 
 
@@ -77,10 +86,11 @@ query =
 
 selection : SelectionSet ProjectData Api.Object.Project
 selection =
-    SelectionSet.map3 ProjectData
+    SelectionSet.map4 ProjectData
         Api.Object.Project.id
         Api.Object.Project.name
         Api.Object.Project.short
+        Api.Object.Project.thumbnailUrl
 
 
 
@@ -120,22 +130,31 @@ projectsView : List ProjectData -> Element Msg
 projectsView projectData =
     wrappedRow
         [ width fill, spacing 2 ]
-        (projectData |> List.map (List.repeat 19) |> List.concat |> List.map (\p -> projectView p))
+        (projectData |> List.map (\p -> projectView p))
 
 
 projectView : ProjectData -> Element Msg
 projectView project =
     let
-        label =
+        box =
             column [ width (px (256 + 128)), Element.htmlAttribute <| Html.Attributes.style "aspect-ratio" "1/1" ]
-                [ row [ spacing 10, Background.color glassColor, backdropBlur 5, padding 16, width fill ] [ el [ Font.size 48, Font.bold ] <| text <| project.name, el [ Font.size 24, centerY ] <| pill project.short primary ]
+                [ wrappedRow
+                    [ spacing 10
+                    , Background.color glassColor
+                    , backdropBlur 5
+                    , padding 16
+                    , width fill
+                    ]
+                    [ paragraph [ Font.size 48, Font.bold, padding 8 ] [ text <| project.name ]
+                    , el [ Font.size 24, alignTop, padding 8 ] <| pill project.short primary
+                    ]
                 ]
     in
-    link
+    button
         [ inFront <| el [ mouseOver [ Background.color mask10 ], width fill, height fill ] <| none
-        , Background.image "assets/pexels-mikhael-mayim-8826427.jpg"
+        , Background.image project.thumbnailUrl
         ]
-        { url = "/projects/" ++ uuidToUrl64 project.id, label = label }
+        { onPress = Just <| OpenProject project, label = box }
 
 
 

@@ -2,34 +2,37 @@ module Views.HomeView exposing (..)
 
 import Colors exposing (gray20, primary)
 import Common exposing (bodyView, imageTitleView)
-import Element exposing (Attribute, Element, column, fill, height, image, link, mouseOver, padding, px, text, width)
+import Element exposing (Attribute, Element, column, fill, height, image, link, minimum, mouseOver, padding, px, text, width)
 import Element.Background as Background
 import Element.Border as Border
+import Element.Input as Input exposing (labelHidden)
 import Link exposing (buttonLink)
 
 
 type alias Model =
-    ()
+    String
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( (), Cmd.none )
+    ( "Foo", Cmd.none )
 
 
 type Msg
-    = Never
+    = Change String
 
 
 view : Model -> Element Msg
 view model =
-    column [ width fill, height fill ] [ imageTitleView "Virtual Void" (image [ width (px 52) ] { src = "assets/logo_white.svg", description = "Virtual Void Logo" }), bodyView links ]
+    column [ width fill, height fill ] [ imageTitleView "Virtual Void" (image [ width (px 52) ] { src = "assets/logo_white.svg", description = "Virtual Void Logo" }), bodyView <| links model ]
 
 
-links : Element Msg
-links =
+links : Model -> Element Msg
+links model =
     column []
         [ link buttonLink { url = "/projects", label = text "Projects" }
+        , Input.multiline [ height (fill |> minimum 200) ] { text = model, placeholder = Nothing, label = labelHidden "FOo", onChange = Change, spellcheck = True }
+        , text "Das ist ein langer langer langer text was geht ab"
         ]
 
 
@@ -40,7 +43,9 @@ projectLink =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        Change string ->
+            ( string, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg

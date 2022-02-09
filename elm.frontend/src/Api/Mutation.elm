@@ -52,6 +52,7 @@ createIssue requiredArgs____ object____ =
 type alias CreateProjectRequiredArguments =
     { name : String
     , short : String
+    , thumbnailUrl : String
     }
 
 
@@ -62,7 +63,7 @@ createProject :
     -> SelectionSet decodesTo Api.Object.Project
     -> SelectionSet decodesTo RootMutation
 createProject requiredArgs____ object____ =
-    Object.selectionForCompositeField "createProject" [ Argument.required "name" requiredArgs____.name Encode.string, Argument.required "short" requiredArgs____.short Encode.string ] object____ Basics.identity
+    Object.selectionForCompositeField "createProject" [ Argument.required "name" requiredArgs____.name Encode.string, Argument.required "short" requiredArgs____.short Encode.string, Argument.required "thumbnailUrl" requiredArgs____.thumbnailUrl Encode.string ] object____ Basics.identity
 
 
 type alias RemoveBacklogRequiredArguments =
