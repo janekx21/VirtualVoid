@@ -5,7 +5,7 @@ import Api.Enum.IssueType exposing (IssueType(..))
 import Colors exposing (fatal, primary, success, warning)
 import Common exposing (coloredMaterialIcon, materialIcon, render, validateWith)
 import Dialog exposing (ChoiceDialog, InfoDialog)
-import Element exposing (Element, alignRight, column, fill, height, minimum, paragraph, px, row, spacing, text, width)
+import Element exposing (..)
 import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html)
@@ -33,7 +33,7 @@ issueDialog issue onClose =
         description =
             case result of
                 Ok value ->
-                    paragraph [ width fill, spacing 6 ] (value |> List.map Element.html)
+                    paragraph [ width fill, spacing 6 ] (value |> List.map html)
 
                 Err error ->
                     text <| error
@@ -89,13 +89,7 @@ createIssueDialog issue onCreate onClose onChange =
                     , placeholder = Just <| Input.placeholder [ alignRight ] <| text "0"
                     , onChange = \string -> onChange { issue | points = string |> parsePoints |> Maybe.withDefault issue.points }
                     }
-                , Input.multiline [ width fill, height (fill |> minimum 128) ]
-                    { text = issue.description
-                    , spellcheck = True
-                    , placeholder = Just <| Input.placeholder [] <| text "Describe your Issue here"
-                    , label = Input.labelAbove [ Font.size 14 ] <| text "Description"
-                    , onChange = \string -> onChange { issue | description = string }
-                    }
+                , multiline issue.description "Describe your Issue here" "Description" (\string -> onChange { issue | description = string })
                 ]
     in
     { title = "Create Issue"
@@ -106,6 +100,20 @@ createIssueDialog issue onCreate onClose onChange =
     , onOk = onCreate
     , okText = "Create"
     }
+
+
+multiline : String -> String -> String -> (String -> msg) -> Element msg
+multiline txt placeholder label onChange =
+    column [ width fill, spacing 5 ]
+        [ el [ Font.size 14 ] <| text label
+        , Input.multiline [ width fill, height (fill |> minimum 128) ]
+            { text = txt
+            , spellcheck = True
+            , placeholder = Just <| Input.placeholder [] <| text placeholder
+            , label = Input.labelHidden label
+            , onChange = onChange
+            }
+        ]
 
 
 issueIcon : IssueType -> Element msg
