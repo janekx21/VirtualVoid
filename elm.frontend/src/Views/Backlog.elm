@@ -1,4 +1,4 @@
-module Views.BacklogView exposing (..)
+module Views.Backlog exposing (..)
 
 import Api.Enum.Importance exposing (Importance(..))
 import Api.Enum.IssueType exposing (IssueType(..))
@@ -86,7 +86,7 @@ view model =
         viewDialog dialog =
             case dialog of
                 IssueDialog issue ->
-                    Dialog.Info <| issueDialog issue CloseDialog
+                    Dialog.Info <| issueDialog CloseDialog issue
 
                 CreateDialog data ->
                     Dialog.Choice <| createIssueDialog data (CreateIssue data) CloseDialog ChangeIssue

@@ -25,8 +25,8 @@ initSimpleIssue =
     { name = "", points = 0, description = "" }
 
 
-issueDialog : { a | type_ : IssueType, name : String, description : String, number : Int } -> msg -> InfoDialog msg
-issueDialog issue onClose =
+issueDialog : msg -> { a | type_ : IssueType, name : String, description : String, number : Int } -> InfoDialog msg
+issueDialog onClose issue =
     let
         result : Result String (List (Html msg))
         result =

@@ -14,12 +14,12 @@ import Html.Attributes
 import Material.Icons
 import Route exposing (Route(..))
 import Url exposing (Url)
-import Views.BacklogView as BacklogView
-import Views.HomeView as HomeView
-import Views.IssueView as IssuesView
-import Views.OfflineView as OfflineView
-import Views.ProjectView as ProjectView
-import Views.ProjectsView as ProjectsView
+import Views.Backlog as BacklogView
+import Views.Home as HomeView
+import Views.Issue as IssuesView
+import Views.Offline as OfflineView
+import Views.Project as ProjectView
+import Views.Projects as ProjectsView
 
 
 main : Program () Model Msg
@@ -246,7 +246,7 @@ view parentModel =
             ( ProjectsView.view model, Nothing ) |> defaultLayout |> document "Projects | Virtual Void" ProjectsPageMsg
 
         ProjectPage model ->
-            ( ProjectView.view model, Nothing ) |> defaultLayout |> document "Project | Virtual Void" ProjectPageMsg
+            ProjectView.view model |> defaultLayout |> document "Project | Virtual Void" ProjectPageMsg
 
         IssuesPage pageModel ->
             Document "Issues | Virtual Void"

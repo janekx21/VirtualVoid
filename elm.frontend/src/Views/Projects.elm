@@ -1,4 +1,4 @@
-module Views.ProjectsView exposing (..)
+module Views.Projects exposing (..)
 
 -- model
 

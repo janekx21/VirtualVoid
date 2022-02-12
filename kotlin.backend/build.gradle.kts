@@ -30,6 +30,10 @@ dependencies {
 
     // dev stuff
     compileOnly("org.springframework.boot:spring-boot-devtools")
+
+    // implementation("com.sxtanna.database:Kedis:+")
+    // implementation("org.ktorm:ktorm-core:+")
+    // implementation("org.xerial:sqlite-jdbc:+")
 }
 
 tasks.withType<KotlinCompile> {

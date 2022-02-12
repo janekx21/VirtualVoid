@@ -1,4 +1,4 @@
-module Views.HomeView exposing (..)
+module Views.Home exposing (..)
 
 import Colors exposing (gray20, primary)
 import Common exposing (Direction(..), bodyView, imageTitleView, tooltip)
