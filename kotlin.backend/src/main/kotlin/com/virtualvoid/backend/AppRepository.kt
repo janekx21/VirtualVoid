@@ -35,7 +35,7 @@ class AppRepository {
     fun resolveEpic(id: UUID): Epic? = if (id.isZero) null else findEpic(id)
 
     init {
-        val demoProject = projects.add(Project(createID(), "Demo", "DMO", "/assets/pexels-mikhael-mayim-8826427.jpg"))
+        val demoProject = projects.add(Project(createID(), "Demo", "DMO", "https://images.pexels.com/photos/245535/pexels-photo-245535.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"))
         backlogs.addAll(
             listOf(
                 Backlog(createID(), "Product Backlog", demoProject),

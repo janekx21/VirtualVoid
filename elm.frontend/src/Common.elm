@@ -211,6 +211,8 @@ type Direction
     | Right
 
 
+{-| This works together with the stylesheet
+-}
 tooltip : Direction -> String -> List (Attribute msg)
 tooltip direction txt =
     let

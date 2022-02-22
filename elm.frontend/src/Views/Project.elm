@@ -264,7 +264,7 @@ transparentButton =
 viewBacklog : BacklogData -> Element Msg
 viewBacklog backlog =
     if List.isEmpty backlog.issues then
-        column [ padding 32, spacing 16 ] [ materialIcon Icons.hourglass_empty 64, text "This Backlog is empty" ]
+        row [ padding 16, spacing 8 ] [ materialIcon Icons.hide_source 24, text "This Backlog is empty" ]
 
     else
         let

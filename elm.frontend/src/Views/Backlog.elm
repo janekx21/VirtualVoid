@@ -10,7 +10,7 @@ import Api.Object.Issue
 import Api.Object.Project
 import Api.Query
 import Colors exposing (colorSelection, gray20, mask10, white)
-import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, focusDefaultTarget, iconTitleView, mutate, pill, query)
+import Common exposing (bodyView, breadcrumb, coloredMaterialIcon, focusDefaultTarget, iconTitleView, materialIcon, mutate, pill, query)
 import CustomScalarCodecs exposing (uuidToUrl64)
 import Dialog exposing (ChoiceDialog, Dialog, InfoDialog)
 import Element exposing (Color, Element, alignRight, column, el, fill, height, link, mouseOver, none, padding, paragraph, px, row, spacing, text, width)
@@ -22,7 +22,7 @@ import Graphql.OptionalArgument exposing (OptionalArgument(..))
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Issue exposing (SimpleIssue, createIssueDialog, importanceIcon, initSimpleIssue, issueDialog, typeIcon, validPoints)
 import Link exposing (boxButton)
-import Material.Icons
+import Material.Icons as Icons
 import UUID exposing (UUID)
 
 
@@ -91,7 +91,7 @@ view model =
                 CreateDialog data ->
                     Dialog.Choice <| createIssueDialog data (CreateIssue data) CloseDialog ChangeIssue
     in
-    ( column [ width fill, height fill ] [ iconTitleView "Backlog" Material.Icons.toc, bodyView <| app model ]
+    ( column [ width fill, height fill ] [ iconTitleView "Backlog" Icons.toc, bodyView <| app model ]
     , model.currentDialog |> Maybe.map viewDialog
     )
 
@@ -132,27 +132,27 @@ app model =
 
 viewBacklog : BacklogData -> Element Msg
 viewBacklog backlog =
-    if List.isEmpty backlog.issues then
-        el [ Font.bold, Font.size 32 ] <| text "There are no Issue"
+    let
+        sortedIssues =
+            backlog.issues |> List.sortBy .number
 
-    else
-        let
-            sortedIssues =
-                backlog.issues |> List.sortBy .number
+        head =
+            row [ width fill ] [ el [ alignRight ] <| addButton ]
 
-            head =
-                row [ width fill ] [ el [ alignRight ] <| addButton ]
+        lines =
+            if List.isEmpty backlog.issues then
+                head :: [ row [ padding 16, spacing 8 ] [ materialIcon Icons.hide_source 24, text "There are no Issue" ] ]
 
-            lines =
+            else
                 head :: (sortedIssues |> List.map viewIssue)
 
-            separator =
-                el [ width fill, height (px 1), Background.color gray20 ] <| none
-        in
-        column [ width fill, spacing 32 ]
-            [ el [ Font.size 28 ] <| text backlog.name
-            , column [ width fill ] (lines |> List.intersperse separator)
-            ]
+        separator =
+            el [ width fill, height (px 1), Background.color gray20 ] <| none
+    in
+    column [ width fill, spacing 32 ]
+        [ el [ Font.size 28 ] <| text backlog.name
+        , column [ width fill ] (lines |> List.intersperse separator)
+        ]
 
 
 addButton : Element Msg
@@ -162,7 +162,7 @@ addButton =
         , label =
             row [ width fill ]
                 [ text <| "New Issue"
-                , el [ alignRight ] <| coloredMaterialIcon Material.Icons.add 24 white
+                , el [ alignRight ] <| coloredMaterialIcon Icons.add 24 white
                 ]
         }
 
