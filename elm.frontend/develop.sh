@@ -1,2 +1,3 @@
-cp src/index.html index.html
-elm-live src/Main.elm -u -s index.html -- --debug --output=elm.js
+#!/bin/sh
+# TODO maybe add proxy
+elm-live src/Main.elm --pushstate --hot --start-page src/index.html -- --debug --output=elm.js

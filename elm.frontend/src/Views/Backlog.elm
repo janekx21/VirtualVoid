@@ -237,10 +237,6 @@ update msg model =
             ( model, Cmd.none )
 
         GotMutation remoteData ->
-            let
-                _ =
-                    Debug.log "got mutation" remoteData
-            in
             case remoteData of
                 Ok _ ->
                     ( { model | currentDialog = Nothing }, fetch model.id )
@@ -248,17 +244,17 @@ update msg model =
                 Err err ->
                     case err of
                         Graphql.Http.GraphqlError _ errList ->
-                            let
-                                _ =
-                                    Debug.log "err"
-                                        (errList
-                                            |> List.map .message
-                                            |> List.map (String.split " : ")
-                                            |> List.map List.tail
-                                            |> List.map (Maybe.withDefault [])
-                                            |> List.concat
-                                        )
-                            in
+                            {-
+                               _ =
+                                   Debug.log "err"
+                                       (errList
+                                           |> List.map .message
+                                           |> List.map (String.split " : ")
+                                           |> List.map List.tail
+                                           |> List.map (Maybe.withDefault [])
+                                           |> List.concat
+                                       )
+                            -}
                             ( model, Cmd.none )
 
                         _ ->
