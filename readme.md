@@ -20,10 +20,10 @@
     A super simple issue management software. The main focus
     is on super simple but qualitative and fast design.
     <br />
-    <a href="https://github.com/janekx21/VirtualVoid/wiki"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/janekx21/VirtualVoid/wiki"><strong>Explore the docs &raquo;</strong></a>
     <br />
     <br />
-    <strike>View Demo</strike>
+    <span style="text-decoration: line-through" title="There is currently no demo hosted">View Demo</span>
     &middot;
     <a href="https://github.com/janekx21/VirtualVoid/issues">Report Bug</a>
     &middot;
@@ -59,40 +59,52 @@
 </details>
 -->
 
-
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![Product Name Screen Shot][product-screenshot]
 
 <!-- TODO write something about the project -->
 
-
 ## Build With
-- Backend
-  - Kotlin
-  - GraphQL
-- Frontend
-  - Elm
-  - elm-ui
-  - Material Icons
-  - elm-graphql
 
+- Backend
+    - Kotlin
+    - Spring
+    - GraphQL
+- Frontend
+    - Elm
+    - elm-ui via `mdgriffith/elm-ui`
+    - Material Icons via `icidasset/elm-material-icons`
+    - Graphql via `dillonkearns/elm-graphql`
 
 ## Getting Started
 
 ### Prerequisites
-Install Elm-Live for the frontend development server.
+
+Install elm-live for the live and hot reloading frontend development server.
+
 ```shell
 npm install -g elm-live
 ```
 
 ### Starting
-Start a live reload dev server for the frontend.
+
+If you want to start developing.
+Start a frontend and backend dev server.
+
 ```shell
-elm.frontend/develop.sh
+sh develop.sh
 ```
 
+This starts an hot reloading elm-live dev server and executes the Gradle Task that starts the
+backend dev server.
+Look into the scripts to see the separate frontend and backend commands.
+
 ## Usage
+
+Follow the standard output text for hosting information like host and port.
+The hosted web application contains the app.
+
 ### Entities
 
 - Project
@@ -102,6 +114,8 @@ elm.frontend/develop.sh
 - State
 
 ### Features
+
+Tracking features and there state.
 
 #### Project
 
@@ -141,47 +155,39 @@ elm.frontend/develop.sh
 - [ ] remove State
 - [ ] change State name
 
-### Routing
-
-#### `/`
-dash
-
-#### `/projects`
-all projects
-
-#### `/projects/{project}`
-a project
-
-#### `/projects/{project}/backlogs`
-all backlogs of a project
-
-#### `/projects/{project}/issues`
-all issues of a project
-
-#### `/issues/{issue}`
-an issue
-
-#### `/boards/{board}`
-a board
-
-
 ## Roadmap
+
 1. [ ] Building a vertical slice
+2. [ ] Add login and users
 
 ## Contributing
+
 ## License
+
 ## Contact
 
 [contributors-shield]: https://img.shields.io/github/contributors/janekx21/VirtualVoid.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/janekx21/VirtualVoid/graphs/contributors
+
 [forks-shield]: https://img.shields.io/github/forks/janekx21/VirtualVoid.svg?style=for-the-badge
+
 [forks-url]: https://github.com/janekx21/VirtualVoid/network/members
+
 [stars-shield]: https://img.shields.io/github/stars/janekx21/VirtualVoid.svg?style=for-the-badge
+
 [stars-url]: https://github.com/janekx21/VirtualVoid/stargazers
+
 [issues-shield]: https://img.shields.io/github/issues/janekx21/VirtualVoid.svg?style=for-the-badge
+
 [issues-url]: https://github.com/janekx21/VirtualVoid/issues
+
 [license-shield]: https://img.shields.io/github/license/janekx21/VirtualVoid.svg?style=for-the-badge
+
 [license-url]: https://github.com/janekx21/VirtualVoid/blob/master/LICENSE.txt
+
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
 [linkedin-url]: https://linkedin.com/in/janekx21
+
 [product-screenshot]: images/screenshot.png
