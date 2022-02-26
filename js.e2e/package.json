@@ -1,0 +1,16 @@
+{
+  "name": "js.e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "nightwatch",
+    "e2e:setup": "node selenium-setup"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nightwatch": "^2.0.7",
+    "selenium-download": "^2.0.16"
+  }
+}
