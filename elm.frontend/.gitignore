@@ -3,6 +3,7 @@ elm-stuff/
 /index.html
 elm.js
 .idea/
+.vscode/
 
 # build
 dist/
