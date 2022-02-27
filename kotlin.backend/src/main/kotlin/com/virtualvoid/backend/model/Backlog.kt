@@ -8,10 +8,11 @@ import graphql.schema.DataFetchingEnvironment
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-data class Backlog(override val id: UUID, val name: String, val project: Project) : Entity {
+data class Backlog(override val id: UUID, val name: String, val description: String, val project: Project) : Entity {
     init {
-        require(name.length in 1..200)
         require(!id.isZero)
+        require(name.length in 1..200)
+        require(description.length in 0..2000)
     }
 
     @Suppress("unused")

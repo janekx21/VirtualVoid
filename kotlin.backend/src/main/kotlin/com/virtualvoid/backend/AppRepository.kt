@@ -38,12 +38,12 @@ class AppRepository {
         val demoProject = projects.add(Project(createID(), "Demo", "DMO", "https://images.pexels.com/photos/245535/pexels-photo-245535.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"))
         backlogs.addAll(
             listOf(
-                Backlog(createID(), "Product Backlog", demoProject),
-                Backlog(createID(), "Sprint 1", demoProject),
-                Backlog(createID(), "Sprint 2", demoProject),
+                Backlog(createID(), "Product Backlog", "This is a Product Backlog that contains every major Story / Task.", demoProject),
+                Backlog(createID(), "Sprint 1", "12.5 - 8.6", demoProject),
+                Backlog(createID(), "Sprint 2", "Current Sprint!", demoProject),
             )
         )
-        val special = backlogs.add(Backlog(createID(), "Special", demoProject))
+        val special = backlogs.add(Backlog(createID(), "Special", "Spezial Demo Project that contains very specific Issues", demoProject))
 
         projects.add(
             Project(
@@ -97,7 +97,7 @@ class AppRepository {
             )
         })
 
-        backlogs.add(Backlog(createID(), "Leeres Backlog das eienen ganz besonders langen namen trägt", l))
+        backlogs.add(Backlog(createID(), "Leeres Backlog das eienen ganz besonders langen namen trägt", "", l))
 
         issues.add(
             Issue(

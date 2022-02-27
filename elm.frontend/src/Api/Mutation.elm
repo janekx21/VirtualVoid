@@ -21,6 +21,7 @@ import Json.Decode as Decode exposing (Decoder)
 
 type alias CreateBacklogRequiredArguments =
     { title : String
+    , description : String
     , project : CustomScalarCodecs.Uuid
     }
 
@@ -32,7 +33,7 @@ createBacklog :
     -> SelectionSet decodesTo Api.Object.Backlog
     -> SelectionSet decodesTo RootMutation
 createBacklog requiredArgs____ object____ =
-    Object.selectionForCompositeField "createBacklog" [ Argument.required "title" requiredArgs____.title Encode.string, Argument.required "project" requiredArgs____.project (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
+    Object.selectionForCompositeField "createBacklog" [ Argument.required "title" requiredArgs____.title Encode.string, Argument.required "description" requiredArgs____.description Encode.string, Argument.required "project" requiredArgs____.project (CustomScalarCodecs.codecs |> Api.Scalar.unwrapEncoder .codecUuid) ] object____ Basics.identity
 
 
 type alias CreateIssueRequiredArguments =

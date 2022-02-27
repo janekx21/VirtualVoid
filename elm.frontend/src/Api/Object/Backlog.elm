@@ -19,6 +19,11 @@ import Graphql.SelectionSet exposing (SelectionSet)
 import Json.Decode as Decode
 
 
+description : SelectionSet String Api.Object.Backlog
+description =
+    Object.selectionForField "String" "description" [] Decode.string
+
+
 id : SelectionSet CustomScalarCodecs.Uuid Api.Object.Backlog
 id =
     Object.selectionForField "CustomScalarCodecs.Uuid" "id" [] (CustomScalarCodecs.codecs |> Api.Scalar.unwrapCodecs |> .codecUuid |> .decoder)

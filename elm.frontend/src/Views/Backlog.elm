@@ -43,7 +43,7 @@ type alias ProjectData =
 
 
 type alias BacklogData =
-    { name : String, issues : List IssueData, project : ProjectData }
+    { name : String, description: String, issues : List IssueData, project : ProjectData }
 
 
 type OpenDialog
@@ -151,6 +151,7 @@ viewBacklog backlog =
     in
     column [ width fill, spacing 32 ]
         [ el [ Font.size 28 ] <| text backlog.name
+            , paragraph [] [text backlog.description]
         , column [ width fill ] (lines |> List.intersperse separator)
         ]
 
@@ -271,6 +272,7 @@ fetch id =
         (Api.Query.backlog { id = id }
             (SelectionSet.succeed BacklogData
                 |> with Api.Object.Backlog.name
+                |> with Api.Object.Backlog.description
                 |> with
                     (Api.Object.Backlog.issues
                         (SelectionSet.succeed IssueData

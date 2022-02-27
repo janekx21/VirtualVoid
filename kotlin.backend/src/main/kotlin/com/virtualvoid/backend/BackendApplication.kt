@@ -81,8 +81,8 @@ class AppMutation(val repo: AppRepository) : Mutation {
     }
 
     @GraphQLDescription("Creates a new Backlog")
-    fun createBacklog(title: String, project: UUID): Backlog =
-        Backlog(createID(), title, repo.projects.find(project)).also { repo.backlogs.add(it) }
+    fun createBacklog(title: String, description: String, project: UUID): Backlog =
+        Backlog(createID(), title, description, repo.projects.find(project)).also { repo.backlogs.add(it) }
 
     @GraphQLDescription("Removes a Backlog")
     fun removeBacklog(id: UUID): Backlog =
