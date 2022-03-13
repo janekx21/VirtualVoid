@@ -156,7 +156,7 @@ update msg model =
         ( ProjectsPageMsg subMsg, ProjectsPage pageModel ) ->
             let
                 ( updatedPageModel, updatedCmd ) =
-                    ProjectsView.update subMsg model.navKey pageModel
+                    ProjectsView.update subMsg pageModel
             in
             ( { model | page = ProjectsPage updatedPageModel }
             , Cmd.map ProjectsPageMsg updatedCmd

@@ -231,3 +231,8 @@ tooltip direction txt =
                     "right"
     in
     [ htmlAttribute <| Html.Attributes.attribute "tooltip" txt, htmlAttribute <| Html.Attributes.class dir ]
+
+
+aspect : Int -> Int -> Attribute msg
+aspect a b =
+    Element.htmlAttribute <| Html.Attributes.style "aspect-ratio" (String.fromInt a ++ "/" ++ String.fromInt b)
