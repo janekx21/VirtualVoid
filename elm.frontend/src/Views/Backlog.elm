@@ -43,7 +43,7 @@ type alias ProjectData =
 
 
 type alias BacklogData =
-    { name : String, description: String, issues : List IssueData, project : ProjectData }
+    { name : String, description : String, issues : List IssueData, project : ProjectData }
 
 
 type OpenDialog
@@ -151,7 +151,7 @@ viewBacklog backlog =
     in
     column [ width fill, spacing 32 ]
         [ el [ Font.size 28 ] <| text backlog.name
-            , paragraph [] [text backlog.description]
+        , paragraph [] [ text backlog.description ]
         , column [ width fill ] (lines |> List.intersperse separator)
         ]
 

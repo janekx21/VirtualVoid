@@ -7,6 +7,11 @@ import Element.Font as Font
 import Element.Input as Input
 
 
+button : List (Attribute msg) -> msg -> Element msg -> Element msg
+button attributes onPress label =
+    Input.button attributes { onPress = Just onPress, label = label }
+
+
 input : List (Attribute msg) -> { onChange : String -> msg, text : String, placeholder : Maybe (Input.Placeholder msg), label : Input.Label msg } -> Element msg
 input attrs textOptions =
     Input.text (attrs ++ border) textOptions

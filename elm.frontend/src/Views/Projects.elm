@@ -1,35 +1,46 @@
-module Views.Projects exposing (..)
+module Views.Projects exposing (Model, Msg, init, update, view)
 
--- model
-
+import Api.Mutation exposing (CreateProjectRequiredArguments)
 import Api.Object.Project
 import Api.Query as Query
-import Colors exposing (gray10, gray20, gray30, lightGlassColor, mask10, primary, secondary, white)
-import Common exposing (aspect, backdropBlur, bodyView, breadcrumb, materialIcon, pill, query, titleView)
+import Colors exposing (gray20, gray30, lightGlassColor, mask10, primary)
+import Common exposing (aspect, backdropBlur, bodyView, breadcrumb, materialIcon, mutate, pill, query, titleView)
 import CustomScalarCodecs exposing (uuidToUrl64)
-import Element exposing (Element, alignTop, centerX, centerY, column, el, fill, link, mouseOver, padding, paragraph, px, spacing, text, width, wrappedRow)
+import Dialog exposing (Dialog)
+import Element exposing (Element, alignTop, centerX, centerY, column, el, fill, htmlAttribute, link, mouseOver, padding, paragraph, px, spacing, text, width, wrappedRow)
 import Element.Background as Background
 import Element.Font as Font
 import Graphql.Http
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
-import Html.Attributes
-import Link exposing (boxButton)
+import Html.Attributes exposing (style)
+import Link
 import Material.Icons as Icons
+import Project
 import RemoteData exposing (RemoteData(..))
+import Styled
 import UUID exposing (UUID)
 
 
+
+-- model
+
+
 type alias Model =
-    RemoteData (Graphql.Http.Error Response) Response
+    { dialog : Maybe CreateProjectRequiredArguments, projects : RemoteData (Graphql.Http.Error Response) Response }
 
 
-type alias ProjectData =
+type alias Project =
     { id : UUID, name : String, short : String, thumbnailUrl : String }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( NotAsked, fetchProjects )
+    ( { dialog = Nothing, projects = NotAsked }, fetchProjects )
+
+
+emptyProjectArguments : CreateProjectRequiredArguments
+emptyProjectArguments =
+    { name = "", short = "", thumbnailUrl = "" }
 
 
 
@@ -37,18 +48,38 @@ init =
 
 
 type alias Response =
-    List ProjectData
+    List Project
 
 
 type Msg
     = GotFetch (Result (Graphql.Http.Error Response) Response)
+    | OpenDialog
+    | CloseDialog
+    | ChangeDialogData CreateProjectRequiredArguments
+    | CreatedProject (Result (Graphql.Http.Error ()) ())
+    | CreateProject CreateProjectRequiredArguments
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg _ =
+update msg model =
     case msg of
         GotFetch result ->
-            ( RemoteData.fromResult result, Cmd.none )
+            ( { model | projects = RemoteData.fromResult result }, Cmd.none )
+
+        OpenDialog ->
+            ( { model | dialog = Just emptyProjectArguments }, Cmd.none )
+
+        CloseDialog ->
+            ( { model | dialog = Nothing }, Cmd.none )
+
+        ChangeDialogData data ->
+            ( { model | dialog = Just data }, Cmd.none )
+
+        CreateProject data ->
+            ( { model | dialog = Nothing }, createProject data )
+
+        CreatedProject _ ->
+            ( model, fetchProjects )
 
 
 
@@ -59,7 +90,7 @@ fetchProjects : Cmd Msg
 fetchProjects =
     query GotFetch
         (Query.projects
-            (SelectionSet.map4 ProjectData
+            (SelectionSet.map4 Project
                 Api.Object.Project.id
                 Api.Object.Project.name
                 Api.Object.Project.short
@@ -68,13 +99,23 @@ fetchProjects =
         )
 
 
+createProject : CreateProjectRequiredArguments -> Cmd Msg
+createProject input =
+    mutate CreatedProject
+        (Api.Mutation.createProject input (SelectionSet.succeed ()))
+
+
 
 -- view
 
 
-view : Model -> Element Msg
+view : Model -> ( Element Msg, Maybe (Dialog Msg) )
 view model =
-    column [ width fill ] [ titleView "Projects", bodyView <| app model ]
+    ( column [ width fill ] [ titleView "Projects", bodyView <| app model ]
+    , model.dialog
+        |> Maybe.map (\data -> Project.createProjectDialog (CreateProject data) CloseDialog ChangeDialogData data)
+        |> Maybe.map Dialog.Choice
+    )
 
 
 app : Model -> Element Msg
@@ -87,7 +128,7 @@ app model =
 
 maybeProjects : Model -> Element Msg
 maybeProjects model =
-    case model of
+    case model.projects of
         NotAsked ->
             text <| "not asked"
 
@@ -101,7 +142,7 @@ maybeProjects model =
             projectsView a
 
 
-projectsView : List ProjectData -> Element Msg
+projectsView : List Project -> Element Msg
 projectsView projectData =
     wrappedRow
         [ width fill, spacing 2 ]
@@ -109,12 +150,12 @@ projectsView projectData =
 
 
 add =
-    el [ width (px (256 + 128)), aspect 1 1, Background.color gray20, mouseOver [ Background.color gray30 ] ] <|
+    Styled.button [ width (px (256 + 128)), aspect 1 1, Background.color gray20, mouseOver [ Background.color gray30 ] ] OpenDialog <|
         el [ centerX, centerY ] <|
             materialIcon Icons.add 64
 
 
-projectView : ProjectData -> Element Msg
+projectView : Project -> Element Msg
 projectView project =
     let
         head =
@@ -138,8 +179,12 @@ projectView project =
                 [ head ]
     in
     link
-        [ Background.image project.thumbnailUrl ]
+        [ Background.image project.thumbnailUrl, htmlAttribute <| style "background-color" "#ccc" ]
         { url = projectUrl project, label = box }
+
+
+
+-- , behindContent <| el [ width fill, height fill, Background.color gray30 ] none
 
 
 projectUrl { id } =

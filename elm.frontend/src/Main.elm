@@ -243,7 +243,7 @@ view parentModel =
             ( HomeView.view model, Nothing ) |> defaultLayout |> document "Virtual Void" HomePageMsg
 
         ProjectsPage model ->
-            ( ProjectsView.view model, Nothing ) |> defaultLayout |> document "Projects | Virtual Void" ProjectsPageMsg
+            ProjectsView.view model |> defaultLayout |> document "Projects | Virtual Void" ProjectsPageMsg
 
         ProjectPage model ->
             ProjectView.view model |> defaultLayout |> document "Project | Virtual Void" ProjectPageMsg

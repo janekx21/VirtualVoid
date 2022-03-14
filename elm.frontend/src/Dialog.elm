@@ -66,7 +66,7 @@ glassPanel =
     [ Background.color lightGlassColor
     , Border.color lightGlassColor
     , Border.width 1
-    , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(10px) grayscale(70%)"
+    , Element.htmlAttribute <| Html.Attributes.style "backdrop-filter" "blur(20px) grayscale(70%)"
     ]
 
 
@@ -114,8 +114,3 @@ framework onClose element =
 
 height100 =
     Element.htmlAttribute <| Html.Attributes.style "max-height" "100%"
-
-
-cancel : msg -> Element msg
-cancel message =
-    el [ onClick message, width fill, height fill ] <| none
