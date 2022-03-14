@@ -50,7 +50,7 @@ class AppRepository {
                 createID(),
                 "Workshop",
                 "WS",
-                "https://images.pexels.com/photos/245535/pexels-photo-245535.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
+                "https://images.pexels.com/photos/245535/pexels-photo-245535.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=400&w=400"
             )
         )
 
@@ -59,7 +59,7 @@ class AppRepository {
                 createID(),
                 "Skyscraper Glas Front",
                 "SCGF",
-                "https://images.pexels.com/photos/3735677/pexels-photo-3735677.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+                "https://images.pexels.com/photos/3735677/pexels-photo-3735677.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=400&w=400"
             )
         )
 
@@ -68,7 +68,7 @@ class AppRepository {
                 createID(),
                 "pergamon",
                 "PG",
-                "https://images.pexels.com/photos/8427830/pexels-photo-8427830.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+                "https://images.pexels.com/photos/8427830/pexels-photo-8427830.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=400&w=400"
             )
         )
 
@@ -77,7 +77,7 @@ class AppRepository {
                 createID(),
                 "LUCILIUD",
                 "L",
-                "https://images.pexels.com/photos/6998682/pexels-photo-6998682.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
+                "https://images.pexels.com/photos/6998682/pexels-photo-6998682.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=400&w=400"
             )
         )
 

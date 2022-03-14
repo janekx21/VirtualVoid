@@ -1,6 +1,7 @@
 module Views.Projects exposing (Model, Msg, init, update, view)
 
 import Api.Mutation exposing (CreateProjectRequiredArguments)
+import Api.Object
 import Api.Object.Project
 import Api.Query as Query
 import Colors exposing (gray20, gray30, lightGlassColor, mask10, primary)
@@ -26,7 +27,7 @@ import UUID exposing (UUID)
 
 
 type alias Model =
-    { dialog : Maybe CreateProjectRequiredArguments, projects : RemoteData (Graphql.Http.Error Response) Response }
+    { dialog : Maybe CreateProjectRequiredArguments, projects : RemoteData (Graphql.Http.Error Projects) Projects }
 
 
 type alias Project =
@@ -40,24 +41,24 @@ init =
 
 emptyProjectArguments : CreateProjectRequiredArguments
 emptyProjectArguments =
-    { name = "", short = "", thumbnailUrl = "" }
+    { name = "", short = "", thumbnailUrl = "https://raw.githubusercontent.com/janekx21/VirtualVoid/master/images/logo.svg" }
 
 
 
 -- update
 
 
-type alias Response =
-    List Project
-
-
 type Msg
-    = GotFetch (Result (Graphql.Http.Error Response) Response)
+    = GotFetch (Result (Graphql.Http.Error Projects) Projects)
     | OpenDialog
     | CloseDialog
     | ChangeDialogData CreateProjectRequiredArguments
-    | CreatedProject (Result (Graphql.Http.Error ()) ())
-    | CreateProject CreateProjectRequiredArguments
+    | GotCreatedProject (Result (Graphql.Http.Error Project) Project)
+    | PostProject CreateProjectRequiredArguments
+
+
+type alias Projects =
+    List Project
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,17 +70,26 @@ update msg model =
         OpenDialog ->
             ( { model | dialog = Just emptyProjectArguments }, Cmd.none )
 
-        CloseDialog ->
-            ( { model | dialog = Nothing }, Cmd.none )
-
         ChangeDialogData data ->
             ( { model | dialog = Just data }, Cmd.none )
 
-        CreateProject data ->
-            ( { model | dialog = Nothing }, createProject data )
+        CloseDialog ->
+            ( { model | dialog = Nothing }, Cmd.none )
 
-        CreatedProject _ ->
-            ( model, fetchProjects )
+        PostProject data ->
+            ( model, createProject data )
+
+        GotCreatedProject result ->
+            case result of
+                Ok project ->
+                    let
+                        projects =
+                            model.projects |> RemoteData.map (List.append [ project ])
+                    in
+                    ( { model | dialog = Nothing, projects = projects }, fetchProjects )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 
@@ -88,21 +98,22 @@ update msg model =
 
 fetchProjects : Cmd Msg
 fetchProjects =
-    query GotFetch
-        (Query.projects
-            (SelectionSet.map4 Project
-                Api.Object.Project.id
-                Api.Object.Project.name
-                Api.Object.Project.short
-                Api.Object.Project.thumbnailUrl
-            )
-        )
+    query GotFetch (Query.projects selectProject)
+
+
+selectProject : SelectionSet Project Api.Object.Project
+selectProject =
+    SelectionSet.map4 Project
+        Api.Object.Project.id
+        Api.Object.Project.name
+        Api.Object.Project.short
+        Api.Object.Project.thumbnailUrl
 
 
 createProject : CreateProjectRequiredArguments -> Cmd Msg
 createProject input =
-    mutate CreatedProject
-        (Api.Mutation.createProject input (SelectionSet.succeed ()))
+    mutate GotCreatedProject
+        (Api.Mutation.createProject input selectProject)
 
 
 
@@ -113,7 +124,7 @@ view : Model -> ( Element Msg, Maybe (Dialog Msg) )
 view model =
     ( column [ width fill ] [ titleView "Projects", bodyView <| app model ]
     , model.dialog
-        |> Maybe.map (\data -> Project.createProjectDialog (CreateProject data) CloseDialog ChangeDialogData data)
+        |> Maybe.map (\data -> Project.createProjectDialog (PostProject data) CloseDialog ChangeDialogData data)
         |> Maybe.map Dialog.Choice
     )
 

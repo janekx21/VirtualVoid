@@ -1,8 +1,10 @@
 module Project exposing (..)
 
-import Common
+import Colors exposing (black, gray40)
+import Common exposing (aspect, validateWith)
 import Dialog exposing (Dialog)
 import Element exposing (..)
+import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import Styled exposing (input)
@@ -32,7 +34,7 @@ createProjectDialog onCreate onClose onChange model =
                         { text = model.short
                         , label = Input.labelHidden "Short"
                         , placeholder = Nothing
-                        , onChange = \string -> onChange { model | short = string }
+                        , onChange = \string -> onChange { model | short = string |> String.toUpper |> validateWith validProjectShort |> Maybe.withDefault model.short }
                         }
                     ]
                 , input []
@@ -41,6 +43,21 @@ createProjectDialog onCreate onClose onChange model =
                     , placeholder = Just <| Input.placeholder [] <| text "https://your-link.domain/image.jpg"
                     , onChange = \string -> onChange { model | thumbnailUrl = string }
                     }
+                , row [ spacing 16 ]
+                    [ imagePreview model.thumbnailUrl 128
+                    , imagePreview model.thumbnailUrl 64
+                    , imagePreview model.thumbnailUrl 32
+                    , imagePreview model.thumbnailUrl 16
+                    ]
                 ]
     in
     { title = "Create Project", label = "Project", okText = "Create", onClose = onClose, onOk = onCreate, body = body }
+
+
+imagePreview url size =
+    el [ padding 8, Border.color gray40, Border.width 1 ] <| image [ aspect 1 1, width (px size) ] { description = "", src = url }
+
+
+validProjectShort : String -> Bool
+validProjectShort short =
+    String.length short <= 4 && String.all Char.isAlphaNum short
