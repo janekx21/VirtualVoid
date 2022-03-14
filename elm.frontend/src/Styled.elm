@@ -1,6 +1,6 @@
 module Styled exposing (..)
 
-import Colors exposing (gray40, gray50, secondary)
+import Colors exposing (gray50)
 import Element exposing (..)
 import Element.Border as Border
 import Element.Font as Font
@@ -14,7 +14,7 @@ button attributes onPress label =
 
 input : List (Attribute msg) -> { onChange : String -> msg, text : String, placeholder : Maybe (Input.Placeholder msg), label : Input.Label msg } -> Element msg
 input attrs textOptions =
-    Input.text (attrs ++ border) textOptions
+        Input.text (attrs ++ border) textOptions
 
 
 border =

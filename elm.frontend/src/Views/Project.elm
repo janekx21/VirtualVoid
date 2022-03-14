@@ -224,7 +224,7 @@ projectView project =
     let
         backlogs =
             if List.isEmpty project.backlogs then
-                paragraph [ Font.bold, Font.size 32 ] [ text "There are no Backlogs here \u{1F978} maybe just add one?" ]
+                row [ padding 16, spacing 8 ] [ materialIcon Icons.hide_source 24, text "This Project is empty. You should add a backlog." ]
 
             else
                 column [ spacing 16, width fill ] (project.backlogs |> List.map backlogView)

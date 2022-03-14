@@ -114,3 +114,4 @@ framework onClose element =
 
 height100 =
     Element.htmlAttribute <| Html.Attributes.style "max-height" "100%"
+
